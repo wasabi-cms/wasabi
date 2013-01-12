@@ -17,7 +17,7 @@ App::uses('CoreAppModel', 'Core.Model');
 
 class User extends CoreAppModel {
 
-	public function getAll($options = array()) {
+	public function findAll($options = array()) {
 		return $this->find('all', $options);
 	}
 

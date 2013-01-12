@@ -29,15 +29,15 @@ class UserTest extends CakeTestCase {
 		$this->User = ClassRegistry::init('Core.User');
 	}
 
-	public function testGetAll() {
-		$result = $this->User->getAll();
+	public function testFindAll() {
+		$result = $this->User->findAll();
 		$expected = array(
 			array('User' => array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => md5('admin'), 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00')),
 			array('User' => array('id' => 2, 'group_id' => 1, 'language_id' => 1, 'username' => 'test', 'password' => md5('test'), 'created' => '2013-01-12 15:00:00', 'modified' => '2013-01-12 15:00:00'))
 		);
 		$this->assertEqual($expected, $result);
 
-		$result = $this->User->getAll(array('conditions' => array('id' => 1)));
+		$result = $this->User->findAll(array('conditions' => array('id' => 1)));
 		$expected = array(
 			array('User' => array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => md5('admin'), 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'))
 		);
