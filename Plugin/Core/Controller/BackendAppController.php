@@ -30,6 +30,8 @@ class BackendAppController extends AppController {
 	public function beforeFilter() {
 		$this->RequestHandler = $this->Components->load('RequestHandler');
 		$this->helpers = array_merge($this->helpers, array(
+			'Form',
+			'Html',
 			'Session'
 		));
 
