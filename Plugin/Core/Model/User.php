@@ -19,6 +19,17 @@ App::uses('Security', 'Utility');
 class User extends CoreAppModel {
 
 	/**
+	 * belongsTo associations
+	 *
+	 * @var array
+	 */
+	public $belongsTo = array(
+		'Group' => array(
+			'className' => 'Core.Group'
+		)
+	);
+
+	/**
 	 * Find all users with find $options
 	 *
 	 * @param array $options
@@ -54,14 +65,14 @@ class User extends CoreAppModel {
 	 * Find a user by id
 	 *
 	 * @param integer $id
+	 * @param array $options
 	 * @return array
 	 */
-	public function findById($id) {
-		return $this->find('first', array(
-			'conditions' => array(
-				$this->alias . '.id' => $id
-			)
-		));
+	public function findById($id, $options = array()) {
+		$opts['conditions'] = array(
+			$this->alias . '.id' => (int) $id
+		);
+		return $this->find('first', array_merge($options, $opts));
 	}
 
 }
