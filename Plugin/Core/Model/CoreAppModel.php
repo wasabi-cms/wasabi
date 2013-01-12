@@ -18,10 +18,21 @@ App::uses('AppModel', 'Model');
 
 class CoreAppModel extends AppModel {
 
+	/**
+	 * Always attach these behaviors
+	 *
+	 * @var array
+	 */
 	public $actsAs = array(
 		'Containable'
 	);
 
-	public $rescursive = -1;
+	/**
+	 * Recursive level
+	 * -1: do not autobind any associations on find() / read() calls
+	 *
+	 * @var int
+	 */
+	public $recursive = -1;
 
 }
