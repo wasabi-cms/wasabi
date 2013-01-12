@@ -22,7 +22,7 @@ class UserFixture extends CakeTestFixture {
 		'group_id' => array('type' => 'integer', 'null' => false),
 		'language_id' => array('type' => 'integer', 'null' => false),
 		'username' => array('type' => 'string', 'length' => 255, 'null' => false),
-		'password' => array('type' => 'string', 'length' => 40),
+		'password' => array('type' => 'string', 'length' => 60),
 		'created' => 'datetime',
 		'modified' => 'datetime'
 	);
@@ -31,8 +31,8 @@ class UserFixture extends CakeTestFixture {
 
 	public function init() {
 		$this->records = array(
-			array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => md5('admin'), 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'),
-			array('id' => 2, 'group_id' => 1, 'language_id' => 1, 'username' => 'test', 'password' => md5('test'), 'created' => '2013-01-12 15:00:00', 'modified' => '2013-01-12 15:00:00')
+			array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO', 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'),
+			array('id' => 2, 'group_id' => 1, 'language_id' => 1, 'username' => 'test', 'password' => '$2a$10$i4q2qRWt5dX5O/C.Nldq5evjpY3MNMlG3K4BrxsXH7zBZmxqwzAUO', 'created' => '2013-01-12 15:00:00', 'modified' => '2013-01-12 15:00:00')
 		);
 		parent::init();
 	}

@@ -17,8 +17,35 @@ App::uses('CoreAppModel', 'Core.Model');
 
 class User extends CoreAppModel {
 
+	/**
+	 * Find all users with find $options
+	 *
+	 * @param array $options
+	 * @return array
+	 */
 	public function findAll($options = array()) {
 		return $this->find('all', $options);
+	}
+
+	/**
+	 * Find a user via username and password
+	 *
+	 * @param string $username
+	 * @param string $password unencrypted password
+	 * @param array $options
+	 *
+	 * @return array|boolean
+	 */
+	public function findWithCredentials($username, $password, $options = array()) {
+		$opts['conditions'] = array(
+			$this->alias . '.username' => $username
+		);
+		$user = $this->find('first', array_merge($options, $opts));
+		if (!$user) {
+			return false;
+		}
+		$bcrypt_password = Security::hash($password, 'blowfish', $user[$this->alias]['password']);
+		return ($bcrypt_password == $user[$this->alias]['password']) ? $user : false;
 	}
 
 }
