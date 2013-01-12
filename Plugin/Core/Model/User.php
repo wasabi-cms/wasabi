@@ -14,6 +14,7 @@
  */
 
 App::uses('CoreAppModel', 'Core.Model');
+App::uses('Security', 'Utility');
 
 class User extends CoreAppModel {
 
@@ -28,7 +29,7 @@ class User extends CoreAppModel {
 	}
 
 	/**
-	 * Find a user via username and password
+	 * Find an active user via username and password
 	 *
 	 * @param string $username
 	 * @param string $password unencrypted password
@@ -36,9 +37,10 @@ class User extends CoreAppModel {
 	 *
 	 * @return array|boolean
 	 */
-	public function findWithCredentials($username, $password, $options = array()) {
+	public function findActiveByCredentials($username, $password, $options = array()) {
 		$opts['conditions'] = array(
-			$this->alias . '.username' => $username
+			$this->alias . '.username' => $username,
+			$this->alias . '.active' => true
 		);
 		$user = $this->find('first', array_merge($options, $opts));
 		if (!$user) {
@@ -46,6 +48,20 @@ class User extends CoreAppModel {
 		}
 		$bcrypt_password = Security::hash($password, 'blowfish', $user[$this->alias]['password']);
 		return ($bcrypt_password == $user[$this->alias]['password']) ? $user : false;
+	}
+
+	/**
+	 * Find a user by id
+	 *
+	 * @param integer $id
+	 * @return array
+	 */
+	public function findById($id) {
+		return $this->find('first', array(
+			'conditions' => array(
+				$this->alias . '.id' => $id
+			)
+		));
 	}
 
 }
