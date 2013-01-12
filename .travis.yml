@@ -78,7 +78,7 @@ before_script:
     }" > Config/database.php
 
 script:
-  - phpunit --configuration ./Test/phpunit_travis.xml
+  - Console/cake test app AllTests --stderr
 
 notifications:
   irc: "irc.freenode.org#wasabi"
