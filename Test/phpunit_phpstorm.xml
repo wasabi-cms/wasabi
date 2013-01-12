@@ -1,0 +1,31 @@
+<phpunit
+        backupGlobals="true"
+        backupStaticAttributes="false"
+        bootstrap="phpunit_bootstrap.php"
+        cacheTokens="false"
+        colors="false"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        forceCoversAnnotation="false"
+        mapTestClassNameToCoveredClassName="false"
+        printerClass="CakeTextReporter"
+        printerFile="../../lib/Cake/TestSuite/Reporter/CakeTextReporter.php"
+        processIsolation="false"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        testSuiteLoaderClass="CakeTestLoader"
+        testSuiteLoaderFile="../../lib/Cake/TestSuite/CakeTestLoader.php"
+        strict="false"
+        verbose="false">
+    <testsuites>
+        <testsuite name="Wasabi App">
+            <directory>./</directory>
+        </testsuite>
+        <testsuite name="Wasabi Plugins">
+            <directory suffix="Test.php">../Plugin/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
