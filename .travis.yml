@@ -78,7 +78,7 @@ before_script:
     }" > Config/database.php
 
 script:
-  - sh -c "./Console/cake test app AllTests --stderr;"
+  - sh -c "./Console/cake;"
 
 notifications:
   irc: "irc.freenode.org#wasabi"
