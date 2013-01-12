@@ -57,7 +57,7 @@ class LessMinProcessorTest extends CakeTestCase {
 /**
  * Test the functionality of LessMinFilter::processLessFiles
  *
- * @covers LessMinFilter::processLessFiles
+ * @covers LessMinProcessor::processLessFiles
  * @return void
  */
 	public function testProcessLessFiles() {
@@ -86,7 +86,7 @@ class LessMinProcessorTest extends CakeTestCase {
 /**
  * Test Less compilation and minification for plugins.
  *
- * @covers LessMinFilter::beforeDispatch
+ * @covers LessMinProcessor::beforeDispatch
  * @return void
  */
 	public function testPluginCompilation() {
@@ -123,7 +123,7 @@ class LessMinProcessorTest extends CakeTestCase {
 /**
  * Test 'LessMin.SKIP_ON_PRODUCTION' setting
  *
- * @covers LessMinFilter::beforeDispatch
+ * @covers LessMinProcessor::beforeDispatch
  * @return void
  */
 	public function testSkipOnProduction() {
