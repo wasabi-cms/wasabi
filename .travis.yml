@@ -78,7 +78,7 @@ before_script:
     }" > Config/database.php
 
 script:
-  - phpunit --configuration ./Test/PHPUnitConfig.xml
+  - phpunit --configuration ./Test/phpunit_travis.xml
 
 notifications:
   irc: "irc.freenode.org#wasabi"
