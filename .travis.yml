@@ -76,6 +76,7 @@ before_script:
       }
     }
     }" > Config/database.php
+  - chmod 755 ./Console/cake
 
 script:
   - sh -c "./Console/cake;"
