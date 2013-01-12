@@ -1,0 +1,12 @@
+2013-01-12 12:36:15 Error: [MissingControllerException] Controller class BlogController could not be found.
+#0 C:\xampp\htdocs\wasabi\app\webroot\index.php(92): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2013-01-12 12:46:45 Error: [MissingControllerException] Controller class BlogController could not be found.
+#0 C:\xampp\htdocs\wasabi\app\webroot\index.php(92): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2013-01-12 12:57:15 Error: [MissingControllerException] Controller class BlogController could not be found.
+#0 C:\xampp\htdocs\wasabi\app\webroot\index.php(92): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2013-01-12 13:07:45 Error: [MissingControllerException] Controller class BlogController could not be found.
+#0 C:\xampp\htdocs\wasabi\app\webroot\index.php(92): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
