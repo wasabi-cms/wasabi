@@ -79,7 +79,7 @@ before_script:
   - chmod 755 ./Console/cake
 
 script:
-  - sh -c "./Console/cake;"
+  - sh -c "./Console/cake test app AllTests --stderr;"
 
 notifications:
   irc: "irc.freenode.org#wasabi"
