@@ -1,12 +1,15 @@
 Config/database.php
 Config/email.php
 Config/security.php
-tmp/cache/models/*
-tmp/cache/persistent/*
-tmp/cache/views/*
-tmp/logs/*
-tmp/sessions/*
-tmp/tests/*
+tmp/
+
+# Ignore Sublime Text files
+*.sublime*
+
+# Ignore PhpStorm project files
 .idea
+
+# Ignore Mac specific files
 .DS_Store
+
 tags
