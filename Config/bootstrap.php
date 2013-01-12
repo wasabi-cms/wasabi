@@ -143,6 +143,10 @@ Cache::config('default', array('engine' => 'File'));
  *
  */
 
+CakePlugin::load('Core', array(
+	'bootstrap' => true,
+	'routes' => true
+));
 
 /**
  * You can attach event listeners to the request lifecyle as Dispatcher Filter . By Default CakePHP bundles two filters:
@@ -161,6 +165,7 @@ Cache::config('default', array('engine' => 'File'));
  * ));
  */
 Configure::write('Dispatcher.filters', array(
+	'Core.LessMinProcessor',
 	'AssetDispatcher',
 	'CacheDispatcher'
 ));
