@@ -75,7 +75,7 @@ before_script:
       }
     }
     }" > Config/database.php
-  - cd Config && ln -s security.php.default security.php
+  - cd Config && ln -s security.php.default security.php && cd ..
   - chmod 755 ./Console/cake
 
 script:
