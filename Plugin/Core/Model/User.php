@@ -27,6 +27,9 @@ class User extends CoreAppModel {
 	public $belongsTo = array(
 		'Group' => array(
 			'className' => 'Core.Group'
+		),
+		'Language' => array(
+			'className' => 'Core.Language'
 		)
 	);
 
