@@ -13,4 +13,4 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-Configure::write('Wasabi.backendPrefix', 'backend');
+Configure::write('Wasabi.backend_prefix', 'backend');
