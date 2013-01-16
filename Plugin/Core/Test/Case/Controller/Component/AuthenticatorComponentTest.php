@@ -76,11 +76,11 @@ class AuthenticatorTestController extends Controller {
 class UserTestModel extends Model {
 
 	public function authenticate($type = 'credentials', $credentials = null) {
-		if ($credentials !== null && isset($credentials['token']) && $credentials['token'] === 'invalid_token') {
-			return false;
-		}
 		if ($type === 'guest') {
-			return 'guest';
+			return array();
+		}
+		if ($type === 'cookie' && ($credentials === null || !is_string($credentials) || $credentials === 'invalid_token')) {
+			return false;
 		}
 		return array(
 			'UserTestModel' => array(
@@ -95,8 +95,8 @@ class UserTestModel extends Model {
 		);
 	}
 
-	public function persist($user, $duration) {
-		return 'test_token';
+	public function persist($user_id, $duration) {
+		return 'test_persist_token';
 	}
 
 }
@@ -129,7 +129,8 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	protected $_tSettings = array(
 		'model' => 'UserTestModel',
 		'sessionKey' => 'wasabi',
-		'cookieKey' => 'wasabi'
+		'cookieKey' => 'wasabi',
+		'rememberFor' => '2 weeks'
 	);
 
 	protected $_tSession = array(
@@ -145,8 +146,6 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	);
 
 	public function setUp() {
-		parent::setUp();
-
 		$request = new CakeRequest(null, false);
 
 		/**
@@ -163,6 +162,8 @@ class AuthenticatorComponentTest extends CakeTestCase {
 
 		$this->Authenticator = $this->Controller->Components->load('AuthenticatorTest');
 		$this->Authenticator->startup($this->Controller);
+
+		parent::setUp();
 	}
 
 	public function testRequiredComponentsAreLoaded() {
@@ -316,8 +317,8 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	public function testPersist() {
 		$this->assertNull($this->Authenticator->Cookie->read($this->_tSettings['cookieKey']));
 		$this->Authenticator->Session->write($this->_tSettings['sessionKey'], $this->_tSession);
-		$this->assertTrue($this->Authenticator->persist('2 weeks'));
-		$expected = 'test_token:2 weeks';
+		$this->assertTrue($this->Authenticator->persist());
+		$expected = 'test_persist_token';
 		$result = $this->Authenticator->Cookie->read($this->_tSettings['cookieKey']);
 		$this->assertEqual($expected, $result);
 	}
@@ -336,7 +337,7 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	}
 
 	public function testGetActiveUser() {
-		$expected = 'guest';
+		$expected = array();
 		$this->assertEqual($expected, $this->Authenticator->getActiveUser());
 
 		$this->Authenticator->Session->write($this->_tSettings['sessionKey'], $this->_tSession);
@@ -360,23 +361,19 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	public function testUseCookie() {
 		$this->assertFalse($this->Authenticator->useCookie());
 
-		$this->Authenticator->Cookie->write($this->_tSettings['cookieKey'], 'temp_token:2 weeks');
+		$this->Authenticator->Cookie->write($this->_tSettings['cookieKey'], 'test_persist_token');
 		$this->assertTrue($this->Authenticator->useCookie());
-		$expected = 'test_token:2 weeks';
+		$expected = 'test_persist_token';
 		$result = $this->Authenticator->Cookie->read($this->_tSettings['cookieKey']);
 		$this->assertEqual($expected, $result);
 
 		$this->Authenticator->Cookie->write($this->_tSettings['cookieKey'], 'invalid_token');
 		$this->assertFalse($this->Authenticator->useCookie());
 		$this->assertNull($this->Authenticator->Cookie->read($this->_tSettings['cookieKey']));
-
-		$this->Authenticator->Cookie->write($this->_tSettings['cookieKey'], 'invalid_token:2 weeks');
-		$this->assertFalse($this->Authenticator->useCookie());
-		$this->assertNull($this->Authenticator->Cookie->read($this->_tSettings['cookieKey']));
 	}
 
 	public function testUseGuest() {
-		$expected = 'guest';
+		$expected = array();
 		$result = $this->Authenticator->useGuestAccount();
 		$this->assertEqual($expected, $result);
 	}
@@ -394,13 +391,13 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	}
 
 	public function tearDown() {
-		parent::tearDown();
-
 		$this->Authenticator->Session->delete($this->_tSettings['sessionKey']);
 		$this->Authenticator->Cookie->delete($this->_tSettings['cookieKey']);
 		unset($this->Authenticator);
 		unset($this->Collection);
 		unset($this->Controller);
+
+		parent::tearDown();
 	}
 
 	public function settings() {
