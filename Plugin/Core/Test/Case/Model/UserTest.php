@@ -13,7 +13,9 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CakeTestCase', 'TestSuite');
 App::uses('ClassRegistry', 'Utility');
+App::uses('Hash', 'Utility');
 App::uses('User', 'Core.Model');
 
 /**
@@ -31,6 +33,11 @@ class UserTest extends CakeTestCase {
 
 	public function testUserBelongsToGroup() {
 		$this->assertTrue(array_key_exists('Group', $this->User->belongsTo));
+	}
+
+	public function testUserHasManyLoginToken() {
+		$this->assertTrue(array_key_exists('LoginToken', $this->User->hasMany));
+		$this->assertTrue(Hash::get($this->User->hasMany, 'LoginToken.dependent'));
 	}
 
 	public function testFindAll() {
@@ -68,7 +75,7 @@ class UserTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-	public function testFindWithCredentials() {
+	public function testFindActiveByCredentials() {
 		$result = $this->User->findActiveByCredentials('admin', 'admin');
 		$expected = array('User' => array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO', 'active' => 1, 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'));
 		$this->assertEqual($expected, $result);
@@ -115,6 +122,16 @@ class UserTest extends CakeTestCase {
 			'User' => array('id' => 1),
 			'Group' => array('id' => 1, 'name' => 'Administrator', 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00')
 		);
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testAuthenticate() {
+		$expected = array();
+		$result = $this->User->authenticate('invalidMethod');
+		$this->assertEqual($expected, $result);
+
+		$expected = array();
+		$result = $this->User->authenticate('guest');
 		$this->assertEqual($expected, $result);
 	}
 
