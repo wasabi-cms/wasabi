@@ -35,10 +35,17 @@ class AuthenticatorComponent extends Component {
 		/*'RequestHandler'*/
 	);
 
+	/**
+	 * Default setting keys
+	 * require initialization through constructor
+	 *
+	 * @var array
+	 */
 	protected $_settings = array(
 		'model' => null,
 		'sessionKey' => null,
-		'cookieKey' => null
+		'cookieKey' => null,
+		'rememberFor' => null
 	);
 
 	/**
@@ -158,7 +165,7 @@ class AuthenticatorComponent extends Component {
 	 * If authentication succeeded the user is stored in the session.
 	 *
 	 * @param string $type
-	 * @param null $credentials
+	 * @param array|null|string $credentials
 	 * @throws NotImplementedException
 	 * @return mixed
 	 */
@@ -173,13 +180,13 @@ class AuthenticatorComponent extends Component {
 	}
 
 	/**
-	 * Logout a user and destroy his Session and Cookie.
+	 * Logout a user and destroy his Cookie and Session.
 	 *
 	 * @return bool
 	 */
 	public function logout() {
-		$this->Session->delete($this->_settings['sessionKey']);
 		$this->Cookie->delete($this->_settings['cookieKey']);
+		$this->Session->delete($this->_settings['sessionKey']);
 		return true;
 	}
 
@@ -187,16 +194,17 @@ class AuthenticatorComponent extends Component {
 	 * Persist a user login for $duration by calling the persist() method on the user model
 	 * that returns a token, which is then stored in a cookie.
 	 *
-	 * @param string $duration
 	 * @throws NotImplementedException
 	 * @return boolean
 	 */
-	public function persist($duration = '2 weeks') {
+	public function persist() {
 		$userModel = $this->_getUserModel();
 		if (!method_exists($userModel, 'persist')) {
 			throw new NotImplementedException($userModel->alias . '::persist() is not implemented!');
 		}
-		$token = $userModel->persist($this->get(), $duration) . ':' . $duration;
+		$user_id = $this->get('id');
+		$duration = $this->_settings['rememberFor'];
+		$token = $userModel->persist($user_id, $duration);
 		$this->Cookie->write($this->_settings['cookieKey'], $token, true /* encrypt */, $duration);
 		return true;
 	}
@@ -242,18 +250,16 @@ class AuthenticatorComponent extends Component {
 	 */
 	protected function _useCookie() {
 		$token = $this->Cookie->read($this->_settings['cookieKey']);
-		if (!$token || !is_string($token) || strpos($token, ':') === false) {
-			$this->Cookie->delete($this->_settings['cookieKey']);
+		if (!$token) {
 			return false;
 		}
-		list($token, $duration) = preg_split('/:/', $token);
-		$user = $this->login('cookie', compact('token', 'duration'));
+		$user = $this->login('cookie', $token);
 		// delete the cookie once it is used
 		$this->Cookie->delete($this->_settings['cookieKey']);
 		if (!$user) {
 			return false;
 		}
-		$this->persist($duration);
+		$this->persist($this->_settings['rememberFor']);
 		return true;
 	}
 
