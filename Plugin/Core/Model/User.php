@@ -14,6 +14,7 @@
  */
 
 App::uses('CoreAppModel', 'Core.Model');
+App::uses('Hash', 'Utility');
 App::uses('Security', 'Utility');
 
 class User extends CoreAppModel {
@@ -53,7 +54,7 @@ class User extends CoreAppModel {
 			$this->alias . '.username' => $username,
 			$this->alias . '.active' => true
 		);
-		$user = $this->find('first', array_merge($options, $opts));
+		$user = $this->find('first', Hash::merge($options, $opts));
 		if (!$user) {
 			return false;
 		}
@@ -72,7 +73,7 @@ class User extends CoreAppModel {
 		$opts['conditions'] = array(
 			$this->alias . '.id' => (int) $id
 		);
-		return $this->find('first', array_merge($options, $opts));
+		return $this->find('first', Hash::merge($options, $opts));
 	}
 
 }

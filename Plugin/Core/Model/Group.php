@@ -14,6 +14,7 @@
  */
 
 App::uses('CoreAppModel', 'Core.Model');
+App::uses('Hash', 'Utility');
 
 class Group extends CoreAppModel {
 
@@ -49,7 +50,7 @@ class Group extends CoreAppModel {
 		$opts['conditions'] = array(
 			$this->alias . '.id' => (int) $id
 		);
-		return $this->find('first', array_merge($options, $opts));
+		return $this->find('first', Hash::merge($options, $opts));
 	}
 
 }
