@@ -13,3 +13,5 @@
  * @subpackage    Wasabi.Plugin.Core.Config
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+
+App::uses('WasabiEventManager', 'Core.Lib');
