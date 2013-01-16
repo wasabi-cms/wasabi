@@ -17,33 +17,25 @@ App::uses('BackendAppController', 'Core.Controller');
 App::uses('ControllerTestCase', 'TestSuite');
 
 /**
- * @property BackendAppController $BackendApp
+ * @property BackendAppController $BackendAppController
  */
 
 class BackendAppControllerTest extends ControllerTestCase {
 
 	public function setUp() {
-		$this->BackendApp = new BackendAppController();
-		$this->BackendApp->constructClasses();
+		$this->BackendAppController = new BackendAppController();
+		$this->BackendAppController->constructClasses();
 	}
 
 	public function testRequiredComponentsAreLoaded() {
-		$this->assertNull($this->BackendApp->Components->RequestHandler);
-		$this->BackendApp->beforeFilter();
-		$this->assertEqual('RequestHandlerComponent', get_class($this->BackendApp->Components->RequestHandler));
+		$this->assertTrue(array_key_exists('RequestHandler', $this->BackendAppController->components));
+		$this->assertTrue(array_key_exists('Core.Authenticator', $this->BackendAppController->components));
 	}
 
 	public function testRequiredHelpersAreLoaded() {
-		$this->assertEmpty($this->BackendApp->helpers);
-		$this->BackendApp->beforeFilter();
-
-		$expected = array(
-			'Form',
-			'Html',
-			'Session'
-		);
-
-		$this->assertEqual($expected, $this->BackendApp->helpers);
+		$this->assertTrue(in_array('Form', $this->BackendAppController->helpers));
+		$this->assertTrue(in_array('Html', $this->BackendAppController->helpers));
+		$this->assertTrue(in_array('Session', $this->BackendAppController->helpers));
 	}
 
 	public function tearDown() {
