@@ -13,6 +13,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CakeTestCase', 'TestSuite');
 App::uses('ClassRegistry', 'Utility');
 App::uses('Group', 'Core.Model');
 
