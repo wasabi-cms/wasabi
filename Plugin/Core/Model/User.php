@@ -125,6 +125,9 @@ class User extends CoreAppModel {
 				}
 				$username = $credentials['username'];
 				$password = $credentials['password'];
+				if ($username == '' || $password == '') {
+					return false;
+				}
 				return $this->findActiveByCredentials($username, $password, array(
 					'contain' => array(
 						'Group',
