@@ -81,6 +81,8 @@ class AuthenticatorComponent extends Component {
 		if (!empty($this->components)) {
 			$this->_componentMap = ComponentCollection::normalizeObjectArray($this->components);
 		}
+
+		new Authenticator($this);
 	}
 
 	/**
@@ -284,6 +286,25 @@ class AuthenticatorComponent extends Component {
 		}
 		list($plugin, $model) = preg_split('/\./', $this->_settings['model']);
 		return $model;
+	}
+
+}
+
+class Authenticator {
+
+	/**
+	 * @var AuthenticatorComponent
+	 */
+	protected static $_instance;
+
+	public function __construct(&$instance) {
+		if (!self::$_instance) {
+			self::$_instance = $instance;
+		}
+	}
+
+	public static function get($field = null) {
+		return self::$_instance->get($field);
 	}
 
 }
