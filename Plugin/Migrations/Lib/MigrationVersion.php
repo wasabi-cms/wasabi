@@ -16,6 +16,7 @@
  */
 
 App::uses('CakeMigration', 'Migrations.Lib');
+App::uses('ClassRegistry', 'Utility');
 App::uses('ConnectionManager', 'Model');
 App::uses('Inflector', 'Utility');
 App::uses('Folder', 'Utility');
