@@ -1,0 +1,104 @@
+/**
+ * General Mixins for Backend wide usage.
+ *
+ * LESS
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the below copyright notice.
+ *
+ * @copyright     Copyright 2013, Frank Förster (http://frankfoerster.com)
+ * @link          http://github.com/frankfoerster/wasabi
+ * @package       Wasabi
+ * @subpackage    Wasabi.Plugin.Core.webroot.less
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
+.clearfix() {
+  &:before, &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+  .ie6 &, .ie7 & {
+    zoom: 1;
+  }
+}
+
+.border-radius(@radius: 5px) {
+  -webkit-border-radius: @arguments;
+  -moz-border-radius: @arguments;
+  border-radius: @arguments;
+}
+
+.box-sizing(@type: border-box) {
+  -moz-box-sizing: @type;
+  -webkit-box-sizing: @type;
+  -ms-box-sizing: @type;
+  box-sizing: @type;
+}
+
+.box-shadow(@shadow: 1px 1px 2px rgba(0,0,0,0.25)) {
+  -webkit-box-shadow: @shadow;
+  -moz-box-shadow: @shadow;
+  box-shadow: @shadow;
+}
+
+.text-shadow(@shadow: 0 1px 1px rgba(0,0,0,.6)) {
+  -webkit-text-shadow: @arguments;
+  -moz-text-shadow: @arguments;
+  text-shadow: @arguments;
+}
+
+.transition(@trans: all .5s linear .0s) {
+  -webkit-transition: @arguments;
+  -moz-transition: @arguments;
+  -o-transition: @arguments;
+  transition: @arguments;
+}
+
+.transform(@rotation) {
+  -webkit-transform: @rotation;
+  -moz-transform: @rotation;
+  -o-transform: @rotation;
+  transform: @rotation;
+}
+
+.opacity(@value: .5) {
+  opacity: @value;
+  //filter: ~'alpha(opacity=(@value*100))';
+  //filter: ~'progid:DXImageTransform.Microsoft.Alpha(opacity=(@value*100))';
+  //-ms-filter: ~'"progid:DXImageTransform.Microsoft.Alpha(opacity=(@value*100))"';
+}
+
+#gradient {
+  .horizontal (@start-color, @end-color) {
+    background-color: @end-color;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, right top, from(@start-color), to(@end-color)); /* Konqueror */
+    background-image: -moz-linear-gradient(left, @start-color, @end-color); /* FF 3.6+ */
+    background-image: -ms-linear-gradient(left, @start-color, @end-color); /* IE10 */
+    background-image: -webkit-gradient(linear, left top, right top, color-stop(0%, @start-color), color-stop(100%, @end-color)); /* Safari 4+, Chrome 2+ */
+    background-image: -webkit-linear-gradient(left, @start-color, @end-color); /* Safari 5.1+, Chrome 10+ */
+    background-image: -o-linear-gradient(left, @start-color, @end-color); /* Opera 11.10 */
+    background-image: -ms-linear-gradient(left, @start-color 0%, @end-color 100%); /* IE10+ */
+    background-image: linear-gradient(left, @start-color, @end-color); /* the standard */
+    //filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@start-color,@end-color)); /* IE6 & IE7 */
+    //-ms-filter: %("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@start-color,@end-color); /* IE8+ */
+  }
+  .vertical (@start-color, @end-color) {
+    background-color: @end-color;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, left bottom, from(@start-color), to(@end-color)); /* Konqueror */
+    background-image: -moz-linear-gradient(@start-color, @end-color); /* FF 3.6+ */
+    background-image: -ms-linear-gradient(@start-color, @end-color); /* IE10 */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @start-color), color-stop(100%, @end-color)); /* Safari 4+, Chrome 2+ */
+    background-image: -webkit-linear-gradient(@start-color, @end-color); /* Safari 5.1+, Chrome 10+ */
+    background-image: -o-linear-gradient(@start-color, @end-color); /* Opera 11.10 */
+    background-image: -ms-linear-gradient(top, @start-color 0%, @end-color 100%); /* IE10+ */
+    background-image: linear-gradient(@start-color, @end-color); /* the standard */
+    //filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@start-color,@end-color)); /* IE6 & IE7 */
+    //-ms-filter: %("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@start-color,@end-color); /* IE8+ */
+  }
+}

@@ -1,0 +1,139 @@
+.wysiwym-buttons {
+  margin-bottom: 5px;
+
+  .button + .button,
+  .button + .button-group,
+  .button-group + .button,
+  .button-group + .button-group {
+    margin-left: 5px;
+  }
+
+  .button {
+    line-height: 1.2em;
+
+    &.bold, &.italic, &.header1, &.header2, &.header3, &.header4, &.header5, &.header6, &.bulletlist, &.numberlist, &.image {
+      text-indent: -9999px;
+      width: 1px;
+    }
+
+    &.bold, &.italic, &.header1, &.header2, &.header3, &.header4, &.header5, &.header6, &.numberlist, &.bulletlist, &.image {
+      &:before {
+        content: "";
+        position: relative;
+        top: 1px;
+        float:left;
+        width: 16px;
+        height: 16px;
+        margin: -0.2em 0.75em 0 -0.6em;
+        background: url(../img/text_icons.png) 0 0 no-repeat;
+      }
+    }
+
+    &.bold:before {
+      background-position: 0 0;
+    }
+    &.bold:hover:before {
+      background-position: -16px 0;
+    }
+
+    &.italic:before {
+      background-position: 0 -16px;
+    }
+    &.italic:hover:before {
+      background-position: -16px -16px;
+    }
+
+    &.header1:before {
+      background-position: 0 -48px;
+    }
+    &.header1:hover:before {
+      background-position: -16px -48px;
+    }
+
+    &.header2:before {
+      background-position: 0 -64px;
+    }
+    &.header2:hover:before {
+      background-position: -16px -64px;
+    }
+
+    &.header3:before {
+      background-position: 0 -80px;
+    }
+    &.header3:hover:before {
+      background-position: -16px -80px;
+    }
+
+    &.header4:before {
+      background-position: 0 -96px;
+    }
+    &.header4:hover:before {
+      background-position: -16px -96px;
+    }
+
+    &.header5:before {
+      background-position: 0 -112px;
+    }
+    &.header5:hover:before {
+      background-position: -16px -112px;
+    }
+
+    &.header6:before {
+      background-position: 0 -128px;
+    }
+    &.header6:hover:before {
+      background-position: -16px -128px;
+    }
+
+    &.bulletlist:before {
+      background-position: 0 -144px;
+    }
+    &.bulletlist:hover:before {
+      background-position: -16px -144px;
+    }
+
+    &.numberlist:before {
+      background-position: 0 -160px;
+    }
+    &.numberlist:hover:before {
+      background-position: -16px -160px;
+    }
+
+    &.image:before {
+      background-position: 0 -176px;
+    }
+    &.image:hover:before {
+      background-position: -16px -176px;
+    }
+  }
+}
+
+.wysiwym-help-toggle {
+  display: block;
+  margin-top: 5px;
+  background-color: #f5f5f5;
+  border: 1px solid #dddddd;
+  padding: 8px 10px;
+}
+
+.wysiwym-help table {
+  width: 100%;
+  background-color: #ffffff;
+
+  tr:first-child {
+    th, td {
+      border-top: 0;
+    }
+  }
+
+  th {
+    padding: 5px;
+    border: 1px solid #dddddd;
+  }
+
+  td {
+    padding: 5px;
+    border: 1px solid #dddddd;
+    font-family: "Bitstream Vera Sans Mono", "Consolas", "Courier New", monospace;
+  }
+}
