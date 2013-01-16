@@ -44,4 +44,50 @@ class UsersController extends BackendAppController {
 		$this->set('users', $users);
 	}
 
+	/**
+	 * Login action
+	 *
+	 * @return void
+	 */
+	public function login() {
+		$this->layout = 'Core.login';
+		$this->set('title_for_layout', __d('core', 'Login'));
+
+		if ($this->Session->check('login_referer')) {
+			$this->set('login_referer', $this->Session->read('login_referer'));
+			$this->Session->delete('login_referer');
+		}
+
+		if (!empty($this->data)) {
+			if ($this->Authenticator->login('credentials', $this->data['User'])) {
+				$this->Session->setFlash(__d('core', 'Welcome back,  %s!', array($this->Authenticator->get('username'))), 'default', array('class' => 'success'));
+			} else {
+				$this->Session->setFlash(__d('core', 'Wrong username or password.'), 'default', array('class' => 'error'));
+			}
+		}
+
+		$user = Authenticator::get();
+		if (!empty($user)) {
+			// default redirect: first primary backend menu item
+			$redirect = $this->viewVars['backend_menu_for_layout']['primary'][0]['url'];
+			// override default redirect if a login_referer is submitted
+			if (!empty($this->data) && isset($this->data['User']['login_referer'])) {
+				$redirect = '/' . $this->data['User']['login_referer'];
+			}
+			$this->redirect($redirect);
+		}
+	}
+
+	/**
+	 * Logout action
+	 *
+	 * @return void
+	 */
+	public function logout() {
+		if ($this->Authenticator->logout()) {
+			$this->Session->setFlash(__d('core', 'See you soon.'), 'default', array('class' => 'success'));
+			$this->redirect(array('action' => 'login'));
+		}
+	}
+
 }
