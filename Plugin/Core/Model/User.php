@@ -17,6 +17,11 @@ App::uses('CoreAppModel', 'Core.Model');
 App::uses('Hash', 'Utility');
 App::uses('Security', 'Utility');
 
+/**
+ * @property Group $Group
+ * @property LoginToken $LoginToken
+ */
+
 class User extends CoreAppModel {
 
 	/**
@@ -30,6 +35,18 @@ class User extends CoreAppModel {
 		),
 		'Language' => array(
 			'className' => 'Core.Language'
+		)
+	);
+
+	/**
+	 * hasMany associations
+	 *
+	 * @var array
+	 */
+	public $hasMany = array(
+		'LoginToken' => array(
+			'className' => 'Core.LoginToken',
+			'dependent' => true
 		)
 	);
 
