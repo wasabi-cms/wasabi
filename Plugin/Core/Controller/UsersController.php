@@ -21,10 +21,20 @@ App::uses('BackendAppController', 'Core.Controller');
 
 class UsersController extends BackendAppController {
 
+	/**
+	 * Models used by this controller
+	 *
+	 * @var array
+	 */
 	public $uses = array(
 		'Core.User'
 	);
 
+	/**
+	 * Index action
+	 *
+	 * @return void
+	 */
 	public function index() {
 		$users = $this->User->findAll(array(
 			'contain' => array(
