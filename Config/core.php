@@ -186,6 +186,13 @@
 	}
 
 /**
+ * Load wasabi settings
+ */
+	if (file_exists(dirname(__FILE__) . DS . 'wasabi.php')) {
+		include dirname(__FILE__) . DS . 'wasabi.php';
+	}
+
+/**
  * Apply timestamps with the last modified time to static assets (js, css, images).
  * Will append a querystring parameter containing the time the file was modified. This is
  * useful for invalidating browser caches.
