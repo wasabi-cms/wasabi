@@ -96,4 +96,93 @@ class User extends CoreAppModel {
 		return $this->find('first', Hash::merge($options, $opts));
 	}
 
+	/**
+	 * Authenticate a user via 'guest', 'credentials' or 'cookie'
+	 *
+	 * 'credentials' needs username, password
+	 * 'cookie'      needs token, duration
+	 *
+	 * @param string $type
+	 * @param array|string $credentials
+	 * @throws InvalidArgumentException
+	 * @return array|bool
+	 */
+	public function authenticate($type, $credentials = null) {
+		switch ($type) {
+
+			case 'guest':
+				return array();
+
+			case 'credentials':
+				if (!is_array($credentials)) {
+					throw new InvalidArgumentException('$credentials has to be an array with "username" and "password" keys.');
+				}
+				if (!isset($credentials['username'])) {
+					throw new InvalidArgumentException('"username" key is missing in $credentials.');
+				}
+				if (!isset($credentials['password'])) {
+					throw new InvalidArgumentException('"password" key is missing in $credentials.');
+				}
+				$username = $credentials['username'];
+				$password = $credentials['password'];
+				return $this->findActiveByCredentials($username, $password, array(
+					'contain' => array(
+						'Group',
+						'Language'
+					)
+				));
+
+			case 'cookie':
+				if (!is_string($credentials)) {
+					throw new InvalidArgumentException('$credentials has to be a string containing the "token:user_id".');
+				}
+				list($token, $user_id) = preg_split('/\:/', $credentials);
+				$user = $this->LoginToken->findActiveToken($token, array(
+					'contain' => array(
+						'User' => array(
+							'Group',
+							'Language'
+						)
+					)
+				));
+				if (!$user) {
+					return false;
+				}
+				$this->LoginToken->delete($user['LoginToken']['id']);
+				unset($user['LoginToken']);
+				return $user;
+
+			default:
+				return array();
+		}
+	}
+
+	/**
+	 * Persist a user login by generating a unique login token for that user
+	 * that expires after the specified $duration.
+	 *
+	 * @param integer $user_id
+	 * @param string $duration
+	 * @return bool|string the generated token, or false if db error
+	 */
+	public function persist($user_id, $duration) {
+		$token = $this->_generateToken();
+		while ($this->LoginToken->alreadyExists($token)) {
+			$token = $this->_generateToken();
+		}
+		if ($this->LoginToken->add($user_id, $token, $duration)) {
+			return $token;
+		}
+		return false;
+	}
+
+	/**
+	 * Generate a token
+	 *
+	 * @return string
+	 */
+	protected function _generateToken() {
+		return md5(uniqid(mt_rand(), true));
+	}
+
 }
