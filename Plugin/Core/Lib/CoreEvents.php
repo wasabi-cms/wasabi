@@ -31,6 +31,13 @@ class CoreEvents {
 	public static function loadPluginRoutes(WasabiEvent $event) {
 		$prefix = Configure::read('Wasabi.backend_prefix');
 
+		// Login & Logout
+		Router::connect("/${prefix}/login", array('plugin' => 'core', 'controller' => 'users', 'action' => 'login'));
+		Router::connect("/${prefix}/logout", array('plugin' => 'core', 'controller' => 'users', 'action' => 'logout'));
+
+		// Edit Profile
+		Router::connect("/${prefix}/profile", array('plugin' => 'core', 'controller' => 'users', 'action' => 'profile'));
+
 		// Users
 		Router::connect("/${prefix}/users", array('plugin' => 'core', 'controller' => 'users', 'action' => 'index'));
 		Router::connect("/${prefix}/users/:action/*", array('plugin' => 'core', 'controller' => 'users'));
