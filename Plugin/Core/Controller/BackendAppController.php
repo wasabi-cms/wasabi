@@ -59,19 +59,6 @@ class BackendAppController extends AppController {
 	}
 
 	/**
-	 * Redirect wrapper for testing
-	 *
-	 * @param array|string $url
-	 * @param integer|null $status
-	 * @param bool $exit
-	 * @return bool|void
-	 */
-	public function redirect($url, $status = null, $exit = true) {
-		parent::redirect($url, $status, $exit);
-		return false;
-	}
-
-	/**
 	 * Check if the current request needs an authenticated user.
 	 * Check if the user is authorized to complete the request.
 	 *
