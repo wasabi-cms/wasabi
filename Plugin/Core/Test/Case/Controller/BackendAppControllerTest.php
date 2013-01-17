@@ -92,6 +92,8 @@ class BackendAppControllerTest extends ControllerTestCase {
 		$this->BackendAppController = new BackendAppTestController();
 		$this->BackendAppController->constructClasses();
 		$this->BackendAppController->Components->init($this->BackendAppController);
+
+		parent::setUp();
 	}
 
 	public function testRequiredComponentsAreLoaded() {
@@ -177,6 +179,8 @@ class BackendAppControllerTest extends ControllerTestCase {
 		$this->BackendAppController->Session->delete('login_referer');
 		unset($this->BackendAppController);
 		ClassRegistry::flush();
+
+		parent::tearDown();
 	}
 
 }
