@@ -60,7 +60,7 @@ class UsersController extends BackendAppController {
 
 		if (!empty($this->data)) {
 			if ($this->Authenticator->login('credentials', $this->data['User'])) {
-				$this->Session->setFlash(__d('core', 'Welcome back,  %s!', array($this->Authenticator->get('username'))), 'default', array('class' => 'success'));
+				$this->Session->setFlash(__d('core', 'Welcome back, %s!', array($this->Authenticator->get('username'))), 'default', array('class' => 'success'));
 			} else {
 				$this->Session->setFlash(__d('core', 'Wrong username or password.'), 'default', array('class' => 'error'));
 			}
