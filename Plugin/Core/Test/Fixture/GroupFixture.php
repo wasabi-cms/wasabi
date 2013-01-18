@@ -32,7 +32,7 @@ class GroupFixture extends CakeTestFixture {
 			array(
 				'id' => 1,
 				'name' => 'Administrator',
-				'user_count' => 1,
+				'user_count' => 2,
 				'created' => '2013-01-12 14:00:00',
 				'modified' => '2013-01-12 14:00:00'),
 			array(

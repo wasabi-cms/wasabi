@@ -68,8 +68,16 @@ class UserTest extends CakeTestCase {
 		));
 		$expected = array(
 			array(
-				'User' => array('id' => 1),
-				'Group' => array('id' => 1, 'name' => 'Administrator', 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00')
+				'User' => array(
+					'id' => 1
+				),
+				'Group' => array(
+					'id' => 1,
+					'name' => 'Administrator',
+					'user_count' => 2,
+					'created' => '2013-01-12 14:00:00',
+					'modified' => '2013-01-12 14:00:00'
+				)
 			),
 		);
 		$this->assertEqual($expected, $result);
@@ -77,7 +85,18 @@ class UserTest extends CakeTestCase {
 
 	public function testFindActiveByCredentials() {
 		$result = $this->User->findActiveByCredentials('admin', 'admin');
-		$expected = array('User' => array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO', 'active' => 1, 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'));
+		$expected = array(
+			'User' => array(
+				'id' => 1,
+				'group_id' => 1,
+				'language_id' => 1,
+				'username' => 'admin',
+				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
+				'active' => 1,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			)
+		);
 		$this->assertEqual($expected, $result);
 
 		$result = $this->User->findActiveByCredentials('admin', 'foo');
@@ -95,15 +114,41 @@ class UserTest extends CakeTestCase {
 			)
 		));
 		$expected = array(
-			'User' => array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO', 'active' => 1, 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'),
-			'Group' => array('id' => 1, 'name' => 'Administrator', 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00')
+			'User' => array(
+				'id' => 1,
+				'group_id' => 1,
+				'language_id' => 1,
+				'username' => 'admin',
+				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
+				'active' => 1,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			),
+			'Group' => array(
+				'id' => 1,
+				'name' => 'Administrator',
+				'user_count' => 2,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			)
 		);
 		$this->assertEqual($expected, $result);
 	}
 
 	public function testFindById() {
 		$result = $this->User->findById(1);
-		$expected = array('User' => array('id' => 1, 'group_id' => 1, 'language_id' => 1, 'username' => 'admin', 'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO', 'active' => 1, 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00'));
+		$expected = array(
+			'User' => array(
+				'id' => 1,
+				'group_id' => 1,
+				'language_id' => 1,
+				'username' => 'admin',
+				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
+				'active' => 1,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			)
+		);
 		$this->assertEqual($expected, $result);
 
 		$result = $this->User->findById(100);
@@ -119,8 +164,16 @@ class UserTest extends CakeTestCase {
 			)
 		));
 		$expected = array(
-			'User' => array('id' => 1),
-			'Group' => array('id' => 1, 'name' => 'Administrator', 'created' => '2013-01-12 14:00:00', 'modified' => '2013-01-12 14:00:00')
+			'User' => array(
+				'id' => 1
+			),
+			'Group' => array(
+				'id' => 1,
+				'name' => 'Administrator',
+				'user_count' => 2,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			)
 		);
 		$this->assertEqual($expected, $result);
 	}
