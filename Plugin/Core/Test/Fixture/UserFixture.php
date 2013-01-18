@@ -23,7 +23,7 @@ class UserFixture extends CakeTestFixture {
 		'language_id' => array('type' => 'integer', 'null' => false),
 		'username' => array('type' => 'string', 'length' => 255, 'null' => false),
 		'password' => array('type' => 'string', 'length' => 60),
-		'active' => array('type' => 'integer', 'length' => 1, 'default' => 0, 'null' => false),
+		'active' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 		'created' => 'datetime',
 		'modified' => 'datetime'
 	);

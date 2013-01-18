@@ -65,17 +65,17 @@ class UsersControllerTest extends ControllerTestCase {
 		$expected = array(
 			array(
 				'User' => array(
-					'id' => '1',
-					'group_id' => '1',
-					'language_id' => '1',
+					'id' => 1,
+					'group_id' => 1,
+					'language_id' => 1,
 					'username' => 'admin',
 					'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
-					'active' => '1',
+					'active' => true,
 					'created' => '2013-01-12 14:00:00',
 					'modified' => '2013-01-12 14:00:00'
 				),
 				'Group' => array(
-					'id' => '1',
+					'id' => 1,
 					'name' => 'Administrator',
 					'user_count' => 2,
 					'created' => '2013-01-12 14:00:00',
@@ -84,17 +84,17 @@ class UsersControllerTest extends ControllerTestCase {
 			),
 			array(
 				'User' => array(
-					'id' => '2',
-					'group_id' => '1',
-					'language_id' => '1',
+					'id' => 2,
+					'group_id' => 1,
+					'language_id' => 1,
 					'username' => 'test',
 					'password' => '$2a$10$i4q2qRWt5dX5O/C.Nldq5evjpY3MNMlG3K4BrxsXH7zBZmxqwzAUO',
-					'active' => '0',
+					'active' => false,
 					'created' => '2013-01-12 15:00:00',
 					'modified' => '2013-01-12 15:00:00'
 				),
 				'Group' => array(
-					'id' => '1',
+					'id' => 1,
 					'name' => 'Administrator',
 					'user_count' => 2,
 					'created' => '2013-01-12 14:00:00',
