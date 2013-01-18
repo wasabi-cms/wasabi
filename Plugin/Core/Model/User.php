@@ -52,6 +52,15 @@ class User extends CoreAppModel {
 	);
 
 	/**
+	 * Default order
+	 *
+	 * @var array
+	 */
+	public $order = array(
+		'User.id ASC'
+	);
+
+	/**
 	 * Find all users with find $options
 	 *
 	 * @param array $options
