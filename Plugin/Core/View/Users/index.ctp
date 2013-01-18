@@ -5,7 +5,7 @@
 			<li><?php echo $this->Html->link(__d('core', 'Add a new User'), "/${backend_prefix}/users/add", array('class' => 'add', 'title' => __d('core', 'Add a new User'))) ?></li>
 		</ul>
 	</div>
-	<table class="list">
+	<table class="list bottom-round">
 		<thead>
 		<tr>
 			<th class="g1 center">ID</th>
@@ -25,9 +25,13 @@
 				<td><?php echo $this->Html->link($u['User']['username'], "/${backend_prefix}/users/edit/" . $u['User']['id'], array('title' => __d('core', 'Edit this User'))) ?></td>
 				<td><?php echo $u['Group']['name'] ?></td>
 				<td class="actions center">
-					<?php if ($u['User']['id'] != Configure::read('User.id')): ?>
-						<?php echo $this->Html->link(__d('core', 'Delete this User'), "/${backend_prefix}/users/delete/" . $u['User']['id'], array('title' => __d('core', 'Delete this User'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Do you really want to delete this User?'))) ?>
-					<?php else: echo '-'; endif; ?>
+					<?php
+					if ($u['User']['id'] != Authenticator::get('id')) {
+						echo $this->Html->link(__d('core', 'Delete this User'), "/${backend_prefix}/users/delete/" . $u['User']['id'], array('title' => __d('core', 'Delete this User'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Do you really want to delete this User?')));
+					} else {
+						echo '-';
+					}
+					?>
 				</td>
 			</tr>
 			<?php
