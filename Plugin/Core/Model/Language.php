@@ -15,6 +15,28 @@
 
 class Language extends CoreAppModel {
 
+	/**
+	 * Find all languages with find $options
+	 *
+	 * @param array $options
+	 * @return array
+	 */
+	public function findAll($options = array()) {
+		return $this->find('all', $options);
+	}
 
+	/**
+	 * Find a single language by id
+	 *
+	 * @param $id
+	 * @param array $options
+	 * @return array
+	 */
+	public function findById($id, $options = array()) {
+		$opts['conditions'] = array(
+			$this->alias . '.id' => (int) $id
+		);
+		return $this->find('first', Hash::merge($options, $opts));
+	}
 
 }
