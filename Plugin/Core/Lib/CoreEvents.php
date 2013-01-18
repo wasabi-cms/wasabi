@@ -64,6 +64,10 @@ class CoreEvents {
 					array(
 						'name' => __d('core', 'Groups'),
 						'url' => array('plugin' => 'core', 'controller' => 'groups', 'action' => 'index')
+					),
+					array(
+						'name' => __d('core', 'Languages'),
+						'url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index')
 					)
 				)
 			)
