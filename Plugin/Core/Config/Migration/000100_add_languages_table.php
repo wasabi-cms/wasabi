@@ -116,10 +116,10 @@ class AddLanguagesTable extends CakeMigration {
 			// Deutsch
 			$language->create(array(
 				'name' => 'Deutsch',
-				'locale' => 'en',
-				'iso' => 'eng',
-				'lang' => 'en-US',
-				'available_at_frontend' => true,
+				'locale' => 'de',
+				'iso' => 'deu',
+				'lang' => 'de-DE',
+				'available_at_frontend' => false,
 				'available_at_backend' => true,
 				'position' => 2
 			));
