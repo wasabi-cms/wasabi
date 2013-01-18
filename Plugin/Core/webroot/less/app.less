@@ -717,6 +717,46 @@ div.inner-box{
 /** ------------------------- BUTTONS ------------------------ */
 @import url('buttons.less.ins');
 
+/** ---------------------- LABELS AND BADGES ----------------- */
+.label, .badge {
+  display: inline-block;
+  padding: 2px 4px;
+  font-size: 84.6%;
+  font-weight: bold;
+  line-height: 14px; // ensure proper line-height if floated
+  color: #fff;
+  vertical-align: baseline;
+  white-space: nowrap;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
+  background-color: #999;
+
+  &:empty {
+    display: none; // Empty labels/badges collapse
+  }
+}
+
+.label {
+  .border-radius(3px);
+}
+
+.badge {
+  padding-left: 9px;
+  padding-right: 9px;
+  .border-radius(9px);
+}
+
+.label-important {
+  background-color: #c09853;
+}
+
+.label-info {
+  background-color: @blue;
+}
+
+.label-warning {
+  background-color: #f89406;
+}
+
 /** ------------------------- WYSIWYM ------------------------ */
 @import url('wysiwym.less.ins');
 
