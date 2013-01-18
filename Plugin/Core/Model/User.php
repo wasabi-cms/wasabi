@@ -129,12 +129,16 @@ class User extends CoreAppModel {
 				if ($username == '' || $password == '') {
 					return array();
 				}
-				return $this->findActiveByCredentials($username, $password, array(
+				$user = $this->findActiveByCredentials($username, $password, array(
 					'contain' => array(
 						'Group',
 						'Language'
 					)
 				));
+				if (!$user) {
+					return array();
+				}
+				return $user;
 
 			case 'cookie':
 				if (!is_string($credentials)) {
@@ -170,9 +174,9 @@ class User extends CoreAppModel {
 	 * @return bool|string the generated token, or false if db error
 	 */
 	public function persist($user_id, $duration) {
-		$token = $this->_generateToken();
+		$token = $this->generateToken();
 		while ($this->LoginToken->alreadyExists($token)) {
-			$token = $this->_generateToken();
+			$token = $this->generateToken();
 		}
 		if ($this->LoginToken->add($user_id, $token, $duration)) {
 			return $token;
@@ -185,7 +189,7 @@ class User extends CoreAppModel {
 	 *
 	 * @return string
 	 */
-	protected function _generateToken() {
+	public function generateToken() {
 		return md5(uniqid(mt_rand(), true));
 	}
 
