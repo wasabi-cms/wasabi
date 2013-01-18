@@ -20,6 +20,7 @@ class GroupFixture extends CakeTestFixture {
 	public $fields = array(
 		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'name' => array('type' => 'string', 'length' => 255, 'null' => false),
+		'user_count' => array('type' => 'integer', 'null' => false, 'default' => 0),
 		'created' => 'datetime',
 		'modified' => 'datetime'
 	);
@@ -31,11 +32,13 @@ class GroupFixture extends CakeTestFixture {
 			array(
 				'id' => 1,
 				'name' => 'Administrator',
+				'user_count' => 1,
 				'created' => '2013-01-12 14:00:00',
 				'modified' => '2013-01-12 14:00:00'),
 			array(
 				'id' => 2,
 				'name' => 'Manager',
+				'user_count' => 0,
 				'created' => '2013-01-12 15:00:00',
 				'modified' => '2013-01-12 15:00:00'
 			)

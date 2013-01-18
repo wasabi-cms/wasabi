@@ -31,7 +31,8 @@ class User extends CoreAppModel {
 	 */
 	public $belongsTo = array(
 		'Group' => array(
-			'className' => 'Core.Group'
+			'className' => 'Core.Group',
+			'counterCache' => true
 		),
 		'Language' => array(
 			'className' => 'Core.Language'

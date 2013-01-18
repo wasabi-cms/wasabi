@@ -27,6 +27,11 @@ class AddGroupsTable extends CakeMigration {
 						'type' => 'string',
 						'null' => false
 					),
+					'user_count' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => 0
+					),
 					'created' => array(
 						'type' => 'datetime',
 						'null' => false
