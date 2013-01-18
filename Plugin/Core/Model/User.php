@@ -115,7 +115,7 @@ class User extends CoreAppModel {
 	 * @param string $type
 	 * @param array|string $credentials
 	 * @throws InvalidArgumentException
-	 * @return array|bool
+	 * @return array
 	 */
 	public function authenticate($type, $credentials = null) {
 		switch ($type) {
@@ -124,19 +124,10 @@ class User extends CoreAppModel {
 				return array();
 
 			case 'credentials':
-				if (!is_array($credentials)) {
-					throw new InvalidArgumentException('$credentials has to be an array with "username" and "password" keys.');
-				}
-				if (!isset($credentials['username'])) {
-					throw new InvalidArgumentException('"username" key is missing in $credentials.');
-				}
-				if (!isset($credentials['password'])) {
-					throw new InvalidArgumentException('"password" key is missing in $credentials.');
-				}
 				$username = $credentials['username'];
 				$password = $credentials['password'];
 				if ($username == '' || $password == '') {
-					return false;
+					return array();
 				}
 				return $this->findActiveByCredentials($username, $password, array(
 					'contain' => array(
@@ -159,7 +150,7 @@ class User extends CoreAppModel {
 					)
 				));
 				if (!$user) {
-					return false;
+					return array();
 				}
 				$this->LoginToken->delete($user['LoginToken']['id']);
 				unset($user['LoginToken']);
