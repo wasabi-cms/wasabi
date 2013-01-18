@@ -39,17 +39,6 @@ class GroupsControllerTest extends ControllerTestCase {
 		$this->GroupsController = new GroupsTestController();
 		$this->GroupsController->constructClasses();
 		$this->GroupsController->Components->init($this->GroupsController);
-		/*$this->UsersController->viewVars['backend_menu_for_layout'] = array(
-			'primary' => array(
-				array(
-					'url' => array(
-						'plugin' => 'core',
-						'controller' => 'users',
-						'action' => 'index'
-					)
-				)
-			)
-		);*/
 
 		parent::setUp();
 	}
@@ -83,7 +72,6 @@ class GroupsControllerTest extends ControllerTestCase {
 			)
 		);
 		$result = $this->GroupsController->viewVars['groups'];
-		var_dump($result);
 		$this->assertEqual($expected, $result);
 	}
 
