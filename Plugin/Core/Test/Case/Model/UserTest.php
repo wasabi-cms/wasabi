@@ -24,7 +24,7 @@ App::uses('User', 'Core.Model');
 
 class UserTest extends CakeTestCase {
 
-	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language');
+	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language', 'plugin.core.login_token');
 
 	public function setUp() {
 		parent::setUp();
@@ -218,6 +218,153 @@ class UserTest extends CakeTestCase {
 
 		$expected = array();
 		$result = $this->User->authenticate('guest');
+		$this->assertEqual($expected, $result);
+
+		// test credential authentication
+		$credentials = array(
+			'username' => 'admin',
+			'password' => ''
+		);
+		$expected = array();
+		$result = $this->User->authenticate('credentials', $credentials);
+		$this->assertEqual($expected, $result);
+
+		$credentials = array(
+			'username' => '',
+			'password' => 'admin'
+		);
+		$expected = array();
+		$result = $this->User->authenticate('credentials', $credentials);
+		$this->assertEqual($expected, $result);
+
+		$credentials = array(
+			'username' => 'non_existant_username',
+			'password' => 'blub'
+		);
+		$expected = array();
+		$result = $this->User->authenticate('credentials', $credentials);
+		$this->assertEqual($expected, $result);
+
+		$credentials = array(
+			'username' => 'admin',
+			'password' => 'admin'
+		);
+		$expected = array(
+			'User' => array(
+				'id' => 1,
+				'group_id' => 1,
+				'language_id' => 1,
+				'username' => 'admin',
+				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
+				'active' => true,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			),
+			'Group' => array(
+				'id' => 1,
+				'name' => 'Administrator',
+				'user_count' => 2,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			),
+			'Language' => array(
+				'id' => 1,
+				'name' => 'English',
+				'locale' => 'en',
+				'iso' => 'eng',
+				'lang' => 'en-US',
+				'available_at_frontend' => true,
+				'available_at_backend' => true,
+				'position' => 1,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
+			)
+		);
+		$result = $this->User->authenticate('credentials', $credentials);
+		$this->assertEqual($expected, $result);
+
+		// test cookie authentication with LoginToken
+		$token = 'invalid_token';
+		$expected = array();
+		$result = $this->User->authenticate('cookie', $token);
+		$this->assertEqual($expected, $result);
+
+		$expected = 1;
+		$result = $this->User->LoginToken->find('count');
+		$this->assertEqual($expected, $result);
+
+		$this->User->save(array(
+			'id' => 1,
+			'active' => false
+		));
+		$token = 'i_am_a_very_secret_token';
+		$expected = array();
+		$result = $this->User->authenticate('cookie', $token);
+		$this->assertEqual($expected, $result);
+		$this->User->save(array(
+			'id' => 1,
+			'active' => true,
+			'modified' => '2013-01-12 14:00:00'
+		));
+
+
+		$token = 'i_am_a_very_secret_token';
+		$expected = array(
+			'User' => array(
+				'id' => 1,
+				'group_id' => 1,
+				'language_id' => 1,
+				'username' => 'admin',
+				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
+				'active' => true,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00',
+				'Group' => array(
+					'id' => '1',
+					'name' => 'Administrator',
+					'user_count' => '2',
+					'created' => '2013-01-12 14:00:00',
+					'modified' => '2013-01-12 14:00:00'
+				),
+				'Language' => array(
+					'id' => '1',
+					'name' => 'English',
+					'locale' => 'en',
+					'iso' => 'eng',
+					'lang' => 'en-US',
+					'available_at_frontend' => true,
+					'available_at_backend' => true,
+					'position' => '1',
+					'created' => '2013-01-12 14:00:00',
+					'modified' => '2013-01-12 14:00:00'
+				)
+			)
+		);
+		$result = $this->User->authenticate('cookie', $token);
+		$this->assertEqual($expected, $result);
+
+		$expected = 0;
+		$result = $this->User->LoginToken->find('count');
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testPersist() {
+		$expected = 1;
+		$result = $this->User->LoginToken->find('count');
+		$this->assertEqual($expected, $result);
+
+		$expected = 32;
+		$result = strlen($this->User->persist(1, '2 weeks'));
+		$this->assertEqual($expected, $result);
+
+		$expected = 2;
+		$result = $this->User->LoginToken->find('count');
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testGenerateToken() {
+		$expected = 32;
+		$result = strlen($this->User->generateToken());
 		$this->assertEqual($expected, $result);
 	}
 
