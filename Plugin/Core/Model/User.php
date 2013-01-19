@@ -141,19 +141,19 @@ class User extends CoreAppModel {
 				return $user;
 
 			case 'cookie':
-				if (!is_string($credentials)) {
-					throw new InvalidArgumentException('$credentials has to be a string containing the "token:user_id".');
-				}
-				list($token, $user_id) = preg_split('/\:/', $credentials);
+				$token = $credentials;
 				$user = $this->LoginToken->findActiveToken($token, array(
 					'contain' => array(
 						'User' => array(
+							'conditions' => array(
+								'User.active' => true
+							),
 							'Group',
 							'Language'
 						)
 					)
 				));
-				if (!$user) {
+				if (!$user || (isset($user['User']) && $user['User']['id'] === null)) {
 					return array();
 				}
 				$this->LoginToken->delete($user['LoginToken']['id']);
