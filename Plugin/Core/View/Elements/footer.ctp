@@ -1,6 +1,9 @@
 <footer>
 	<div class="inner">
 		Wasabi CMS
+		<?php if (Configure::read('debug') > 0) {
+			echo $this->Html->link('Go to Tests', '/test.php');
+		} ?>
 	</div>
 </footer>
 <?php
