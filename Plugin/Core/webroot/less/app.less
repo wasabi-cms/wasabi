@@ -37,7 +37,7 @@ a {
   color: #000000;
   font-weight: bold;
   text-decoration: none;
-  .transition(all, .2s, linear, .0s);
+  .transition(all .2s linear .0s);
 
   &:hover {
     color: @blue;
@@ -432,7 +432,7 @@ header {
     &.even {
 
       td {
-        background-color: #fcfcfc;
+        background-color: #f9f9f9;
       }
     }
 
@@ -1193,11 +1193,7 @@ footer {
 .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled { opacity: .35; filter:Alpha(Opacity=35); background-image: none; }
 .ui-datepicker-next, .ui-datepicker-prev {
   cursor: pointer;
-  -webkit-transition: none;
-  -moz-transition: none;
-  -ms-transition: none;
-  -o-transition: none;
-  transition: none;
+  .transition(none);
 }
 
 .ui-datepicker {
