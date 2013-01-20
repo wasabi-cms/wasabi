@@ -37,6 +37,8 @@ class LessMinProcessorTest extends CakeTestCase {
  */
 	public function setUp() {
 		$this->testAppWebroot = CakePlugin::path('Core') . 'Test' . DS . 'test_app' . DS . 'webroot' . DS;
+
+		parent::setUp();
 	}
 
 /**
@@ -52,6 +54,8 @@ class LessMinProcessorTest extends CakeTestCase {
 			$css_folder = new Folder(CakePlugin::path($p) . 'webroot' . DS . 'css' . DS);
 			$css_folder->delete();
 		}
+
+		parent::tearDown();
 	}
 
 /**

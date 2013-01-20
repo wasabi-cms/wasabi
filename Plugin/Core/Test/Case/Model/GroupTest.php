@@ -26,8 +26,9 @@ class GroupTest extends CakeTestCase {
 	public $fixtures = array('plugin.core.group', 'plugin.core.user');
 
 	public function setUp() {
-		parent::setUp();
 		$this->Group = ClassRegistry::init('Core.Group');
+
+		parent::setUp();
 	}
 
 	public function testGroupHasManyUser() {
@@ -120,8 +121,9 @@ class GroupTest extends CakeTestCase {
 	}
 
 	public function tearDown() {
-		parent::tearDown();
 		unset($this->Group);
+
+		parent::tearDown();
 	}
 
 }

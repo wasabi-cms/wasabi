@@ -23,8 +23,9 @@ App::uses('ClassRegistry', 'Utility');
 class LoginTokenTest extends CakeTestCase {
 
 	public function setUp() {
-		parent::setUp();
 		$this->LoginToken = ClassRegistry::init('Core.LoginToken');
+
+		parent::setUp();
 	}
 
 	public function testBelongsToUser() {
@@ -32,8 +33,9 @@ class LoginTokenTest extends CakeTestCase {
 	}
 
 	public function tearDown() {
-		parent::tearDown();
 		unset($this->LoginToken);
+
+		parent::tearDown();
 	}
 
 }

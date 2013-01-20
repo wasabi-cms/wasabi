@@ -27,8 +27,9 @@ class UserTest extends CakeTestCase {
 	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language', 'plugin.core.login_token');
 
 	public function setUp() {
-		parent::setUp();
 		$this->User = ClassRegistry::init('Core.User');
+
+		parent::setUp();
 	}
 
 	public function testUserBelongsToGroup() {
@@ -369,8 +370,9 @@ class UserTest extends CakeTestCase {
 	}
 
 	public function tearDown() {
-		parent::tearDown();
 		unset($this->User);
+
+		parent::tearDown();
 	}
 
 }
