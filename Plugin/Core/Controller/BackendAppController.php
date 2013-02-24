@@ -38,6 +38,13 @@ class BackendAppController extends AppController {
 	);
 
 	/**
+	 * Default Session flash message when form errors are present.
+	 *
+	 * @var string
+	 */
+	public $formErrorMessage;
+
+	/**
 	 * Helpers used by this controller
 	 *
 	 * @var array
@@ -91,6 +98,8 @@ class BackendAppController extends AppController {
 	 * - interface language
 	 * - content language
 	 * - backend menu items
+	 * - backend_prefix
+	 * - default form error message
 	 *
 	 * @return void
 	 */
@@ -98,6 +107,7 @@ class BackendAppController extends AppController {
 		$this->_loadBackendMenu();
 		$this->layout = 'Core.default';
 		$this->set('backend_prefix', Configure::read('Wasabi.backend_prefix'));
+		$this->formErrorMessage = __d('core', 'Please correct the marked errors.');
 	}
 
 	/**
