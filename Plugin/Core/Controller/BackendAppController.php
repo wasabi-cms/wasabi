@@ -45,6 +45,13 @@ class BackendAppController extends AppController {
 	public $formErrorMessage;
 
 	/**
+	 * Default Session flash message when a request is invalid.
+	 *
+	 * @var string
+	 */
+	public $invalidRequestMessage;
+
+	/**
 	 * Helpers used by this controller
 	 *
 	 * @var array
@@ -100,6 +107,7 @@ class BackendAppController extends AppController {
 	 * - backend menu items
 	 * - backend_prefix
 	 * - default form error message
+	 * - default invalid request message
 	 *
 	 * @return void
 	 */
@@ -108,6 +116,7 @@ class BackendAppController extends AppController {
 		$this->layout = 'Core.default';
 		$this->set('backend_prefix', Configure::read('Wasabi.backend_prefix'));
 		$this->formErrorMessage = __d('core', 'Please correct the marked errors.');
+		$this->invalidRequestMessage = __d('core', 'Invalid Request.');
 	}
 
 	/**
