@@ -19,6 +19,7 @@ App::uses('Security', 'Utility');
 
 /**
  * @property Group $Group
+ * @property Language $Language
  * @property LoginToken $LoginToken
  */
 
