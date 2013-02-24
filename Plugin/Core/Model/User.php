@@ -62,6 +62,82 @@ class User extends CoreAppModel {
 	);
 
 	/**
+	 * Domain used to translate validation messages
+	 * e.g. __d('core', 'Validation message...');
+	 */
+	public $validationDomain = 'core';
+
+	/**
+	 * Validation rules
+	 *
+	 * @var array
+	 */
+	public $validate = array(
+		'username' => array(
+			'length' => array(
+				'rule' => array('between', 4, 50),
+				'message' => 'Ensure the username consists of %d to %d characters.'
+			),
+			'unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'This Username is already in use.'
+			)
+		),
+		'password_unencrypted' => array(
+			'password_length' => array(
+				'rule' => array('between', 6, 50),
+				'message' => 'Ensure the password consists of %d to %d characters.',
+				'required' => false
+			)
+		),
+		'password_confirmation' => array(
+			'password_equal'  => array(
+				'rule' => 'checkPasswords',
+				'message' => 'The Password Confirmation doesn\'t match the Password field.',
+				'required' => false
+			)
+		),
+		'group_id' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Please choose the Group this User should belong to.'
+			)
+		)
+	);
+
+	/**
+	 * beforeValidate callback
+	 *
+	 * Remove possword fields if unencrypted password is empty or
+	 * create a password hash for the unencrypted password and assign it to the password field of the user.
+	 *
+	 * @param array $options
+	 * @return bool
+	 */
+	public function beforeValidate($options = array()) {
+		if (empty($this->data['User']['password_unencrypted'])) {
+			unset($this->data['User']['password_unencrypted']);
+			unset($this->data['User']['password_confirmation']);
+		} else {
+			$this->data['User']['password'] = Security::hash($this->data['User']['password_unencrypted'], 'blowfish');
+		}
+		return true;
+	}
+
+	/**
+	 * Compare the unencrypted password with the password confirmation and return true if both match
+	 *
+	 * @return bool
+	 */
+	public function checkPasswords() {
+		if ((!isset($this->data['User']['password_unencrypted']) || $this->data['User']['password_unencrypted'] == '') && (!isset($this->data['User']['password_confirmation']) || $this->data['User']['password_confirmation'] == '')) {
+			return true;
+		}
+
+		return strcmp($this->data['User']['password_unencrypted'], $this->data['User']['password_confirmation']) == 0;
+	}
+
+	/**
 	 * Find all users with find $options
 	 *
 	 * @param array $options
