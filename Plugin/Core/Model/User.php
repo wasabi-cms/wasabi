@@ -102,6 +102,11 @@ class User extends CoreAppModel {
 				'rule' => 'notEmpty',
 				'message' => 'Please choose the Group this User should belong to.'
 			)
+		),
+		'language_id' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty'
+			)
 		)
 	);
 
