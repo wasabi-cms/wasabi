@@ -105,7 +105,8 @@ class User extends CoreAppModel {
 		),
 		'language_id' => array(
 			'notEmpty' => array(
-				'rule' => 'notEmpty'
+				'rule' => 'notEmpty',
+				'message' => 'Please choose an available backend language.'
 			)
 		)
 	);
