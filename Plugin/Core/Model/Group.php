@@ -16,6 +16,10 @@
 App::uses('CoreAppModel', 'Core.Model');
 App::uses('Hash', 'Utility');
 
+/**
+ * @property User $User
+ */
+
 class Group extends CoreAppModel {
 
 	/**
@@ -51,6 +55,37 @@ class Group extends CoreAppModel {
 			$this->alias . '.id' => (int) $id
 		);
 		return $this->find('first', Hash::merge($options, $opts));
+	}
+
+	/**
+	 * Move all users from a specific group to another group.
+	 *
+	 * @param integer $from_id
+	 * @param integer $to_id
+	 * @return bool
+	 */
+	public function moveUsersToNewGroup($from_id, $to_id) {
+		if ($this->exists($from_id) && $this->exists($to_id)) {
+			$user_ids = $this->User->find('list', array(
+				'fields' => 'User.id',
+				'contain' => array('Group'),
+				'conditions' => array(
+					'Group.id' => $from_id
+				)
+			));
+			$data = array();
+			foreach ($user_ids as $key => $user_id) {
+				$data[] = array(
+					'User' => array(
+						'id' => $user_id,
+						'group_id' => $to_id
+					)
+				);
+			}
+			return $this->User->saveAll($data);
+		}
+
+		return false;
 	}
 
 }
