@@ -34,6 +34,20 @@ class Group extends CoreAppModel {
 	);
 
 	/**
+	 * Validation rules
+	 *
+	 * @var array
+	 */
+	public $validate = array(
+		'name' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Please enter a name for the group.'
+			)
+		)
+	);
+
+	/**
 	 * Find all groups with find $options
 	 *
 	 * @param array $options
