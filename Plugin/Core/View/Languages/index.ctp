@@ -48,7 +48,7 @@
 				<td class="actions center">
 					<?php
 					if (!in_array($lang['Language']['id'], array(1, 2))) {
-						echo $this->Html->link(__d('core', 'Delete this Language'), "/${backend_prefix}/languages/delete/" . $lang['Language']['id'], array('title' => __d('core', 'Delete this Language'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Do you really want to delete this Language?')));
+						echo $this->Html->link(__d('core', 'Delete this Language'), '#', array('title' => __d('core', 'Delete this Language'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Delete language <strong>%s</strong> ?', array($lang['Language']['name'])), 'data-confirm-action' => Router::url("/${backend_prefix}/languages/delete/" . $lang['Language']['id']), 'data-modal-title' => __d('core', 'Deletion Confirmation')));
 					} else {
 						echo '-';
 					}
