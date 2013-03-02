@@ -8,7 +8,7 @@
 </footer>
 <?php
 echo $this->Html->script(array(
-	'/core/js/jquery-1.8.3.min',
+	'/core/js/jquery-1.9.1.min',
 	'/core/js/plugins'
 ));
 $this->start('bottom_js');
