@@ -12,6 +12,7 @@ echo $this->Html->script(array(
 	'/core/js/plugins'
 ));
 $this->start('bottom_js');
+echo $this->element('Core.js_translations');
 $this->end('bottom_js');
 echo $this->fetch('bottom_js');
 
