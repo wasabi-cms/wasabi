@@ -17,6 +17,7 @@ App::uses('BackendAppController', 'Core.Controller');
 
 /**
  * @property User $User
+ * @property array $data
  */
 
 class UsersController extends BackendAppController {
@@ -32,6 +33,7 @@ class UsersController extends BackendAppController {
 
 	/**
 	 * Index action
+	 * GET
 	 *
 	 * @return void
 	 */
@@ -41,11 +43,88 @@ class UsersController extends BackendAppController {
 				'Group'
 			)
 		));
-		$this->set('users', $users);
+		$this->set(array(
+			'users' => $users,
+			'title_for_layout' => __d('core', 'All Users')
+		));
+	}
+
+	/**
+	 * Add action
+	 * GET | POST
+	 *
+	 * @return void
+	 */
+	public function add() {
+		$this->_prepareAddEdit();
+		if ($this->request->is('post') && !empty($this->data)) {
+			if ($this->User->save($this->data)) {
+				$this->Session->setFlash(__d('core', 'The User <strong>%s</strong> has been added.', array($this->data['User']['username'])), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
+			}
+		}
+	}
+
+	/**
+	 * Edit action
+	 * GET | POST
+	 *
+	 * @param null|integer $id
+	 * @return void
+	 */
+	public function edit($id = null) {
+		if ($id === null || ($id == 1 && Authenticator::get('User.id') != 1)) {
+			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+			$this->redirect(array('action' => 'index'));
+		}
+		$this->_prepareAddEdit();
+		if (!$this->request->is('post') && empty($this->data)) {
+			$this->request->data = $this->User->findById($id);
+			unset($this->User->validate['password_unencrypted']);
+			unset($this->User->validate['password_confirmation']);
+		} else {
+			if ($this->User->save($this->data)) {
+				$this->Session->setFlash(__d('core', 'The user <strong>%s</strong> has been updated successfully.', array($this->data['User']['username'])), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
+			}
+		}
+		$this->render('add');
+	}
+
+	/**
+	 * Delete action
+	 * POST
+	 *
+	 * @param null|integer $id
+	 * @return void
+	 * @throws MethodNotAllowedException
+	 */
+	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
+
+		if ($id === null || !$this->User->canBeDeleted($id)) {
+			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+			$this->redirect(array('action' => 'index'));
+		}
+
+		if ($this->User->delete($id)) {
+			$this->Session->setFlash(__d('core', 'The user has been deleted.'), 'default', array('class' => 'success'));
+			$this->redirect(array('action' => 'index'));
+		}
+
+		$this->Session->setFlash(__d('core', 'The user has not been deleted.'), 'default', array('class' => 'error'));
+		$this->redirect(array('action' => 'index'));
 	}
 
 	/**
 	 * Login action
+	 * GET | POST
 	 *
 	 * @return void
 	 */
@@ -80,6 +159,7 @@ class UsersController extends BackendAppController {
 
 	/**
 	 * Logout action
+	 * GET
 	 *
 	 * @return void
 	 */
@@ -88,6 +168,23 @@ class UsersController extends BackendAppController {
 			$this->Session->setFlash(__d('core', 'See you soon.'), 'default', array('class' => 'success'));
 			$this->redirect(array('action' => 'login'));
 		}
+	}
+
+	/**
+	 * Init view variables that are required for add/edit action.
+	 *
+	 * @return void
+	 */
+	private function _prepareAddEdit() {
+		$title = __d('core', 'Add a new User');
+		if ($this->request->params['action'] == 'edit') {
+			$title = __d('core', 'Edit User');
+		}
+		$this->set(array(
+			'groups' => $this->User->Group->find('list', array('Group.id', 'Group.name')),
+			'languages' => $this->User->Language->find('list', array('Language.id', 'Language.name')),
+			'title_for_layout' => $title
+		));
 	}
 
 }
