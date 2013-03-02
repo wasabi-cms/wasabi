@@ -164,7 +164,7 @@ class AuthenticatorComponent extends Component {
 	/**
 	 * Login function checks for authenticate() method on the user model
 	 * and calls it to retrieve an authenticated user.
-	 * If authentication succeeded the user is stored in the session.
+	 * If authentication succeeds the user is stored in the session.
 	 *
 	 * @param string $type
 	 * @param array|null|string $credentials
