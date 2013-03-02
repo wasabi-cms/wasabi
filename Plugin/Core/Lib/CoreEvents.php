@@ -25,6 +25,10 @@ class CoreEvents {
 		'Backend.Menu.load' => array(
 			'method' => 'loadBackendMenu',
 			'priority' => 0
+		),
+		'Backend.JS.Translations.load' => array(
+			'method' => 'loadJsTranslations',
+			'priority' => 0
 		)
 	);
 
@@ -71,6 +75,13 @@ class CoreEvents {
 					)
 				)
 			)
+		);
+	}
+
+	public static function loadJsTranslations(WasabiEvent $event) {
+		return array(
+			'Yes' => __d('core', 'Yes'),
+			'No'  => __d('core', 'No')
 		);
 	}
 }
