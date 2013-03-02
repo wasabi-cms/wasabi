@@ -16,6 +16,13 @@
 class Language extends CoreAppModel {
 
 	/**
+	 * Default order
+	 *
+	 * @var string
+	 */
+	public $order = 'Language.position ASC';
+
+	/**
 	 * Validation rules
 	 *
 	 * @var array
