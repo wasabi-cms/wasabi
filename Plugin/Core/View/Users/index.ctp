@@ -47,7 +47,7 @@
 				<td class="actions center">
 					<?php
 					if ($u['User']['id'] != Authenticator::get('id') && $u['User']['id'] != 1) {
-						echo $this->Html->link(__d('core', 'Delete this User'), "/${backend_prefix}/users/delete/" . $u['User']['id'], array('title' => __d('core', 'Delete this User'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Do you really want to delete this User?')));
+						echo $this->Html->link(__d('core', 'Delete this User'), '#', array('title' => __d('core', 'Delete this User'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Delete user <strong>%s</strong> ?', array($u['User']['username'])), 'data-confirm-action' => Router::url("/${backend_prefix}/users/delete/" . $u['User']['id']), 'data-modal-title' => __d('core', 'Deletion Confirmation')));
 					} else {
 						echo '-';
 					}
