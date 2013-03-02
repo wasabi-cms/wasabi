@@ -50,6 +50,7 @@ class LanguagesController extends BackendAppController {
 	public function add() {
 		$this->set('title_for_layout', __d('core', 'Add a new Language'));
 		if ($this->request->is('post') && !empty($this->data)) {
+			$this->request->data['Language']['position'] = 9999;
 			if ($this->Language->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The language <strong>%s</strong> has been added.', array($this->data['Language']['name'])), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'index'));
