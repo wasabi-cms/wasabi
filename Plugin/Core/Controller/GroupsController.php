@@ -32,6 +32,7 @@ class GroupsController extends BackendAppController {
 
 	/**
 	 * Index action
+	 * GET
 	 *
 	 * @return void
 	 */
