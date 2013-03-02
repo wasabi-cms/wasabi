@@ -37,7 +37,6 @@ a {
   color: #000000;
   font-weight: bold;
   text-decoration: none;
-  .transition(all .2s linear .0s);
 
   &:hover {
     color: @blue;
@@ -91,6 +90,19 @@ a {
     a {
       color: #205791;
     }
+  }
+}
+
+/** ------------------- INFOBOX ------------------------------ */
+.infobox {
+  padding: 10px 10px 0;
+  margin-bottom: 20px;
+  background-color: #fff6bf;
+  border: 1px solid darken(#fff6bf, 20%);
+
+  p {
+    padding: 0 0 10px;
+    margin: 0;
   }
 }
 
@@ -488,7 +500,7 @@ textarea {
 }
 
 input[type=checkbox] {
-  margin-right: 5px;
+  margin: 3px 5px 0 0;
 }
 
 input[type=submit], button {
@@ -937,6 +949,65 @@ ul.image_sort_list {
 /* Fix for IE 7: */
 *+html .fileinput-button {
   margin: 1px 0 0 0;
+}
+
+/** --------------------- LightModal ------------------------- */
+#lightmodal_overlay {
+  background-color: #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+#lightmodal_content {
+  background-color: #fff;
+  .border-radius(5px);
+  .box-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+
+  h2, p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+#lightmodal_header {
+  padding: 18px 18px 14px;
+  background-color: #e5e5e5;
+  border-bottom: 1px solid #ccc;
+  .border-radius(5px 5px 0 0);
+
+  h2 {
+    font-size: 18px;
+    color: #444;
+    .text-shadow(1px 1px 0 rgba(255, 255, 255, 0.5));
+  }
+
+  a.lightmodal-close {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: transparent url(../img/modal_close.png) no-repeat scroll 0 0;
+  }
+}
+
+#lightmodal_body {
+  padding: 20px 0 10px;
+
+  p {
+    padding: 0 20px 20px;
+    line-height: 1.5em;
+  }
+}
+
+#lightmodal_confirm_bar {
+  padding: 10px 20px 0;
+  border-top: 1px solid #eee;
+  text-align: right;
 }
 
 /** --------------------- CONFIRM DIALOG --------------------- */
