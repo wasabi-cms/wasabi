@@ -38,7 +38,10 @@ class GroupsController extends BackendAppController {
 	 */
 	public function index() {
 		$groups = $this->Group->findAll();
-		$this->set('groups', $groups);
+		$this->set(array(
+			'groups' => $groups,
+			'title_for_layout' => __d('core', 'All Groups')
+		));
 	}
 
 }
