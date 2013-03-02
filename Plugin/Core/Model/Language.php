@@ -16,6 +16,54 @@
 class Language extends CoreAppModel {
 
 	/**
+	 * Validation rules
+	 *
+	 * @var array
+	 */
+	public $validate = array(
+		'name' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Please enter the name of the language.'
+			),
+			'unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'This language already exists.'
+			)
+		),
+		'locale' => array(
+			'length' => array(
+				'rule' => array('between', 2, 2),
+				'message' => 'Ensure the locale consists of exactly 2 characters.'
+			),
+			'unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'This locale already exists.'
+			)
+		),
+		'iso' => array(
+			'length' => array(
+				'rule' => array('between', 3, 3),
+				'message' => 'Ensure the ISO code consists of exactly 3 characters.'
+			),
+			'unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'This ISO code already exists.'
+			)
+		),
+		'lang' => array(
+			'length' => array(
+				'rule' => array('between', 2, 5),
+				'message' => 'Ensure the HTML language code consists of 2 to 5 characters.'
+			),
+			'unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'This HTML language code already exists.'
+			)
+		)
+	);
+
+	/**
 	 * Find all languages with find $options
 	 *
 	 * @param array $options
@@ -37,6 +85,26 @@ class Language extends CoreAppModel {
 			$this->alias . '.id' => (int) $id
 		);
 		return $this->find('first', Hash::merge($options, $opts));
+	}
+
+	/**
+	 * Check if a user account by given $id can be deleted,
+	 *
+	 * @param integer $id
+	 * @return bool
+	 */
+	public function canBeDeleted($id) {
+		// available backup languages cannot be deleted
+		if ($id == 1 || $id == 2) {
+			return false;
+		}
+
+		// language with $id does not exist
+		if (!$this->exists($id)) {
+			return false;
+		}
+
+		return true;
 	}
 
 }
