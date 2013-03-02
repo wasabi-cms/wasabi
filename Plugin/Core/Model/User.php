@@ -276,4 +276,29 @@ class User extends CoreAppModel {
 		return md5(uniqid(mt_rand(), true));
 	}
 
+	/**
+	 * Check if a user account by given $id can be deleted,
+	 *
+	 * @param integer $id
+	 * @return bool
+	 */
+	public function canBeDeleted($id) {
+		// global administrative user cannot be delete
+		if ($id == 1) {
+			return false;
+		}
+
+		// a user cannot delete his own user account
+		if ($id == Authenticator::get('User.id')) {
+			return false;
+		}
+
+		// user account with $id does not exist
+		if (!$this->exists($id)) {
+			return false;
+		}
+
+		return true;
+	}
+
 }
