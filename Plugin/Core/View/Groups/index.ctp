@@ -27,7 +27,7 @@
 				<td class="actions center">
 					<?php
 					if ($g['Group']['id'] != 1) {
-						echo $this->Html->link(__d('core', 'Delete this Group'), "/${backend_prefix}/groups/delete/" . $g['Group']['id'], array('title' => __d('core', 'Delete this Group'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Do you really want to delete this Group?')));
+						echo $this->Html->link(__d('core', 'Delete this Group'), '#', array('title' => __d('core', 'Delete this Group'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Delete the group <strong>%s</strong> ?', array($g['Group']['name'])), 'data-confirm-action' => Router::url("/${backend_prefix}/groups/delete/" . $g['Group']['id']), 'data-modal-title' => __d('core', 'Deletion Confirmation')));
 					} else {
 						echo '-';
 					}
