@@ -184,6 +184,12 @@ $(function() {
     type: 'confirm'
   });
 
+  $('.list tr').hover(function() {
+    $(this).addClass('hover');
+  }, function() {
+    $(this).removeClass('hover');
+  });
+
 });
 
 (function($) {
