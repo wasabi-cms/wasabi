@@ -28,7 +28,15 @@ class CoreEvents {
 		),
 		'Backend.JS.Translations.load' => array(
 			'method' => 'loadJsTranslations',
-			'priority' => 0
+			'priority' => 100
+		),
+		'Common.Settings.load' => array(
+			'method' => 'loadSettings',
+			'priority' => 99999
+		),
+		'Common.CacheConfig.init' => array(
+			'method' => 'initCacheConfig',
+			'priority' => 99999
 		)
 	);
 
@@ -94,5 +102,50 @@ class CoreEvents {
 			'Yes' => __d('core', 'Yes'),
 			'No'  => __d('core', 'No')
 		);
+	}
+
+	/**
+	 * Load and cache all core settings
+	 *
+	 * @param WasabiEvent $event
+	 * @return array
+	 */
+	public static function loadSettings(WasabiEvent $event) {
+		if (!$settings = Cache::read('core_settings', 'core.infinite')) {
+			/**
+			 * @var $core_setting CoreSetting
+			 */
+			$core_setting = ClassRegistry::init('Core.CoreSetting');
+			$core_settings = $core_setting->findById(1);
+
+			$settings = array();
+			if ($core_settings) {
+				$core_settings = $core_settings['CoreSetting'];
+				unset($core_settings['id'], $core_settings['created'], $core_settings['modified']);
+				$settings = array(
+					'core' => $core_settings
+				);
+			}
+
+			Cache::write('core_settings', $settings, 'core.infinite');
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Initialize all cache configs of the Core plugin
+	 *
+	 * @param WasabiEvent $event
+	 * @return void
+	 */
+	public static function initCacheConfig(WasabiEvent $event) {
+		$cache_folder = new Folder(CACHE . 'core' . DS . 'infinite', true, 0755);
+		Cache::config('core.infinite', array(
+			'engine' => 'File',
+			'duration' => '+999 days',
+			'prefix' => false,
+			'path' => $cache_folder->path,
+		));
 	}
 }
