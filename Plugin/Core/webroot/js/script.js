@@ -229,6 +229,35 @@ $(function() {
     dataType: 'json'
   });
 
+  /**
+   * Default ajaxSuccess handler
+   * display a flash message if the response contains
+   * {
+   *   'status': '...' # the class of the flash message
+   *   'flashMessage': '...' # the text of the flash message
+   * }
+   */
+  $(document).ajaxSuccess(function(event, xhr, settings) {
+    if (xhr.status == 200 && xhr.statusText == 'OK') {
+      var data = $.parseJSON(xhr.responseText) || {};
+      if (data.status !== undefined && data.flashMessage !== undefined) {
+        $.flashMessage('ul.sub-menu', data.status, data.flashMessage);
+      }
+    }
+  });
+
+  /**
+   * Default ajaxError handler
+   */
+  $(document).ajaxError(function(event, xhr, settings) {
+    if (xhr.status == 500) {
+      var data = $.parseJSON(xhr.responseText) || {};
+      if (data.name !== undefined) {
+        $.flashMessage('ul.sub-menu', 'error', data.name);
+      }
+    }
+  });
+
 });
 
 (function($) {
