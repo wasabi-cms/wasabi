@@ -13,6 +13,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Folder', 'Utility');
 App::uses('Router', 'Routing');
 
 class CoreEvents {
