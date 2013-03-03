@@ -127,6 +127,15 @@ a:not(.button) {
 
   &.online  { color: green; }
   &.offline { color: red; }
+
+  &.lightmodal-close {
+    outline: none;
+    width: 14px;
+    height: 14px;
+    text-indent: -9999px;
+    background: transparent url('../img/sprite.png') no-repeat scroll;
+    background-position: 0 -160px;
+  }
 }
 
 /** ----------------------- HEADER --------------------------- */
@@ -222,7 +231,7 @@ header {
     .inline-block();
     line-height: 39px;
     padding: 0 32px 0 20px;
-    background: transparent url(../img/arrow_small_down.png) no-repeat scroll right center;
+    background: transparent url(../img/sprite.png) no-repeat scroll right -174px;
   }
 
   &.hover > a {
@@ -996,12 +1005,9 @@ ul.image_sort_list {
   }
 
   a.lightmodal-close {
-    width: 14px;
-    height: 14px;
     position: absolute;
     top: 18px;
     right: 18px;
-    background: transparent url(../img/modal_close.png) no-repeat scroll 0 0;
   }
 }
 
