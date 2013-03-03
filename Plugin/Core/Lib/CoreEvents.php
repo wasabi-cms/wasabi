@@ -57,6 +57,9 @@ class CoreEvents {
 		// Languages
 		Router::connect("/${prefix}/languages", array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index'));
 		Router::connect("/${prefix}/languages/:action/*", array('plugin' => 'core', 'controller' => 'languages'));
+
+		// Core Settings
+		Router::connect("/${prefix}/settings/edit", array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit'));
 	}
 
 	public static function loadBackendMenu(WasabiEvent $event) {
@@ -76,6 +79,10 @@ class CoreEvents {
 					array(
 						'name' => __d('core', 'Languages'),
 						'url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index')
+					),
+					array(
+						'name' => __d('core', 'Core Settings'),
+						'url' => array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit')
 					)
 				)
 			)
