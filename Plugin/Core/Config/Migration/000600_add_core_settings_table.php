@@ -42,6 +42,10 @@ class AddCoreSettingsTable extends CakeMigration {
 						'type' => 'datetime',
 						'null' => false
 					),
+					'modified' => array(
+						'type' => 'datetime',
+						'null' => false
+					),
 					'indexes' => array(
 						'PRIMARY' => array(
 							'column' => 'id',
