@@ -33,6 +33,10 @@ class CoreEvents {
 	);
 
 	public static function loadPluginRoutes(WasabiEvent $event) {
+
+		// Handle .json and application/json requests
+		Router::parseExtensions('json');
+
 		$prefix = Configure::read('Wasabi.backend_prefix');
 
 		// Login & Logout
