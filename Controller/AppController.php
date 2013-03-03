@@ -40,6 +40,20 @@ class AppController extends Controller {
 	 *
 	 * Stores the loaded settings in 'Settings' key accessible via Configure::read('Settings')
 	 *
+	 * Structure:
+	 * ----------
+	 * Array(
+	 *     'plugin_key' => Array(
+	 *         'setting_name_1' => 'setting_value_1',
+	 *         ...
+	 *     ),
+	 *     ...
+	 * )
+	 *
+	 * Access via:
+	 * -----------
+	 * Configure::read('Settings.plugin_key.setting_name_1');
+	 *
 	 * @return void
 	 */
 	private function _loadSettings() {
