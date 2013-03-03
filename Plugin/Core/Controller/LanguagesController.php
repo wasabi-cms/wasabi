@@ -112,4 +112,25 @@ class LanguagesController extends BackendAppController {
 		$this->Session->setFlash(__d('core', 'The language has not been deleted.'), 'default', array('class' => 'error'));
 		$this->redirect(array('action' => 'index'));
 	}
+
+	/**
+	 * Save the order of languages
+	 *
+	 * @throws CakeException
+	 * @return void
+	 */
+	public function sort() {
+		if (!$this->request->is('ajax') || empty($this->data) || !isset($this->data['Language']) || empty($this->data['Language'])) {
+			throw new CakeException($this->invalidRequestMessage, 400);
+		}
+
+		if ($this->Language->saveMany($this->data['Language'], array('validate' => false))) {
+			$status = 'success';
+			$flashMessage = __d('core', 'The language position has been updated.');
+			$this->set(compact('status', 'flashMessage'));
+			$this->set('_serialize', array('status', 'flashMessage'));
+		} else {
+			throw new CakeException(__d('core', 'Error saving language order to DB.'), 500);
+		}
+	}
 }

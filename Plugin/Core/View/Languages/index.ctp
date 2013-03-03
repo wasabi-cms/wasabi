@@ -5,7 +5,8 @@
 			<li><?php echo $this->Html->link(__d('core', 'Add a new Language'), "/${backend_prefix}/languages/add", array('class' => 'add', 'title' => __d('core', 'Add a new Language'))) ?></li>
 		</ul>
 	</div>
-	<table class="list bottom-round">
+	<?php echo $this->Form->create('Language', array('url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'sort'))); ?>
+	<table id="languages" class="list bottom-round">
 		<thead>
 		<tr>
 			<th class="g1 center">ID</th>
@@ -24,7 +25,13 @@
 			$class = ($i % 2 == 0) ? ' class="even"' : '';
 			?>
 			<tr<?php echo $class ?>>
-				<td class="right"><?php echo $lang['Language']['id'] ?></td>
+				<td class="right">
+					<?php
+					echo $this->Form->input('Language.'.$i.'.id', array('type' => 'hidden', 'value' => $lang['Language']['id']));
+					echo $this->Form->input('Language.'.$i.'.position', array('type' => 'hidden', 'value' => $lang['Language']['position'], 'class' => 'position'));
+					echo $lang['Language']['id'];
+					?>
+				</td>
 				<td><?php echo $this->Html->link($lang['Language']['name'], "/${backend_prefix}/languages/edit/" . $lang['Language']['id'], array('title' => __d('core', 'Edit this Language'))) ?></td>
 				<td><?php echo $lang['Language']['locale'] ?></td>
 				<td><?php echo $lang['Language']['iso'] ?></td>

@@ -190,6 +190,45 @@ $(function() {
     $(this).removeClass('hover');
   });
 
+  $('#languages').sortable({
+    handle: 'a.sort',
+    items: 'tr',
+    placeholder: 'sortable-placeholder',
+    forcePlaceholderSize: true,
+    opacity: 0.8,
+    helper: function(e, tr) {
+      var originals = tr.children();
+      var helper = tr.clone();
+      helper.children().each(function(index) {
+        $(this).width(originals.eq(index).outerWidth());
+      });
+      return helper;
+    },
+    start: function(event, ui) {
+      ui.placeholder.html('<td colspan="7"></td>');
+    },
+    stop: function(event, ui) {
+      var i = 1;
+      $(this).find('tbody tr').each(function(index) {
+        $(this).find('input.position').first().val(i);
+        i++;
+      });
+      var form = $('#LanguageIndexForm');
+      $.ajax({
+        url: form.attr('action'),
+        data: form.serialize(),
+        type: 'post'
+      });
+    }
+  });
+
+  /**
+   * Default Ajax options
+   */
+  $.ajaxSetup({
+    dataType: 'json'
+  });
+
 });
 
 (function($) {
