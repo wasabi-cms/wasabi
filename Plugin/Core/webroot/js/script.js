@@ -241,6 +241,23 @@ $(function() {
       } else {
         return entity;
       }
+    },
+
+    /**
+     * Render a flash message
+     *
+     * @param elAfter The element after which the message should be rendered.
+     * @param cls The css class of the flash message.
+     * @param message The content of the flash message.
+     */
+    flashMessage: function(elAfter, cls, message) {
+      var ancestor = $(elAfter);
+      if (ancestor.length) {
+        $('#flashMessage').remove();
+        var flashMessage = $('<div id="flashMessage"></div>');
+        flashMessage.addClass(cls).html(message);
+        ancestor.after(flashMessage);
+      }
     }
 
   });
