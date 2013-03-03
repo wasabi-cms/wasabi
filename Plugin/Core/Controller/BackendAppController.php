@@ -81,23 +81,28 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _checkPermissions() {
-		$user = $this->Authenticator->get();
-		if (empty($user)
-			&& !(
-				$this->request->params['plugin'] == 'core'
-				&& $this->request->params['controller'] == 'users'
-				&& (
-					$this->request->params['action'] == 'login'
-					|| $this->request->params['action'] == 'logout'
-				)
-			)
-		) {
-			$this->Session->write('login_referer', $this->request->url);
-			$this->redirect(array(
-				'plugin' => 'core',
-				'controller' => 'users',
-				'action' => 'login'
-			));
+		$plugin = $this->request->params['plugin'];
+		$controller = $this->request->params['controller'];
+		$action = $this->request->params['action'];
+		$path = "${plugin}.${controller}.${action}";
+
+		$guest_actions = array(
+			'core.users.login',
+			'core.users.logout'
+		);
+
+		// action requires login
+		if (!in_array($path, $guest_actions)) {
+
+			// user is not logged in -> save current request and redirect to login page
+			if (!$this->Authenticator->get()) {
+				$this->Session->write('login_referer', $this->request->url);
+				$this->redirect(array(
+					'plugin' => 'core',
+					'controller' => 'users',
+					'action' => 'login'
+				));
+			}
 		}
 	}
 
