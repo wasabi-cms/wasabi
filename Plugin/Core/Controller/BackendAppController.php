@@ -68,6 +68,8 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	public function beforeFilter() {
+		parent::beforeFilter();
+
 		$this->_checkPermissions();
 		$this->_setupBackend();
 	}
