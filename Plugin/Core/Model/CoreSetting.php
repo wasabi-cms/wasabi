@@ -49,6 +49,19 @@ class CoreSetting extends CoreAppModel {
 	);
 
 	/**
+	 * afterSave callback
+	 * Clear the core_settings cache whenever the settings are updated.
+	 *
+	 * @param bool $created
+	 * @return void
+	 */
+	public function afterSave($created) {
+		if (!$created) {
+			Cache::delete('core_settings', 'core.infinite');
+		}
+	}
+
+	/**
 	 * Retrieve the settings row by id
 	 *
 	 * @param $id
