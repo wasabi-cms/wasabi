@@ -24,6 +24,11 @@ class BackendAppTestController extends BackendAppController {
 	public $checkPermissionsCalled = false;
 	public $setupBackendCalled = false;
 
+	public function beforeFilter() {
+		$this->_checkPermissions();
+		$this->_setupBackend();
+	}
+
 	public function checkPermisions() {
 		$this->_checkPermissions();
 	}
