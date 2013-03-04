@@ -38,7 +38,10 @@ class LanguagesController extends BackendAppController {
 	 */
 	public function index() {
 		$languages = $this->Language->findAll();
-		$this->set('languages', $languages);
+		$this->set(array(
+			'languages' => $languages,
+			'title_for_layout' => __d('core', 'All Languages')
+		));
 	}
 
 	/**
