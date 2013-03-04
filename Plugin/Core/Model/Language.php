@@ -71,6 +71,18 @@ class Language extends CoreAppModel {
 	);
 
 	/**
+	 * afterSave callback
+	 * Clear the languages cache whenever a new language is created
+	 * or an existing language is updated.
+	 *
+	 * @param bool $created
+	 * @return void
+	 */
+	public function afterSave($created) {
+		Cache::delete('languages', 'core.infinite');
+	}
+
+	/**
 	 * Find all languages with find $options
 	 *
 	 * @param array $options

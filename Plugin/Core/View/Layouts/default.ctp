@@ -34,7 +34,7 @@
 				</ul>
 			</div>
 			<?php endif; ?>
-			<ul class="lang-switcher"></ul>
+			<?php echo $this->element('Core.language_switch'); ?>
 		</div>
 	</header>
 	<div id="main">

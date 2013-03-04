@@ -136,4 +136,20 @@ class LanguagesController extends BackendAppController {
 			throw new CakeException(__d('core', 'Error saving language order to DB.'), 500);
 		}
 	}
+
+	/**
+	 * Change the content language to $id and update the session.
+	 *
+	 * @param integer $id
+	 * @return void
+	 */
+	public function change($id = null) {
+		if ($id === null || !$this->Language->exists($id)) {
+			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+			$this->redirect($this->referer(array('action' => 'index')), null, true);
+		}
+		$lang = $this->Language->findById($id);
+		$this->Session->write('Wasabi.content_language_id', $lang['Language']['id']);
+		$this->redirect($this->referer(array('action' => 'index')), null, true);
+	}
 }
