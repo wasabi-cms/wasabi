@@ -395,24 +395,11 @@ header {
           }
         }
 
-        &.button.icon.reload:before {
-          background: transparent url('../img/sprite.png') no-repeat scroll 0 -114px;
-          width: 50px;
-          height: 50px;
-          margin: 0;
-        }
+        &.reload {
+          background: #3c8dde url('../img/sprite.png') no-repeat scroll 0 -114px;
 
-        &.button.icon.reload {
-          border-color: #3072b3;
-          border-bottom-color: #2a65a0;
-          text-decoration: none;
-          text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
-          color: #fff;
-          padding: 0;
-          #gradient > .horizontal(#599bdc, #3072b3, #3c8dde);
-
-          &:hover, &:focus, &:active {
-            #gradient > .horizontal(lighten(#599bdc, 10%), lighten(#3072b3, 10%), lighten(#3c8dde, 10%));
+          &:hover {
+            background-color: lighten(#3c8dde, 5%);
           }
         }
       }
