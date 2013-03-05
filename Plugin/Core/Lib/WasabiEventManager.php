@@ -21,7 +21,7 @@ class WasabiEventManager {
 	protected $_events = array();
 
 	public function __construct() {
-		$this->_loadEventListeners();
+		$this->reloadEventListeners();
 	}
 
 	public static function instance() {
@@ -45,7 +45,8 @@ class WasabiEventManager {
 		return $results;
 	}
 
-	protected function _loadEventListeners() {
+	public function reloadEventListeners() {
+		$this->_events = array();
 		foreach (CakePlugin::loaded() as $plugin) {
 			$this->_loadEventListener($plugin);
 		}

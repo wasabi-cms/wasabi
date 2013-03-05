@@ -13,6 +13,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('ClassRegistry', 'Utility');
 App::uses('Folder', 'Utility');
 App::uses('Router', 'Routing');
 
@@ -21,7 +22,7 @@ class CoreEvents {
 	public $implements = array(
 		'Plugin.Routes.load' => array(
 			'method' => 'loadPluginRoutes',
-			'priority' => 100
+			'priority' => 99999
 		),
 		'Backend.Menu.load' => array(
 			'method' => 'loadBackendMenu',
@@ -30,6 +31,10 @@ class CoreEvents {
 		'Backend.JS.Translations.load' => array(
 			'method' => 'loadJsTranslations',
 			'priority' => 100
+		),
+		'Common.Plugins.load' => array(
+			'method' => 'loadPlugins',
+			'priority' => 99999
 		),
 		'Common.Settings.load' => array(
 			'method' => 'loadSettings',
@@ -69,6 +74,10 @@ class CoreEvents {
 
 		// Core Settings
 		Router::connect("/${prefix}/settings/edit", array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit'));
+
+		// Plugins
+		Router::connect("/${prefix}/plugins", array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index'));
+		Router::connect("/${prefix}/plugins/:action/*", array('plugin' => 'core', 'controller' => 'plugins'));
 	}
 
 	public static function loadBackendMenu(WasabiEvent $event) {
@@ -88,6 +97,10 @@ class CoreEvents {
 					array(
 						'name' => __d('core', 'Languages'),
 						'url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index')
+					),
+					array(
+						'name' => __d('core', 'Plugins'),
+						'url' => array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index')
 					),
 					array(
 						'name' => __d('core', 'Core Settings'),
@@ -148,5 +161,36 @@ class CoreEvents {
 			'prefix' => false,
 			'path' => $cache_folder->path,
 		));
+	}
+
+	public static function loadPlugins(WasabiEvent $event) {
+		$cache_folder = new Folder(CACHE . 'core' . DS . 'plugins', true, 0755);
+		Cache::config('core.plugins', array(
+			'engine' => 'File',
+			'duration' => '+999 days',
+			'prefix' => false,
+			'path' => $cache_folder->path,
+		));
+
+
+		$active_plugins = Cache::read('active_plugins', 'core.plugins');
+		if ($active_plugins === false) {
+			/**
+			 * @var Plugin $plugin
+			 */
+			$plugin = ClassRegistry::init('Core.Plugin');
+			$active_plugins = $plugin->findActive();
+			if (!$active_plugins) {
+				$active_plugins = array();
+			}
+
+			Cache::write('active_plugins', $active_plugins, 'core.plugins');
+		}
+
+		foreach ($active_plugins as $p) {
+			CakePlugin::load($p['Plugin']['name'], array('bootstrap' => false, 'routes' => false));
+		}
+
+		WasabiEventManager::instance()->reloadEventListeners();
 	}
 }

@@ -146,6 +146,7 @@ Cache::config('default', array('engine' => 'File'));
 CakePlugin::load('Core', array('bootstrap' => true, 'routes' => false));
 CakePlugin::load('Migrations');
 
+WasabiEventManager::trigger(new stdClass(), 'Common.Plugins.load');
 
 
 /**
