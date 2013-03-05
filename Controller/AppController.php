@@ -32,7 +32,6 @@ class AppController extends Controller {
 		WasabiEventManager::trigger(new stdClass(), 'Common.CacheConfig.init');
 
 		$this->_loadSettings();
-		$this->_loadLanguages();
 	}
 
 	/**
@@ -75,61 +74,6 @@ class AppController extends Controller {
 		}
 
 		Configure::write('Settings', $settings);
-	}
-
-	/**
-	 * Load and setup all languages and language related config options.
-	 *
-	 * @return void
-	 */
-	private function _loadLanguages() {
-		// All available languages for frontend / backend
-		if (!$languages = Cache::read('languages', 'core.infinite')) {
-			$language = ClassRegistry::init('Core.Language');
-			$all_languages = $language->findAll();
-
-			$languages = array(
-				'frontend' => array(),
-				'backend' => array()
-			);
-			foreach ($all_languages as $lang) {
-				if ($lang['Language']['available_at_backend'] === true) {
-					$languages['backend'][] = $lang['Language'];
-				}
-				if ($lang['Language']['available_at_frontend'] === true) {
-					$languages['frontend'][] = $lang['Language'];
-				}
-			}
-			Cache::write('languages', $languages, 'core.infinite');
-		}
-		Configure::write('Languages', $languages);
-
-		// current backend language of the logged in user
-		$user = Authenticator::get();
-		$user_language = $languages['backend'][0];
-		if ($user && isset($user['Language']) && isset($user['Language']['id'])) {
-			foreach ($languages['backend'] as $b_lang) {
-				if ($b_lang['id'] == $user['Language']['id']) {
-					$user_language = $b_lang;
-					break;
-				}
-			}
-		}
-		Configure::write('Wasabi.backend_language', $user_language);
-		Configure::write('Config.language', $user_language['iso']);
-
-		// current content language the user has active
-		$content_language = $languages['frontend'][0];
-		if ($this->Session->check('Wasabi.content_language_id')) {
-			$c_lang_id = $this->Session->read('Wasabi.content_language_id');
-			foreach ($languages['frontend'] as $c_lang) {
-				if ($c_lang['id'] == $c_lang_id) {
-					$content_language = $c_lang;
-					break;
-				}
-			}
-		}
-		Configure::write('Wasabi.content_language', $content_language);
 	}
 
 }
