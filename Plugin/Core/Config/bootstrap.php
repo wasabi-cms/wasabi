@@ -34,11 +34,23 @@ if ($active_plugins === false) {
 	 * @var Plugin $plugin
 	 */
 	$plugin = ClassRegistry::init('Core.Plugin');
-	$active_plugins = $plugin->findActive();
-	if (!$active_plugins) {
-		$active_plugins = array();
+	$ds = $plugin->getDataSource();
+	$tables = $ds->listSources();
+	$plugin_table_present = false;
+	foreach ($tables as $t) {
+		if ($t == $plugin->table) {
+			$plugin_table_present = true;
+			break;
+		}
 	}
-	unset($plugin);
+	if ($plugin_table_present) {
+		$active_plugins = $plugin->findActive();
+		if (!$active_plugins) {
+			$active_plugins = array();
+		}
+	}
+
+	unset($plugin, $ds, $tables, $plugin_table_present);
 
 	Cache::write('active_plugins', $active_plugins, 'core.infinite');
 }
