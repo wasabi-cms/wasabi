@@ -8,7 +8,6 @@
 	<table class="list bottom-round">
 		<thead>
 		<tr>
-			<th class="g1 center">ID</th>
 			<th class="g4"><?php echo __d('core', 'Plugin') ?></th>
 			<th class="g4"><?php echo __d('core', 'Status') ?></th>
 			<th class="g4"><?php echo __d('core', 'Actions') ?></th>
@@ -21,12 +20,8 @@
 			$class = ($i % 2 == 0) ? ' class="even"' : '';
 			?>
 			<tr<?php echo $class ?>>
-				<td class="right"><?php echo $p['Plugin']['id'] ?></td>
 				<td><?php echo $p['Plugin']['name'] ?></td>
 				<td>
-					<?php if ($p['Plugin']['flagged'] === true) { ?>
-						<span class="label label-error">not correctly uninstalled</span>
-					<?php } else { ?>
 					<?php
 					$class = '';
 					$text = __d('core', 'inactive');
@@ -45,47 +40,42 @@
 					}
 					echo '<span class="label' . $class . '">' . $text . '</span>';
 					?>
-					<?php } ?>
 				</td>
 				<td>
 					<?php
-					if (!$p['Plugin']['flagged']) {
-						if (!$p['Plugin']['installed']) {
-							echo $this->Html->link(__d('core', 'install'), '#', array(
-								'title' => __d('core', 'Install this Plugin'),
+					if (!$p['Plugin']['installed']) {
+						echo $this->Html->link(__d('core', 'install'), '#', array(
+							'title' => __d('core', 'Install this Plugin'),
+							'class' => 'confirm',
+							'data-confirm' => __d('core', 'Install <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
+							'data-confirm-action' => Router::url("/${backend_prefix}/plugins/install/" . $p['Plugin']['name']),
+							'data-modal-title' => __d('core', 'Confirm Installation')
+						));
+					} else {
+						if (!$p['Plugin']['active']) {
+							echo $this->Html->link(__d('core', 'activate'), '#', array(
+								'title' => __d('core', 'Activate this Plugin'),
 								'class' => 'confirm',
-								'data-confirm' => __d('core', 'Install <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
-								'data-confirm-action' => Router::url("/${backend_prefix}/plugins/install/" . $p['Plugin']['id']),
-								'data-modal-title' => __d('core', 'Confirm Installation')
+								'data-confirm' => __d('core', 'Activate <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
+								'data-confirm-action' => Router::url("/${backend_prefix}/plugins/activate/" . $p['Plugin']['name']),
+								'data-modal-title' => __d('core', 'Confirm Activation')
+							));
+							echo $this->Html->link(__d('core', 'uninstall'), '#', array(
+								'title' => __d('core', 'Uninstall this Plugin'),
+								'class' => 'confirm',
+								'data-confirm' => __d('core', 'Uninstall <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
+								'data-confirm-action' => Router::url("/${backend_prefix}/plugins/uninstall/" . $p['Plugin']['name']),
+								'data-modal-title' => __d('core', 'Confirm Uninstallation')
 							));
 						} else {
-							if (!$p['Plugin']['active']) {
-								echo $this->Html->link(__d('core', 'activate'), '#', array(
-									'title' => __d('core', 'Activate this Plugin'),
-									'class' => 'confirm',
-									'data-confirm' => __d('core', 'Activate <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
-									'data-confirm-action' => Router::url("/${backend_prefix}/plugins/activate/" . $p['Plugin']['id']),
-									'data-modal-title' => __d('core', 'Confirm Activation')
-								));
-								echo $this->Html->link(__d('core', 'uninstall'), '#', array(
-									'title' => __d('core', 'Uninstall this Plugin'),
-									'class' => 'confirm',
-									'data-confirm' => __d('core', 'Uninstall <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
-									'data-confirm-action' => Router::url("/${backend_prefix}/plugins/uninstall/" . $p['Plugin']['id']),
-									'data-modal-title' => __d('core', 'Confirm Uninstallation')
-								));
-							} else {
-								echo $this->Html->link(__d('core', 'deactivate'), '#', array(
-									'title' => __d('core', 'Deactivate this Plugin'),
-									'class' => 'confirm',
-									'data-confirm' => __d('core', 'Deactivate <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
-									'data-confirm-action' => Router::url("/${backend_prefix}/plugins/deactivate/" . $p['Plugin']['id']),
-									'data-modal-title' => __d('core', 'Confirm Deactivation')
-								));
-							}
+							echo $this->Html->link(__d('core', 'deactivate'), '#', array(
+								'title' => __d('core', 'Deactivate this Plugin'),
+								'class' => 'confirm',
+								'data-confirm' => __d('core', 'Deactivate <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
+								'data-confirm-action' => Router::url("/${backend_prefix}/plugins/deactivate/" . $p['Plugin']['name']),
+								'data-modal-title' => __d('core', 'Confirm Deactivation')
+							));
 						}
-					} else {
-						echo '-';
 					}
 					?>
 				</td>

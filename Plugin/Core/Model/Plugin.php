@@ -15,223 +15,92 @@
 
 class Plugin extends CoreAppModel {
 
-	/**
-	 * Default order
-	 *
-	 * @var string
-	 */
-	public $order = 'Plugin.name ASC';
+	public $useTable = false;
 
-	public function afterSave($created) {
+	/**
+	 * Find all plugins
+	 *
+	 * @return array
+	 */
+	public function findAll() {
+		$plugin_folder = new Folder(APP . 'Plugin' . DS, false);
+		$plugin_folders = $plugin_folder->read(true, array('.', 'Core', 'Migrations'));
+		$plugin_folders = $plugin_folders[0];
+
+		$plugins = array();
+		foreach ($plugin_folders as $plugin) {
+			$plugins[] = array(
+				'Plugin' => array(
+					'name' => $plugin,
+					'active' => $this->isActive($plugin),
+					'installed' => $this->isInstalled($plugin),
+					'bootstrap' => $this->hasBootstrap($plugin),
+					'routes' => $this->hasRoutes($plugin)
+				)
+			);
+		}
+
+		return $plugins;
+	}
+
+	public function exists($plugin) {
+		return file_exists($this->getPluginPath($plugin));
+	}
+
+	public function isActive($plugin) {
+		return file_exists($this->getPluginConfigPath($plugin) . '.active');
+	}
+
+	public function isInstalled($plugin) {
+		return file_exists($this->getPluginConfigPath($plugin) . '.installed');
+	}
+
+	public function hasBootstrap($plugin) {
+		return file_exists($this->getPluginConfigPath($plugin) . 'bootstrap.php');
+	}
+
+	public function hasRoutes($plugin) {
+		return file_exists($this->getPluginConfigPath($plugin) . 'routes.php');
+	}
+
+	public function getPluginPath($plugin) {
+		return APP . 'Plugin' . DS . $plugin . DS;
+	}
+
+	public function getPluginConfigPath($plugin) {
+		return $this->getPluginPath($plugin) . 'Config' . DS;
+	}
+
+	public function install($plugin) {
+		$install_file = new File($this->getPluginConfigPath($plugin) . '.installed', true, 0755);
+		return $this->isInstalled($plugin);
+	}
+
+	public function uninstall($plugin) {
+		if ($this->isInstalled($plugin)) {
+			$install_file = new File($this->getPluginConfigPath($plugin) . '.installed', false);
+			$install_file->delete();
+		}
+		return !$this->isInstalled($plugin);
+	}
+
+	public function activate($plugin) {
+		$active_file = new File($this->getPluginConfigPath($plugin) . '.active', true, 0755);
+		$this->clearActivePluginCache();
+		return $this->isActive($plugin);
+	}
+
+	public function deactivate($plugin) {
+		if ($this->isActive($plugin)) {
+			$active_file = new File($this->getPluginConfigPath($plugin) . '.active', false);
+			$active_file->delete();
+		}
+		$this->clearActivePluginCache();
+		return !$this->isActive($plugin);
+	}
+
+	public function clearActivePluginCache() {
 		Cache::delete('active_plugins', 'core.infinite');
-	}
-
-	/**
-	 * Find all plugins with find $options
-	 *
-	 * @param array $options
-	 * @return array
-	 */
-	public function findAll($options = array()) {
-		return $this->find('all', $options);
-	}
-
-	/**
-	 * Find a single group by id
-	 *
-	 * @param $id
-	 * @param array $options
-	 * @return array|boolean
-	 */
-	public function findById($id, $options = array()) {
-		$opts['conditions'] = array(
-			$this->alias . '.id' => (int) $id
-		);
-		return $this->find('first', Hash::merge($options, $opts));
-	}
-
-	/**
-	 * Find all active plugins.
-	 *
-	 * @return array
-	 */
-	public function findActive() {
-		return $this->find('all', array(
-			'conditions' => array(
-				$this->alias . '.active' => 1
-			)
-		));
-	}
-
-	public function findAllInstalled() {
-		return $this->find('all', array(
-			'conditions' => array(
-				$this->alias . '.installed' => true
-			),
-			'order' => $this->alias . '.name ASC'
-		));
-	}
-
-	/**
-	 * Flag a plugin to indicate it is not correctly uninstalled
-	 *
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function flag($id) {
-		return $this->save(array(
-			'Plugin' => array(
-				'id' => $id,
-				'flagged' => 1
-			)
-		));
-	}
-
-	/**
-	 * Unflag a plugin
-	 *
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function unflag($id) {
-		return $this->save(array(
-			'Plugin' => array(
-				'id' => $id,
-				'flagged' => 0
-			)
-		));
-	}
-
-	/**
-	 * Check if a plugin is active and return it.
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function isActive($id) {
-		return $this->findById($id, array(
-			'conditions' => array(
-				'Plugin.active' => 1
-			)
-		));
-	}
-
-	/**
-	 * Check if a plugin is not activated and return it.
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function isNotActive($id) {
-		return $this->findById($id, array(
-			'conditions' => array(
-				'Plugin.active' => 0
-			)
-		));
-	}
-
-	/**
-	 * Check if a plugin is installed and return it.
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function isInstalled($id) {
-		return $this->findById($id, array(
-			'conditions' => array(
-				'Plugin.installed' => 1
-			)
-		));
-	}
-
-	/**
-	 * Check if a plugin is not installed and return it.
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function isNotInstalled($id) {
-		return $this->findById($id, array(
-			'conditions' => array(
-				'Plugin.installed' => 0
-			)
-		));
-	}
-
-	/**
-	 * Activate a plugin by $id
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function activate($id) {
-		$data = array(
-			'Plugin' => array(
-				'id' => $id,
-				'active' => 1
-			)
-		);
-		if ($this->save($data)) {
-			return $this->findById($id);
-		}
-		return false;
-	}
-
-	/**
-	 * Deactivate a plugin by $id
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function deactivate($id) {
-		$data = array(
-			'Plugin' => array(
-				'id' => $id,
-				'active' => 0
-			)
-		);
-		if ($this->save($data)) {
-			return $this->findById($id);
-		}
-		return false;
-	}
-
-	/**
-	 * Install a plugin by $id
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function install($id) {
-		$data = array(
-			'Plugin' => array(
-				'id' => $id,
-				'installed' => 1
-			)
-		);
-		if ($this->save($data)) {
-			return $this->findById($id);
-		}
-		return false;
-	}
-
-	/**
-	 * Uninstall a plugin by $id
-	 *
-	 * @param integer $id
-	 * @return array|boolean
-	 */
-	public function uninstall($id) {
-		$data = array(
-			'Plugin' => array(
-				'id' => $id,
-				'installed' => 0
-			)
-		);
-		if ($this->save($data)) {
-			return $this->findById($id);
-		}
-		return false;
 	}
 
 }

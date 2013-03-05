@@ -34,29 +34,20 @@ if ($active_plugins === false) {
 	 * @var Plugin $plugin
 	 */
 	$plugin = ClassRegistry::init('Core.Plugin');
-	$ds = $plugin->getDataSource();
-	$tables = $ds->listSources();
-	$plugin_table_present = false;
-	foreach ($tables as $t) {
-		if ($t == $plugin->table) {
-			$plugin_table_present = true;
-			break;
-		}
-	}
-	if ($plugin_table_present) {
-		$active_plugins = $plugin->findActive();
-		if (!$active_plugins) {
-			$active_plugins = array();
-		}
-	}
 
-	unset($plugin, $ds, $tables, $plugin_table_present);
+	$active_plugins = array();
+	foreach ($plugin->findAll() as $p) {
+		if ($p['Plugin']['active'] === true) {
+			$active_plugins[] = $p;
+		}
+	}
+	unset($plugin);
 
 	Cache::write('active_plugins', $active_plugins, 'core.infinite');
 }
 
 foreach ($active_plugins as $p) {
-	CakePlugin::load($p['Plugin']['name'], array('bootstrap' => false, 'routes' => false));
+	CakePlugin::load($p['Plugin']['name'], array('bootstrap' => $p['Plugin']['bootstrap'], 'routes' => $p['Plugin']['routes']));
 }
 
 unset($active_plugins);
