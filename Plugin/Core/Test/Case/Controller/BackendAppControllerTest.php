@@ -24,11 +24,6 @@ class BackendAppTestController extends BackendAppController {
 	public $checkPermissionsCalled = false;
 	public $setupBackendCalled = false;
 
-	public function beforeFilter() {
-		$this->_checkPermissions();
-		$this->_setupBackend();
-	}
-
 	public function checkPermisions() {
 		$this->_checkPermissions();
 	}
@@ -93,7 +88,7 @@ class AuthenticatorTest2Component extends AuthenticatorTest1Component {
 
 class BackendAppControllerTest extends ControllerTestCase {
 
-	public $fixtures = array('plugin.core.language');
+	public $fixtures = array('plugin.core.language', 'plugin.core.core_setting');
 
 	public function setUp() {
 		$this->BackendAppController = new BackendAppTestController();
