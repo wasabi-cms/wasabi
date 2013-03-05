@@ -93,6 +93,8 @@ class AuthenticatorTest2Component extends AuthenticatorTest1Component {
 
 class BackendAppControllerTest extends ControllerTestCase {
 
+	public $fixtures = array('plugin.core.language');
+
 	public function setUp() {
 		$this->BackendAppController = new BackendAppTestController();
 		$this->BackendAppController->constructClasses();
