@@ -29,8 +29,6 @@ class AppController extends Controller {
 	public function beforeFilter() {
 		parent::beforeFilter();
 
-		WasabiEventManager::trigger(new stdClass(), 'Common.CacheConfig.init');
-
 		$this->_loadSettings();
 	}
 

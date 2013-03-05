@@ -14,7 +14,6 @@
  */
 
 App::uses('ClassRegistry', 'Utility');
-App::uses('Folder', 'Utility');
 App::uses('Router', 'Routing');
 
 class CoreEvents {
@@ -32,16 +31,8 @@ class CoreEvents {
 			'method' => 'loadJsTranslations',
 			'priority' => 100
 		),
-		'Common.Plugins.load' => array(
-			'method' => 'loadPlugins',
-			'priority' => 99999
-		),
 		'Common.Settings.load' => array(
 			'method' => 'loadSettings',
-			'priority' => 99999
-		),
-		'Common.CacheConfig.init' => array(
-			'method' => 'initCacheConfig',
 			'priority' => 99999
 		)
 	);
@@ -145,52 +136,5 @@ class CoreEvents {
 		}
 
 		return $settings;
-	}
-
-	/**
-	 * Initialize all cache configs of the Core plugin
-	 *
-	 * @param WasabiEvent $event
-	 * @return void
-	 */
-	public static function initCacheConfig(WasabiEvent $event) {
-		$cache_folder = new Folder(CACHE . 'core' . DS . 'infinite', true, 0755);
-		Cache::config('core.infinite', array(
-			'engine' => 'File',
-			'duration' => '+999 days',
-			'prefix' => false,
-			'path' => $cache_folder->path,
-		));
-	}
-
-	public static function loadPlugins(WasabiEvent $event) {
-		$cache_folder = new Folder(CACHE . 'core' . DS . 'plugins', true, 0755);
-		Cache::config('core.plugins', array(
-			'engine' => 'File',
-			'duration' => '+999 days',
-			'prefix' => false,
-			'path' => $cache_folder->path,
-		));
-
-
-		$active_plugins = Cache::read('active_plugins', 'core.plugins');
-		if ($active_plugins === false) {
-			/**
-			 * @var Plugin $plugin
-			 */
-			$plugin = ClassRegistry::init('Core.Plugin');
-			$active_plugins = $plugin->findActive();
-			if (!$active_plugins) {
-				$active_plugins = array();
-			}
-
-			Cache::write('active_plugins', $active_plugins, 'core.plugins');
-		}
-
-		foreach ($active_plugins as $p) {
-			CakePlugin::load($p['Plugin']['name'], array('bootstrap' => false, 'routes' => false));
-		}
-
-		WasabiEventManager::instance()->reloadEventListeners();
 	}
 }

@@ -23,7 +23,7 @@ class Plugin extends CoreAppModel {
 	public $order = 'Plugin.name ASC';
 
 	public function afterSave($created) {
-		Cache::delete('active_plugins', 'core.plugins');
+		Cache::delete('active_plugins', 'core.infinite');
 	}
 
 	/**

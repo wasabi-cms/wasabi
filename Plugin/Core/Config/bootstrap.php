@@ -14,4 +14,37 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('ClassRegistry', 'Utility');
+App::uses('Folder', 'Utility');
 App::uses('WasabiEventManager', 'Core.Lib');
+
+$cache_folder = new Folder(CACHE . 'core' . DS . 'infinite', true, 0755);
+Cache::config('core.infinite', array(
+	'engine' => 'File',
+	'duration' => '+999 days',
+	'prefix' => false,
+	'path' => $cache_folder->path,
+));
+
+unset($cache_folder);
+
+$active_plugins = Cache::read('active_plugins', 'core.infinite');
+if ($active_plugins === false) {
+	/**
+	 * @var Plugin $plugin
+	 */
+	$plugin = ClassRegistry::init('Core.Plugin');
+	$active_plugins = $plugin->findActive();
+	if (!$active_plugins) {
+		$active_plugins = array();
+	}
+	unset($plugin);
+
+	Cache::write('active_plugins', $active_plugins, 'core.infinite');
+}
+
+foreach ($active_plugins as $p) {
+	CakePlugin::load($p['Plugin']['name'], array('bootstrap' => false, 'routes' => false));
+}
+
+unset($active_plugins);
