@@ -10,9 +10,9 @@
 	<meta name="viewport" content="width=device-width">
 	<?php
 	echo $this->fetch('meta');
-	echo $this->Html->css('/core/css/app');
+	echo $this->WasabiAsset->css('/css/app.css', 'Core');
 	if (Configure::read('debug') > 0) {
-		echo $this->Html->css('/core/css/debug');
+		echo $this->WasabiAsset->css('/css/debug.css', 'Core');
 	}
 	echo $this->Html->meta('icon');
 	?>
