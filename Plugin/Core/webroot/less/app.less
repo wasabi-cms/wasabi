@@ -1,4 +1,5 @@
 @blue = #00A5F0;
+@link_color = #4183C4;
 
 /* ==|== Import Mixins =========================== */
 @import url('mixins.less.ins');
@@ -34,12 +35,11 @@ img {
 }
 
 a {
-  color: #000000;
-  font-weight: bold;
+  color: @link_color;
   text-decoration: none;
 
   &:hover {
-    color: @blue;
+    text-decoration: underline;
   }
 }
 
@@ -178,6 +178,7 @@ header {
 
         &:hover {
           background-color: #333333;
+          text-decoration: none;
         }
       }
 
@@ -212,6 +213,7 @@ header {
 
       &:hover {
         background-color: #333;
+        text-decoration: none;
       }
     }
 
@@ -239,6 +241,14 @@ header {
   &.hover > a {
     background-color: #333;
     color: #fff;
+  }
+
+  a {
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 
   ul {
@@ -335,6 +345,7 @@ header {
 
       &:hover {
         color: #ddd;
+        text-decoration: none;
       }
     }
 
