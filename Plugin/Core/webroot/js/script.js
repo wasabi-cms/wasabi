@@ -49,7 +49,7 @@
             that.modalBody.append($('<p></p>').html(confirmMessage));
           }
           if (action !== false) {
-            var form = $('<form></form>').attr('accept-charset', 'utf-8').attr('method', 'post').attr('action', action);
+            var form = $('<form></form>').attr('accept-charset', 'utf-8').attr('method', 'post').attr('action', action).attr('id', 'confirm-form');
             var submitButton = $('<button type="submit"></button>').addClass('lightmodal-confirm button green primary').html($.translateEntity('Yes'));
             var cancelLink = $('<a></a>').attr('href', '#').addClass('lightmodal-close button danger').html($.translateEntity('No'));
             var confirmBar = $('<div id="lightmodal_confirm_bar"></div>');
@@ -59,6 +59,7 @@
             that.modalBody.append(confirmBar);
             that.modalBody.find('.lightmodal-confirm').click(function(event) {
               $(this).attr('disabled', 'disabled');
+              $('#confirm-form').submit();
             });
           }
         }
