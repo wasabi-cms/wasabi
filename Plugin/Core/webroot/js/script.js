@@ -58,8 +58,11 @@
 
             that.modalBody.append(confirmBar);
             that.modalBody.find('.lightmodal-confirm').click(function(event) {
-              $(this).attr('disabled', 'disabled');
-              $('#confirm-form').submit();
+              event.preventDefault();
+              if ($(this).attr('data-disabled') != 'true') {
+                $(this).attr('data-disabled', 'true');
+                $('#confirm-form').submit();
+              }
             });
           }
         }
