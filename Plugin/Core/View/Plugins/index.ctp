@@ -1,9 +1,6 @@
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'All Plugins') ?></h1>
-		<ul class="actions">
-			<li><?php echo $this->Html->link(__d('core', 'Find new Plugins'), "/${backend_prefix}/plugins/update", array('class' => 'reload', 'title' => __d('core', 'Find new Plugins'))) ?></li>
-		</ul>
 	</div>
 	<table class="list bottom-round">
 		<thead>
