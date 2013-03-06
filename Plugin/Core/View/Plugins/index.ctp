@@ -8,9 +8,11 @@
 	<table class="list bottom-round">
 		<thead>
 		<tr>
-			<th class="g4"><?php echo __d('core', 'Plugin') ?></th>
-			<th class="g4"><?php echo __d('core', 'Status') ?></th>
-			<th class="g4"><?php echo __d('core', 'Actions') ?></th>
+			<th class="g3"><?php echo __d('core', 'Plugin') ?></th>
+			<th class="g4"><?php echo __d('core', 'Description') ?></th>
+			<th class="g4"><?php echo __d('core', 'Author') ?></th>
+			<th class="g3"><?php echo __d('core', 'Status') ?></th>
+			<th class="g2"><?php echo __d('core', 'Actions') ?></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -20,7 +22,44 @@
 			$class = ($i % 2 == 0) ? ' class="even"' : '';
 			?>
 			<tr<?php echo $class ?>>
-				<td><?php echo $p['Plugin']['name'] ?></td>
+				<td>
+					<?php
+					if (isset($p['PluginInfo']['name'])) {
+						echo $p['PluginInfo']['name'];
+					} else {
+						echo $p['Plugin']['name'];
+					}
+					if (isset($p['PluginInfo']['version'])) {
+						echo ' (' . $p['PluginInfo']['version'] . ')';
+					}
+					?>
+				</td>
+				<td>
+					<?php
+					if (isset($p['PluginInfo']['description'])) {
+						echo $p['PluginInfo']['description'];
+					} else {
+						echo '-';
+					}
+					?>
+				</td>
+				<td>
+					<?php
+					if (isset($p['PluginInfo']['author'])) {
+						echo $p['PluginInfo']['author'];
+						if (isset($p['PluginInfo']['authorUrl'])) {
+							echo '<br>';
+							echo $this->Html->link($p['PluginInfo']['authorUrl'], $p['PluginInfo']['authorUrl'], array('target' => '_blank'));
+						}
+						if (isset($p['PluginInfo']['authorEmail'])) {
+							echo '<br>';
+							echo $this->Html->link(__d('core', 'Support'), 'mailto://'.$p['PluginInfo']['authorEmail']);
+						}
+					} else {
+						echo '-';
+					}
+					?>
+				</td>
 				<td>
 					<?php
 					$class = '';
@@ -60,6 +99,7 @@
 								'data-confirm-action' => Router::url("/${backend_prefix}/plugins/activate/" . $p['Plugin']['name']),
 								'data-modal-title' => __d('core', 'Confirm Activation')
 							));
+							echo '<br>';
 							echo $this->Html->link(__d('core', 'uninstall'), '#', array(
 								'title' => __d('core', 'Uninstall this Plugin'),
 								'class' => 'confirm',

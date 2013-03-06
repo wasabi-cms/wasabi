@@ -36,7 +36,8 @@ class Plugin extends CoreAppModel {
 					'installed' => $this->isInstalled($plugin),
 					'bootstrap' => $this->hasBootstrap($plugin),
 					'routes' => $this->hasRoutes($plugin)
-				)
+				),
+				'PluginInfo' => $this->getInfo($plugin)
 			);
 		}
 
@@ -101,6 +102,18 @@ class Plugin extends CoreAppModel {
 
 	public function clearActivePluginCache() {
 		Cache::delete('active_plugins', 'core.infinite');
+	}
+
+	public function getInfo($plugin) {
+		$info_file = APP . 'Plugin' . DS . $plugin . DS . 'Config' . DS . 'plugin.json';
+
+		$info = array();
+		if (file_exists($info_file)) {
+			$info = file_get_contents($info_file);
+			$info = (array) json_decode($info);
+		}
+
+		return $info;
 	}
 
 }
