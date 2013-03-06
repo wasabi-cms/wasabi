@@ -43,14 +43,14 @@
 				<td>
 					<?php
 					if (isset($p['PluginInfo']['author'])) {
-						echo $p['PluginInfo']['author'];
+						if (isset($p['PluginInfo']['authorEmail'])) {
+							echo $this->Html->link($p['PluginInfo']['author'], 'mailto://'.$p['PluginInfo']['authorEmail']);
+						} else {
+							echo $p['PluginInfo']['author'];
+						}
 						if (isset($p['PluginInfo']['authorUrl'])) {
 							echo '<br>';
 							echo $this->Html->link($p['PluginInfo']['authorUrl'], $p['PluginInfo']['authorUrl'], array('target' => '_blank'));
-						}
-						if (isset($p['PluginInfo']['authorEmail'])) {
-							echo '<br>';
-							echo $this->Html->link(__d('core', 'Support'), 'mailto://'.$p['PluginInfo']['authorEmail']);
 						}
 					} else {
 						echo '-';
