@@ -39,6 +39,10 @@
 
 	WasabiEventManager::trigger(new stdClass(), 'Plugin.Routes.load');
 
+	// add WasabiRoute class to handle routes saved in DB
+	App::uses('WasabiRoute', 'Core.Routing/Route');
+	Router::connect('/', array(), array('routeClass' => 'WasabiRoute'));
+
 /**
  * Load the CakePHP default routes. Only remove this if you do not want to use
  * the built-in default routes.
