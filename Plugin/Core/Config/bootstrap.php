@@ -26,6 +26,14 @@ Cache::config('core.infinite', array(
 	'path' => $cache_folder->path,
 ));
 
+$cache_folder = new Folder(CACHE . 'core' . DS . 'routes', true, 0755);
+Cache::config('core.routes', array(
+	'engine' => 'File',
+	'duration' => '+999 days',
+	'prefix' => false,
+	'path' => $cache_folder->path
+));
+
 unset($cache_folder);
 
 $active_plugins = Cache::read('active_plugins', 'core.infinite');
