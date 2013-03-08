@@ -85,7 +85,7 @@ class WasabiRoute extends CakeRoute {
 			$route['Route']['url'] .= '/' . implode('/', $named_params);
 		}
 
-		Cache::write($identifier, $route['Route']['url'], 'router');
+		Cache::write($identifier, $route['Route']['url'], 'routes');
 
 		return $route['Route']['url'];
 	}
