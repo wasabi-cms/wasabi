@@ -46,7 +46,7 @@ class WasabiRoute extends CakeRoute {
 
 		$identifier = md5(serialize($url));
 
-		if ($result = Cache::read($identifier, 'routes')) {
+		if ($result = Cache::read($identifier, 'core.routes')) {
 			return $result;
 		}
 
@@ -85,7 +85,7 @@ class WasabiRoute extends CakeRoute {
 			$route['Route']['url'] .= '/' . implode('/', $named_params);
 		}
 
-		Cache::write($identifier, $route['Route']['url'], 'routes');
+		Cache::write($identifier, $route['Route']['url'], 'core.routes');
 
 		return $route['Route']['url'];
 	}
