@@ -34,6 +34,14 @@ Cache::config('core.routes', array(
 	'path' => $cache_folder->path
 ));
 
+$cache_folder = new Folder(CACHE . 'frontend' . DS . 'pygmentize', true, 0755);
+Cache::config('frontend.pygmentize', array(
+	'engine' => 'File',
+	'duration' => '+999 days',
+	'prefix' => false,
+	'path' => $cache_folder->path
+));
+
 unset($cache_folder);
 
 $active_plugins = Cache::read('active_plugins', 'core.infinite');
