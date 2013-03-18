@@ -368,6 +368,8 @@ class TextileTest extends CakeTestCase {
 
 		/**
 		 * test working pygments / pygmentize
+		 * For testing on Windows systems make sure that pygmentize.exe is available in Path.
+		 * For testing on Linux/Unix/OSX systems make sure that pygmentize is available in PATH.
 		 *
 		 * code(js).
 		 *   $('html').trigger('test_event');
