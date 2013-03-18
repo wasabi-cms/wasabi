@@ -143,7 +143,7 @@ class TextileTest extends CakeTestCase {
 		 *
 		 */
 		$str = "\n\n\n\nHello World!\n\nHello\nWorld 2!\n\nBlub\n\n\n\nBlub 2\n\n\n\n";
-		$expected = "<p>Hello World!</p>\r\n<p>Hello<br>World 2!</p>\r\n<p>Blub</p>\r\n<p>Blub 2</p>";
+		$expected = "<p>Hello World!</p><p>Hello<br>World 2!</p><p>Blub</p><p>Blub 2</p>";
 		$result = $this->Textile->convert($str);
 		$this->assertEqual($expected, $result);
 	}

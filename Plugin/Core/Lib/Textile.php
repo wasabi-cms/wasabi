@@ -109,11 +109,8 @@ class Textile {
 				$part = $this->_formatText($part);
 			}
 		}
-		$out = implode(PHP_EOL, $this->_parts);
-		$out = preg_replace("/\r\n<p><\/p>/", '', $out);
-		$out = preg_replace("/<p><\/p>\r\n/", '', $out);
-		$out = preg_replace("/\n<p><\/p>/", '', $out);
-		$out = preg_replace("/<p><\/p>\n/", '', $out);
+		$out = implode('', $this->_parts);
+		$out = preg_replace("/<p><\/p>/", '', $out);
 		return $out;
 	}
 
