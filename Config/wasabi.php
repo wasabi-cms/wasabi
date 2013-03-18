@@ -14,3 +14,9 @@
  */
 
 Configure::write('Wasabi.backend_prefix', 'backend');
+
+/**
+ * Pygmentize is a python library to transform code blocks into nice format.
+ * Provide the full path to the library here if you want to use it.
+ */
+Configure::write('Wasabi.pygmentize_path', 'full_path_to_pygmentize');
