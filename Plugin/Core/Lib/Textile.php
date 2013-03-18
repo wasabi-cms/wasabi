@@ -112,6 +112,8 @@ class Textile {
 		$out = implode(PHP_EOL, $this->_parts);
 		$out = preg_replace("/\r\n<p><\/p>/", '', $out);
 		$out = preg_replace("/<p><\/p>\r\n/", '', $out);
+		$out = preg_replace("/\n<p><\/p>/", '', $out);
+		$out = preg_replace("/<p><\/p>\n/", '', $out);
 		return $out;
 	}
 
