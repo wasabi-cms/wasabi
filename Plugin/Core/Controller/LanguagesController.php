@@ -71,7 +71,7 @@ class LanguagesController extends BackendAppController {
 	 * @return void
 	 */
 	public function edit($id = null) {
-		if ($id === null) {
+		if ($id === null || !$this->Language->exists($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index'));
 		}
