@@ -97,7 +97,7 @@ class BackendAppController extends AppController {
 
 			// user is not logged in -> save current request and redirect to login page
 			if (!$this->Authenticator->get()) {
-				$this->Session->write('login_referer', $this->request->url);
+				$this->Session->write('login_referer', '/' . $this->request->url);
 				$this->redirect(array(
 					'plugin' => 'core',
 					'controller' => 'users',
