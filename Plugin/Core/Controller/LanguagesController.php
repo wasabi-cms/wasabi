@@ -56,7 +56,7 @@ class LanguagesController extends BackendAppController {
 			$this->request->data['Language']['position'] = 9999;
 			if ($this->Language->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The language <strong>%s</strong> has been added.', array($this->data['Language']['name'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index')); return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -73,7 +73,7 @@ class LanguagesController extends BackendAppController {
 	public function edit($id = null) {
 		if ($id === null || !$this->Language->exists($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index')); return;
 		}
 		$this->set('title_for_layout', __d('core', 'Edit Language'));
 		if (!$this->request->is('post') && empty($this->data)) {
@@ -81,7 +81,7 @@ class LanguagesController extends BackendAppController {
 		} else {
 			if ($this->Language->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The language <strong>%s</strong> has been updated successfully.', array($this->data['Language']['name'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index')); return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -94,8 +94,8 @@ class LanguagesController extends BackendAppController {
 	 * POST
 	 *
 	 * @param null|integer $id
-	 * @return void
 	 * @throws MethodNotAllowedException
+	 * @return void
 	 */
 	public function delete($id = null) {
 		if (!$this->request->is('post')) {
@@ -104,16 +104,13 @@ class LanguagesController extends BackendAppController {
 
 		if ($id === null || !$this->Language->canBeDeleted($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index')); return;
 		}
 
 		if ($this->Language->delete($id)) {
 			$this->Session->setFlash(__d('core', 'The language has been deleted.'), 'default', array('class' => 'success'));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index')); return;
 		}
-
-		$this->Session->setFlash(__d('core', 'The language has not been deleted.'), 'default', array('class' => 'error'));
-		$this->redirect(array('action' => 'index'));
 	}
 
 	/**
@@ -132,8 +129,6 @@ class LanguagesController extends BackendAppController {
 			$flashMessage = __d('core', 'The language position has been updated.');
 			$this->set(compact('status', 'flashMessage'));
 			$this->set('_serialize', array('status', 'flashMessage'));
-		} else {
-			throw new CakeException(__d('core', 'Error saving language order to DB.'), 500);
 		}
 	}
 
@@ -146,10 +141,10 @@ class LanguagesController extends BackendAppController {
 	public function change($id = null) {
 		if ($id === null || !$this->Language->exists($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect($this->referer(array('action' => 'index')), null, true);
+			$this->redirect($this->referer(array('action' => 'index'))); return;
 		}
 		$lang = $this->Language->findById($id);
 		$this->Session->write('Wasabi.content_language_id', $lang['Language']['id']);
-		$this->redirect($this->referer(array('action' => 'index')), null, true);
+		$this->redirect($this->referer(array('action' => 'index'))); return;
 	}
 }
