@@ -3,9 +3,6 @@
 echo $this->Session->flash();
 echo $this->Form->create('User', array('url' => array('plugin' => 'core', 'controller' => 'users', 'action' => 'login')));
 echo '<div class="form-content">';
-if (isset($login_referer)) {
-	echo $this->Form->input('login_referer', array('type' => 'hidden', 'value' => $login_referer));
-}
 echo $this->Form->input('User.username', array('label' => __d('core', 'Username').':', 'class' => 'big'));
 echo $this->Form->input('User.password', array('label' => __d('core', 'Password').':', 'class' => 'big'));
 echo $this->Form->input('User.remember', array(
