@@ -39,7 +39,7 @@ class LanguagesTestController extends LanguagesController {
 
 class LanguagesControllerTest extends ControllerTestCase {
 
-	public $fixtures = array('plugin.core.language');
+	public $fixtures = array('plugin.core.core_setting', 'plugin.core.language');
 
 	public function setUp() {
 		$this->backendPrefix = Configure::read('Wasabi.backend_prefix');
