@@ -2,9 +2,9 @@
 	<div class="title-pad">
 		<h1><?php echo ($this->params['action'] == 'add') ? __d('core', 'Add a new User') : __d('core', 'Edit User <strong>%s</strong>', array($this->data['User']['username'])) ?></h1>
 	</div>
+	<?php echo $this->Form->create('User'); ?>
 	<div class="page-content form-content">
 		<?php
-		echo $this->Form->create('User');
 		if ($this->params['action'] == 'edit') {
 			echo $this->Form->input('id', array('type' => 'hidden'));
 		}
@@ -30,7 +30,7 @@
 		<?php
 		echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button green primary'));
 		echo $this->Html->link(__d('core', 'Cancel'), "/${backend_prefix}/users", array('class' => 'button danger'));
-		echo $this->Form->end();
 		?>
 	</div>
+	<?php echo $this->Form->end(); ?>
 </div>

@@ -2,9 +2,9 @@
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'Edit Core Settings') ?></h1>
 	</div>
+	<?php echo $this->Form->create('CoreSetting'); ?>
 	<div class="page-content form-content">
 		<?php
-		echo $this->Form->create('CoreSetting');
 		echo $this->Form->input('id', array('type' => 'hidden'));
 		?>
 		<div class="form-row-wrapper">
@@ -36,7 +36,7 @@
 		<?php
 		echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button green primary'));
 		echo $this->Html->link(__d('core', 'Reset'), "/${backend_prefix}/settings/edit", array('class' => 'button danger'));
-		echo $this->Form->end();
 		?>
 	</div>
+	<?php echo $this->Form->end(); ?>
 </div>
