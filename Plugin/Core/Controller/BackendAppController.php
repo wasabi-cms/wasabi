@@ -34,8 +34,7 @@ class BackendAppController extends AppController {
 			'sessionKey' => 'wasabi',
 			'cookieKey' => 'wasabi_remember'
 		),
-		'RequestHandler',
-		'Security'
+		'RequestHandler'
 	);
 
 	/**
