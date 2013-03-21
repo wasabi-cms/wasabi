@@ -49,6 +49,10 @@ class CoreControllerTest extends ControllerTestCase {
 		CakeSession::destroy();
 		ClassRegistry::flush();
 
+		Cache::clear(false, 'core.infinite');
+		Cache::clear(false, 'core.routes');
+		Cache::clear(false, 'frontend.pygmentize');
+
 		parent::tearDown();
 	}
 
