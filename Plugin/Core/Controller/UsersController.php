@@ -100,7 +100,7 @@ class UsersController extends BackendAppController {
 	 * @return void
 	 */
 	public function edit($id = null) {
-		if ($id === null || ($id == 1 && Authenticator::get('User.id') != 1)) {
+		if ($id === null || ($id == 1 && $this->Authenticator->get('User.id') != 1)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index')); return;
 		}
@@ -133,7 +133,7 @@ class UsersController extends BackendAppController {
 			throw new MethodNotAllowedException();
 		}
 
-		if ($id === null || !$this->User->canBeDeleted($id)) {
+		if ($id === null || !$this->User->canBeDeleted($id, $this->Authenticator->get('User.id'))) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index')); return;
 		}
@@ -154,7 +154,7 @@ class UsersController extends BackendAppController {
 		$this->layout = 'Core.login';
 		$this->set('title_for_layout', __d('core', 'Login'));
 
-		$user = Authenticator::get();
+		$user = $this->Authenticator->get();
 		if ($user) {
 			$this->redirect($this->_getRedirect()); return;
 		}

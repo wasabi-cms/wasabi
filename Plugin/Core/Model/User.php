@@ -280,16 +280,17 @@ class User extends CoreAppModel {
 	 * Check if a user account by given $id can be deleted,
 	 *
 	 * @param integer $id
+	 * @param integer $auth_user_id
 	 * @return bool
 	 */
-	public function canBeDeleted($id) {
+	public function canBeDeleted($id, $auth_user_id) {
 		// global administrative user cannot be delete
 		if ($id == 1) {
 			return false;
 		}
 
 		// a user cannot delete his own user account
-		if ($id == Authenticator::get('User.id')) {
+		if ($id == $auth_user_id) {
 			return false;
 		}
 
