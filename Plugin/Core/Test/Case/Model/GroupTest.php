@@ -31,6 +31,12 @@ class GroupTest extends CakeTestCase {
 		parent::setUp();
 	}
 
+	public function tearDown() {
+		unset($this->Group);
+
+		parent::tearDown();
+	}
+
 	public function testGroupHasManyUser() {
 		$this->assertTrue(array_key_exists('User', $this->Group->hasMany));
 	}
@@ -99,10 +105,16 @@ class GroupTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-	public function tearDown() {
-		unset($this->Group);
+	public function testMoveUsersToNewGroup() {
+		$this->assertFalse($this->Group->moveUsersToNewGroup(2, 99));
+		$this->assertEmpty($this->Group->User->findAll(array('conditions' => array(
+			'User.group_id' => 99
+		))));
 
-		parent::tearDown();
+		$this->assertTrue($this->Group->moveUsersToNewGroup(2, 3));
+		$this->assertEmpty($this->Group->User->findAll(array('conditions' => array(
+			'User.group_id' => 2
+		))));
 	}
 
 }
