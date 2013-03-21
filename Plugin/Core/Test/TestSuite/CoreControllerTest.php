@@ -49,9 +49,16 @@ class CoreControllerTest extends ControllerTestCase {
 		CakeSession::destroy();
 		ClassRegistry::flush();
 
-		Cache::clear(false, 'core.infinite');
-		Cache::clear(false, 'core.routes');
-		Cache::clear(false, 'frontend.pygmentize');
+		$cache_configs = array(
+			'core.infinite',
+			'core.routes',
+			'frontend.pygmentize'
+		);
+		foreach ($cache_configs as $config) {
+			$cache = Cache::config($config);
+			$cache_folder = new Folder($cache['settings']['path']);
+			$cache_folder->delete();
+		}
 
 		parent::tearDown();
 	}
