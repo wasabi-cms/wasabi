@@ -135,7 +135,7 @@ class BackendAppController extends AppController {
 	 */
 	protected function _loadBackendMenu() {
 		$event_name = 'Backend.Menu.load';
-		$menu_items = WasabiEventManager::trigger($this, $event_name);
+		$menu_items = $this->_triggerEvent($this, $event_name);
 		if (empty($menu_items)) {
 			return;
 		}
@@ -174,7 +174,7 @@ class BackendAppController extends AppController {
 	 *
 	 * @return void
 	 */
-	private function _loadLanguages() {
+	protected function _loadLanguages() {
 		// All available languages for frontend / backend
 		if (!$languages = Cache::read('languages', 'core.infinite')) {
 			$language = ClassRegistry::init('Core.Language');
@@ -222,6 +222,19 @@ class BackendAppController extends AppController {
 			}
 		}
 		Configure::write('Wasabi.content_language', $content_language);
+	}
+
+	/**
+	 * Wrapper to trigger an event via WasabiEventManager.
+	 * The wrapper is needed to easily mock _triggerEvent for controller tests.
+	 *
+	 * @param object $origin
+	 * @param string $event_name
+	 * @param null|mixed $data
+	 * @return array
+	 */
+	protected function _triggerEvent(&$origin, $event_name, $data = null) {
+		return WasabiEventManager::trigger($origin, $event_name, $data);
 	}
 
 }
