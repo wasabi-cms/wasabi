@@ -115,16 +115,24 @@ class LanguagesController extends BackendAppController {
 
 	/**
 	 * Save the order of languages
+	 * AJAX POST
 	 *
 	 * @throws CakeException
 	 * @return void
 	 */
 	public function sort() {
-		if (!$this->request->is('ajax') || empty($this->data) || !isset($this->data['Language']) || empty($this->data['Language'])) {
+		if (!($this->request->is('ajax') && $this->request->is('post')) || empty($this->data) || !isset($this->data['Language'])) {
 			throw new CakeException($this->invalidRequestMessage, 400);
 		}
 
-		if ($this->Language->saveMany($this->data['Language'], array('validate' => false))) {
+		$saved = $this->Language->saveMany($this->data['Language'], array(
+			'validate' => false,
+			'fieldList' => array(
+				'position'
+			))
+		);
+
+		if ($saved) {
 			$status = 'success';
 			$flashMessage = __d('core', 'The language position has been updated.');
 			$this->set(compact('status', 'flashMessage'));
