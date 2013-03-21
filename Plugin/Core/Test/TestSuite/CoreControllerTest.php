@@ -67,4 +67,14 @@ class CoreControllerTest extends ControllerTestCase {
 		));
 	}
 
+	/**
+	 * Force an ajax request.
+	 * The $_SERVER variable is reset before every test, so this is safe
+	 *
+	 * @see http://stackoverflow.com/questions/8182278/testing-ajax-request-in-cakephp-2-0
+	 */
+	protected function _makeAjax() {
+		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+	}
+
 }
