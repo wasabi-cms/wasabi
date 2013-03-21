@@ -298,6 +298,17 @@ class User extends CoreAppModel {
 			return false;
 		}
 
+		// check that at least one active account remains after deletion
+		$user_count = $this->find('count', array(
+			'conditions' => array(
+				$this->alias . '.active' => true,
+				$this->alias . '.id <>' => $id
+			)
+		));
+		if ($user_count < 1) {
+			return false;
+		}
+
 		return true;
 	}
 
