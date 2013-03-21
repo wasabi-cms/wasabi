@@ -13,7 +13,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('ControllerTestCase', 'TestSuite');
+App::uses('CoreControllerTest', 'Core.Test/TestSuite');
 App::uses('LanguagesController', 'Core.Controller');
 
 class LanguagesTestController extends LanguagesController {
@@ -34,35 +34,23 @@ class LanguagesTestController extends LanguagesController {
 
 /**
  * @property LanguagesTestController $Languages
- * @property string $backendPrefix
  */
 
-class LanguagesControllerTest extends ControllerTestCase {
+class LanguagesControllerTest extends CoreControllerTest {
 
 	public $fixtures = array('plugin.core.core_setting', 'plugin.core.route', 'plugin.core.language');
 
 	public function setUp() {
-		$this->backendPrefix = Configure::read('Wasabi.backend_prefix');
-
-		$request = new CakeRequest();
-		$response = new CakeResponse();
-
-		$this->Languages = new LanguagesTestController($request, $response);
-		$this->Languages->constructClasses();
-		$this->Languages->Components->init($this->Languages);
-		$this->Languages->request->params['plugin'] = 'core';
-		$this->Languages->request->params['controller'] = 'languages';
-		$this->Languages->request->params['pass'] = array();
-		$this->Languages->request->params['named'] = array();
-
-		$this->Languages->Session->write('wasabi', array(
-			'User' => array(
-				'id' => 1,
-				'username' => 'admin'
-			)
-		));
+		$this->Languages = $this->generate('LanguagesTest');
+		$this->_loginUser();
 
 		parent::setUp();
+	}
+
+	public function tearDown() {
+		unset($this->Languages);
+
+		parent::tearDown();
 	}
 
 	public function testRequiredModelsAreSetup() {
@@ -70,327 +58,171 @@ class LanguagesControllerTest extends ControllerTestCase {
 	}
 
 	public function testIndexAction() {
-		$this->Languages->request->params['action'] = 'index';
-		$this->Languages->request->url = $this->backendPrefix . '/languages';
-		$this->Languages->startupProcess();
-		$this->Languages->index();
+		$this->testAction('/' . $this->backendPrefix . '/languages', array('method' => 'get'));
 
-		$this->assertEmpty($this->headers);
-		$this->assertNull($this->Languages->redirectUrl);
-		$this->assertInternalType('array', $this->Languages->viewVars['languages']);
-
-		$expected = array(
-			array(
-				'Language' => array(
-					'id' => 1,
-					'name' => 'English',
-					'locale' => 'en',
-					'iso' => 'eng',
-					'lang' => 'en-US',
-					'available_at_frontend' => true,
-					'available_at_backend' => true,
-					'position' => 1,
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				)
-			),
-			array(
-				'Language' => array(
-					'id' => 2,
-					'name' => 'Deutsch',
-					'locale' => 'de',
-					'iso' => 'deu',
-					'lang' => 'de-DE',
-					'available_at_frontend' => false,
-					'available_at_backend' => true,
-					'position' => 2,
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				)
-			)
-		);
-		$this->assertEqual($expected, $this->Languages->viewVars['languages']);
+		$this->assertInternalType('string', $this->Languages->viewVars['title_for_layout']);
+		$this->assertTrue(isset($this->Languages->viewVars['languages']));
+		$this->assertNotEmpty($this->Languages->viewVars['languages']);
 	}
 
 	public function testAddActionGet() {
-		$this->Languages->request->params['action'] = 'add';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/add';
-		$this->Languages->startupProcess();
-		$this->Languages->add();
+		$this->testAction('/' . $this->backendPrefix . '/languages/add', array('method' => 'get'));
 
 		$this->assertInternalType('string', $this->Languages->viewVars['title_for_layout']);
 		$this->assertNull($this->Languages->redirectUrl);
 	}
 
 	public function testAddActionPost() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'add';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/add';
-		$this->Languages->request->data = array(
-			'Language' => array(
-				'name' => 'Added Language',
-				'locale' => 'al',
-				'iso' => 'alg',
-				'lang' => 'ad-La',
-				'available_at_frontend' => true,
-				'available_at_backend' => true,
+		$this->testAction('/' . $this->backendPrefix . '/languages/add', array(
+			'method' => 'post',
+			'data' => array(
+				'Language' => array(
+					'name' => 'Added Language',
+					'locale' => 'al',
+					'iso' => 'alg',
+					'lang' => 'ad-La',
+					'available_at_frontend' => true,
+					'available_at_backend' => true,
+				)
 			)
-		);
+		));
 
-		$this->Languages->startupProcess();
-		$this->Languages->add();
-
-		$this->assertInternalType('string', $this->Languages->viewVars['title_for_layout']);
 		$this->assertEmpty($this->Languages->Language->validationErrors);
+		$this->assertEqual(($lang_count + 1), $this->Languages->Language->find('count'));
 		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'Added Language')));
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'success';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual('success', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testAddActionPostValidationError() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'add';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/add';
-		$this->Languages->request->data = array(
-			'Language' => array(
-				'name' => '',
-				'locale' => 'al',
-				'iso' => 'alg',
-				'lang' => 'ad-La',
-				'available_at_frontend' => true,
-				'available_at_backend' => true,
+		$this->testAction('/' . $this->backendPrefix . '/languages/add', array(
+			'method' => 'post',
+			'data' => array(
+				'Language' => array(
+					'name' => '',
+					'locale' => 'al',
+					'iso' => 'alg',
+					'lang' => 'ad-La',
+					'available_at_frontend' => true,
+					'available_at_backend' => true,
+				)
 			)
-		);
-
-		$this->Languages->startupProcess();
-		$this->Languages->add();
+		));
 
 		$this->assertNotEmpty($this->Languages->Language->validationErrors);
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
+		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertFalse($this->Languages->Language->hasAny(array('name' => 'Added Language')));
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Languages->redirectUrl);
 	}
 
 	public function testEditActionGet() {
-		$this->Languages->request->params['action'] = 'edit';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/edit/1';
-		$this->Languages->startupProcess();
-		$this->Languages->edit(1);
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array('method' => 'get'));
 
 		$this->assertInternalType('string', $this->Languages->viewVars['title_for_layout']);
 		$this->assertNull($this->Languages->redirectUrl);
+		$this->assertEqual('add', $this->Languages->renderView);
 
-		$expected = 'add';
-		$result = $this->Languages->renderView;
+		$expected = $this->Languages->Language->findById(1);
+		$result = $this->Languages->request->data;
 		$this->assertEqual($expected, $result);
 	}
 
-	public function testEditActionIdCheck1() {
-		$this->Languages->request->params['action'] = 'edit';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/edit';
-		$this->Languages->startupProcess();
-		$this->Languages->edit();
+	public function testEditActionGetNonExistentId() {
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit/99', array('method' => 'get'));
 
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
-	public function testEditActionIdCheck2() {
-		$this->Languages->request->params['action'] = 'edit';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/edit/99';
-		$this->Languages->startupProcess();
-		$this->Languages->edit(99);
+	public function testEditActionGetNoId() {
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit/99', array('method' => 'get'));
 
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testEditActionPost() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'edit';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/edit/1';
-		$this->Languages->request->data = array(
-			'Language' => array(
-				'id' => 1,
-				'name' => 'English edited',
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array(
+			'method' => 'post',
+			'data' => array(
+				'Language' => array(
+					'id' => 1,
+					'name' => 'English modified'
+				)
 			)
-		);
+		));
 
-		$this->Languages->startupProcess();
-		$this->Languages->edit(1);
-
-		$this->assertInternalType('string', $this->Languages->viewVars['title_for_layout']);
 		$this->assertEmpty($this->Languages->Language->validationErrors);
-		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'English edited')));
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'success';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'English modified')));
+		$this->assertEqual('success', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testEditActionPostValidationError() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'edit';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/edit/1';
-		$this->Languages->request->data = array(
-			'Language' => array(
-				'id' => 1,
-				'name' => '',
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array(
+			'method' => 'post',
+			'data' => array(
+				'Language' => array(
+					'id' => 1,
+					'name' => ''
+				)
 			)
-		);
-
-		$this->Languages->startupProcess();
-		$this->Languages->edit(1);
+		));
 
 		$this->assertNotEmpty($this->Languages->Language->validationErrors);
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
+		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'English')));
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Languages->redirectUrl);
 	}
 
-	public function testDeleteActionThrowsExceptionOnGet() {
-		$this->Languages->request->params['action'] = 'delete';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/delete/1';
-
-		$this->Languages->startupProcess();
-
+	public function testDeleteActionGetThrowsException() {
 		$this->setExpectedException('MethodNotAllowedException');
 
-		$this->Languages->delete(1);
+		$this->testAction('/' . $this->backendPrefix . '/languages/delete', array('method' => 'get'));
 	}
 
-	public function testDeleteActionInvalidRequest1() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+	public function testDeleteActionPostInvalidRequest1() {
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'delete';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/delete';
+		$this->testAction('/' . $this->backendPrefix . '/languages/delete', array('method' => 'post'));
 
-		$this->Languages->startupProcess();
-		$this->Languages->delete();
-
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testDeleteActionInvalidRequest2() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'delete';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/delete/1';
+		$this->testAction('/' . $this->backendPrefix . '/languages/delete/1', array('method' => 'post'));
 
-		$this->Languages->startupProcess();
-		$this->Languages->delete(1);
-
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testDeleteActionInvalidRequest3() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->request->params['action'] = 'delete';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/delete/99';
+		$this->testAction('/' . $this->backendPrefix . '/languages/delete/99', array('method' => 'post'));
 
-		$this->Languages->startupProcess();
-		$this->Languages->delete(99);
-
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testDeleteAction() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
-
-		$this->Languages->request->params['action'] = 'delete';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/delete/1';
-
-		$this->Languages->startupProcess();
-
 		$this->Languages->Language->save(array(
 			'Language' => array(
 				'name' => 'Test Language',
@@ -402,191 +234,96 @@ class LanguagesControllerTest extends ControllerTestCase {
 			)
 		));
 		$id = $this->Languages->Language->getLastInsertID();
-
 		$lang_count = $this->Languages->Language->find('count');
 
-		$this->Languages->delete($id);
+		$this->testAction('/' . $this->backendPrefix . '/languages/delete/' . $id, array('method' => 'post'));
 
-		$expected = $lang_count - 1;
-		$result = $this->Languages->Language->find('count');
-		$this->assertEqual($expected, $result);
+		$this->assertEqual(($lang_count - 1), $this->Languages->Language->find('count'));
 		$this->assertFalse($this->Languages->Language->exists($id));
-
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
-
-		$expected = 'success';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
-		$expected = array('action' => 'index');
-		$result = $this->Languages->redirectUrl;
-		$this->assertEqual($expected, $result);
+		$this->assertEqual('success', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testSortActionThrowsExceptionOnNonAjaxRequest() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('ajax')
-			->will($this->returnValue(false));
-
-		$this->Languages->request->params['action'] = 'sort';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/sort';
-		$this->Languages->startupProcess();
-
 		$this->setExpectedException('CakeException');
 
-		$this->Languages->sort();
+		$this->testAction('/' . $this->backendPrefix . '/languages/sort', array('method' => 'post'));
 	}
 
-	public function testSortActionThrowsExceptionOnEmptyData() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('ajax')
-			->will($this->returnValue(true));
-
-		$this->Languages->request->params['action'] = 'sort';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/sort';
-		$this->Languages->request->data = array();
-		$this->Languages->startupProcess();
+	public function testSortActionThrowsExceptionOnAjaxGet() {
+		$this->_makeAjax();
 
 		$this->setExpectedException('CakeException');
 
-		$this->Languages->sort();
+		$this->testAction('/' . $this->backendPrefix . '/languages/sort', array('method' => 'get'));
 	}
 
 	public function testSortActionThrowsExceptionOnMissingLanguageKey() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('ajax')
-			->will($this->returnValue(true));
-
-		$this->Languages->request->params['action'] = 'sort';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/sort';
-		$this->Languages->request->data = array('Foo');
-		$this->Languages->startupProcess();
+		$this->_makeAjax();
 
 		$this->setExpectedException('CakeException');
 
-		$this->Languages->sort();
-	}
-
-	public function testSortActionThrowsExceptionOnEmptyLanguageArray() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('ajax')
-			->will($this->returnValue(true));
-
-		$this->Languages->request->params['action'] = 'sort';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/sort';
-		$this->Languages->request->data = array('Language' => array());
-		$this->Languages->startupProcess();
-
-		$this->setExpectedException('CakeException');
-
-		$this->Languages->sort();
+		$this->testAction('/' . $this->backendPrefix . '/languages/sort', array(
+			'method' => 'post',
+			'data' => array(
+				'Foo' => 'bar'
+			)
+		));
 	}
 
 	public function testSortAction() {
-		$this->Languages->request = $this->getMock('CakeRequest', array('is'));
-		$this->Languages->request->expects($this->once())
-			->method('is')
-			->with('ajax')
-			->will($this->returnValue(true));
+		$this->_makeAjax();
 
-		$this->Languages->request->params['action'] = 'sort';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/sort';
-		$this->Languages->request->data = array(
-			'Language' => array(
-				'1' => array(
-					'id' => 1,
-					'position' => 2
-				),
-				'2' => array(
-					'id' => 2,
-					'position' => 1
+		$this->testAction('/' . $this->backendPrefix . '/languages/sort', array(
+			'method' => 'post',
+			'data' => array(
+				'Language' => array(
+					'1' => array(
+						'id' => 1,
+						'name' => 'different name',
+						'position' => 2
+					),
+					'2' => array(
+						'id' => 2,
+						'position' => 1
+					)
 				)
 			)
-		);
-		$this->Languages->startupProcess();
+		));
 
-		$expected = 1;
-		$result = $this->Languages->Language->field('position', array('id' => 1));
-		$this->assertEqual($expected, $result);
-
-		$expected = 2;
-		$result = $this->Languages->Language->field('position', array('id' => 2));
-		$this->assertEqual($expected, $result);
-
-		$this->Languages->sort();
-
-		$expected = 2;
-		$result = $this->Languages->Language->field('position', array('id' => 1));
-		$this->assertEqual($expected, $result);
-
-		$expected = 1;
-		$result = $this->Languages->Language->field('position', array('id' => 2));
-		$this->assertEqual($expected, $result);
-
+		$this->assertEqual(2, $this->Languages->Language->field('position', array('id' => 1)));
+		$this->assertEqual(1, $this->Languages->Language->field('position', array('id' => 2)));
+		$this->assertFalse($this->Languages->Language->hasAny(array('name' => 'different name')));
 		$this->assertArrayHasKey('status', $this->Languages->viewVars);
 		$this->assertArrayHasKey('flashMessage', $this->Languages->viewVars);
-
-		$expected = 'success';
-		$result = $this->Languages->viewVars['status'];
-		$this->assertEqual($expected, $result);
-
 		$this->assertArrayHasKey('_serialize', $this->Languages->viewVars);
 		$this->assertNotEmpty($this->Languages->viewVars['_serialize']);
-
-		$expected = 'status';
-		$result = $this->Languages->viewVars['_serialize'][0];
-		$this->assertEqual($expected, $result);
-
-		$expected = 'flashMessage';
-		$result = $this->Languages->viewVars['_serialize'][1];
-		$this->assertEqual($expected, $result);
+		$this->assertEqual('status', $this->Languages->viewVars['_serialize'][0]);
+		$this->assertEqual('flashMessage', $this->Languages->viewVars['_serialize'][1]);
+		$this->assertEqual('success', $this->Languages->viewVars['status']);
 	}
 
-	public function testChangeActionInvalidRequest() {
-		$this->Languages->request->params['action'] = 'change';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/change/99';
+	public function testChangeActionInvalidRequest1() {
+		$this->testAction('/' . $this->backendPrefix . '/languages/change', array('method' => 'get'));
 
-		$this->Languages->startupProcess();
-		$this->Languages->change(99);
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertNotNull($this->Languages->redirectUrl);
+	}
 
-		$this->assertTrue($this->Languages->Session->check('Message.flash'));
+	public function testChangeActionInvalidRequest2() {
+		$this->testAction('/' . $this->backendPrefix . '/languages/change/99', array('method' => 'get'));
 
-		$expected = 'error';
-		$result = $this->Languages->Session->read('Message.flash.params.class');
-		$this->assertEqual($expected, $result);
-
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNotNull($this->Languages->redirectUrl);
 	}
 
 	public function testChangeAction() {
-		$this->Languages->request->params['action'] = 'change';
-		$this->Languages->request->url = $this->backendPrefix . '/languages/change/2';
-
-		$this->Languages->startupProcess();
-		$this->Languages->change(2);
+		$this->testAction('/' . $this->backendPrefix . '/languages/change/2', array('method' => 'get'));
 
 		$this->assertTrue($this->Languages->Session->check('Wasabi.content_language_id'));
-
-		$expected = 2;
-		$result = $this->Languages->Session->read('Wasabi.content_language_id');
-		$this->assertEqual($expected, $result);
-
+		$this->assertEqual(2, $this->Languages->Session->read('Wasabi.content_language_id'));
+		$this->assertFalse($this->Languages->Session->check('Message.flash'));
 		$this->assertNotNull($this->Languages->redirectUrl);
-	}
-
-	public function tearDown() {
-		$this->Languages->Session->delete('wasabi');
-		unset($this->Languages, $this->backendPrefix);
-
-		parent::tearDown();
 	}
 
 }
