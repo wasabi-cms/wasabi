@@ -43,7 +43,7 @@ class UsersTestController extends UsersController {
 
 class UsersControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language', 'plugin.core.login_token');
+	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language', 'plugin.core.login_token', 'plugin.core.core_setting');
 
 	public function setUp() {
 		$this->Users = $this->generate('UsersTest');
