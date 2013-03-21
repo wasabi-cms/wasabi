@@ -16,7 +16,7 @@
 App::uses('AuthenticatorComponent', 'Core.Controller/Component');
 App::uses('BackendAppController', 'Core.Controller');
 App::uses('Configure', 'Core');
-App::uses('ControllerTestCase', 'TestSuite');
+App::uses('CoreControllerTest', 'Core.Test/TestSuite');
 
 class BackendAppTestController extends BackendAppController {
 
@@ -36,6 +36,10 @@ class BackendAppTestController extends BackendAppController {
 		$this->_loadBackendMenu();
 	}
 
+	public function loadLanguages() {
+		$this->_loadLanguages();
+	}
+
 	public function redirect($url) {
 		$this->redirectUrl = $url;
 		return false;
@@ -49,6 +53,17 @@ class BackendAppTestController extends BackendAppController {
 	protected function _setupBackend() {
 		$this->setupBackendCalled = true;
 		parent::_setupBackend();
+	}
+
+}
+
+class BackendAppTestTwoController extends BackendAppTestController {
+
+	public $triggerEventCalled = false;
+
+	protected function _triggerEvent(&$origin, $event_name, $data = null) {
+		$this->triggerEventCalled = true;
+		return array();
 	}
 
 }
@@ -83,10 +98,10 @@ class AuthenticatorTest2Component extends AuthenticatorTest1Component {
 }
 
 /**
- * @property BackendAppTestController $BackendAppController
+ * @property BackendAppTestController|BackendAppTestTwoController $BackendAppController
  */
 
-class BackendAppControllerTest extends ControllerTestCase {
+class BackendAppControllerTest extends CoreControllerTest {
 
 	public $fixtures = array('plugin.core.language', 'plugin.core.core_setting');
 
@@ -96,6 +111,12 @@ class BackendAppControllerTest extends ControllerTestCase {
 		$this->BackendAppController->Components->init($this->BackendAppController);
 
 		parent::setUp();
+	}
+
+	public function tearDown() {
+		unset($this->BackendAppController);
+
+		parent::tearDown();
 	}
 
 	public function testRequiredComponentsAreLoaded() {
@@ -176,13 +197,43 @@ class BackendAppControllerTest extends ControllerTestCase {
 		$this->assertTrue(isset($this->BackendAppController->viewVars['backend_menu_for_layout']['secondary']));
 	}
 
-	public function tearDown() {
-		$this->BackendAppController->Session->delete('wasabi');
-		$this->BackendAppController->Session->delete('login_referer');
-		unset($this->BackendAppController);
-		ClassRegistry::flush();
+	public function testLoadBackendMenuReturnsIfNoMenusAreSetup() {
+		$this->BackendAppController = new BackendAppTestTwoController(new CakeRequest(), new CakeResponse());
+		$this->BackendAppController->constructClasses();
+		$this->BackendAppController->Components->init($this->BackendAppController);
+		$this->BackendAppController->loadBackendMenu();
 
-		parent::tearDown();
+		$this->assertTrue($this->BackendAppController->triggerEventCalled);
+	}
+
+	public function testLoadLanguages() {
+		Cache::delete('languages', 'core.infinite');
+		$this->assertFalse(Cache::read('languages', 'core.infinite'));
+		$this->BackendAppController->loadLanguages();
+
+		$this->assertNotEmpty(Configure::read('Languages.frontend'));
+		$this->assertNotEmpty(Configure::read('Languages.backend'));
+		$this->assertEqual(1, Configure::read('Wasabi.backend_language.id'));
+		$this->assertEqual('eng', Configure::read('Config.language'));
+
+		$this->BackendAppController->Session->write('wasabi', array(
+			'User' => array(
+				'id' => 1
+			),
+			'Language' => array(
+				'id' => 2,
+				'iso' => 'deu'
+			)
+		));
+		$this->BackendAppController->loadLanguages();
+
+		$this->assertEqual(2, Configure::read('Wasabi.backend_language.id'));
+		$this->assertEqual('deu', Configure::read('Config.language'));
+
+		$this->BackendAppController->Session->write('Wasabi.content_language_id', 1);
+		$this->BackendAppController->loadLanguages();
+
+		$this->assertEqual(1, Configure::read('Wasabi.content_language.id'));
 	}
 
 }
