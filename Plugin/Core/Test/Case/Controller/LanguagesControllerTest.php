@@ -115,7 +115,6 @@ class LanguagesControllerTest extends CoreControllerTest {
 
 		$this->assertNotEmpty($this->Languages->Language->validationErrors);
 		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
-		$this->assertFalse($this->Languages->Language->hasAny(array('name' => 'Added Language')));
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Languages->redirectUrl);
 	}
@@ -140,7 +139,7 @@ class LanguagesControllerTest extends CoreControllerTest {
 	}
 
 	public function testEditActionGetNoId() {
-		$this->testAction('/' . $this->backendPrefix . '/languages/edit/99', array('method' => 'get'));
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit', array('method' => 'get'));
 
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
