@@ -127,7 +127,7 @@ class BackendAppControllerTest extends ControllerTestCase {
 		$this->BackendAppController->checkPermisions();
 		$this->assertTrue($this->BackendAppController->Session->check('login_referer'));
 
-		$expected = 'backend/users';
+		$expected = '/backend/users';
 		$result = $this->BackendAppController->Session->read('login_referer');
 		$this->assertEqual($expected, $result);
 
