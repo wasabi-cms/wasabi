@@ -32,6 +32,12 @@ class UserTest extends CakeTestCase {
 		parent::setUp();
 	}
 
+	public function tearDown() {
+		unset($this->User);
+
+		parent::tearDown();
+	}
+
 	public function testUserBelongsToGroup() {
 		$this->assertTrue(array_key_exists('Group', $this->User->belongsTo));
 	}
@@ -334,6 +340,29 @@ class UserTest extends CakeTestCase {
 		$expected = 2;
 		$result = $this->User->LoginToken->find('count');
 		$this->assertEqual($expected, $result);
+
+		$this->User->LoginToken = $this->getMockForModel('LoginToken', array('add'));
+		$this->User->LoginToken
+			->expects($this->once())
+			->method('add')
+			->will($this->returnValue(false));
+		$this->assertFalse($this->User->persist(1, '2 weeks'));
+	}
+
+	public function testPersistExistingToken() {
+		$this->User->LoginToken = $this->getMockForModel('LoginToken', array('alreadyExists'));
+		$this->User->LoginToken
+			->expects($this->at(0))
+			->method('alreadyExists')
+			->will($this->returnValue(true));
+		$this->User->LoginToken
+			->expects($this->at(1))
+			->method('alreadyExists')
+			->will($this->returnValue(false));
+
+		$expected = 32;
+		$result = strlen($this->User->persist(1, '2 weeks'));
+		$this->assertEqual($expected, $result);
 	}
 
 	public function testGenerateToken() {
@@ -342,10 +371,79 @@ class UserTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-	public function tearDown() {
-		unset($this->User);
+	public function testBeforeValidate() {
+		$this->User->data = array(
+			'User' => array(
+				'password_unencrypted' => '',
+				'password_confirmation' => 'abc'
+			)
+		);
+		$this->assertTrue($this->User->beforeValidate());
+		$this->assertFalse(isset($this->User->data['User']['password_unencrypted']));
+		$this->assertFalse(isset($this->User->data['User']['password_confirmation']));
 
-		parent::tearDown();
+		$this->User->data = array(
+			'User' => array(
+				'password_unencrypted' => 'abc',
+				'password_confirmation' => 'abc'
+			)
+		);
+		$this->User->beforeValidate();
+		$this->assertTrue(isset($this->User->data['User']['password_unencrypted']));
+		$this->assertTrue(isset($this->User->data['User']['password_confirmation']));
+		$this->assertArrayHasKey('password', $this->User->data['User']);
+	}
+
+	public function testCheckPasswords() {
+		$this->User->data = array('User' => array());
+		$this->assertTrue($this->User->checkPasswords());
+
+		$this->User->data = array(
+			'User' => array(
+				'password_unencrypted' => '',
+				'password_confirmation' => 'abc'
+			)
+		);
+		$this->assertFalse($this->User->checkPasswords());
+
+		$this->User->data = array(
+			'User' => array(
+				'password_unencrypted' => 'abc',
+				'password_confirmation' => 'abc'
+			)
+		);
+		$this->assertTrue($this->User->checkPasswords());
+
+		$this->User->data = array(
+			'User' => array(
+				'password_unencrypted' => 'abc',
+				'password_confirmation' => 'abcde'
+			)
+		);
+		$this->assertFalse($this->User->checkPasswords());
+	}
+
+	public function testCanBeDeleted() {
+		$this->assertFalse($this->User->canBeDeleted(1, 99));
+		$this->assertFalse($this->User->canBeDeleted(2, 2));
+		$this->assertFalse($this->User->canBeDeleted(99, 1));
+		$this->assertTrue($this->User->canBeDeleted(2, 1));
+
+		$this->User->saveMany(array(
+			array(
+				'User' => array(
+					'id' => 1,
+					'active' => 0
+				)
+			),
+			array(
+				'User' => array(
+					'id' => 2,
+					'active' => 1
+				)
+			)
+		));
+		$this->assertFalse($this->User->canBeDeleted(2, 1));
 	}
 
 }
