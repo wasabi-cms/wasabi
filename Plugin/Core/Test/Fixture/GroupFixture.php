@@ -41,7 +41,14 @@ class GroupFixture extends CakeTestFixture {
 				'user_count' => 1,
 				'created' => '2013-01-12 15:00:00',
 				'modified' => '2013-01-12 15:00:00'
-			)
+			),
+			array(
+				'id' => 3,
+				'name' => 'Empty Group',
+				'user_count' => 0,
+				'created' => '2013-01-12 15:00:00',
+				'modified' => '2013-01-12 15:00:00'
+			),
 		);
 		parent::init();
 	}
