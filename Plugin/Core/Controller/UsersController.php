@@ -32,6 +32,31 @@ class UsersController extends BackendAppController {
 	);
 
 	/**
+	 * Constructor
+	 *
+	 * Additionally load the Security component for the login action only.
+	 * Using the default $components array completely overrides BackendAppController::$components.
+	 * Therefore it is added on top of it here.
+	 *
+	 * @param CakeRequest $request
+	 * @param CakeResponse $response
+	 */
+	public function __construct(CakeRequest $request, CakeResponse $response) {
+		parent::__construct($request, $response);
+
+		$this->components = Hash::merge($this->components, array(
+			'Security' => array(
+				'unlockedActions' => array(
+					'add',
+					'edit',
+					'delete',
+					'logout'
+				)
+			)
+		));
+	}
+
+	/**
 	 * Index action
 	 * GET
 	 *
@@ -60,7 +85,7 @@ class UsersController extends BackendAppController {
 		if ($this->request->is('post') && !empty($this->data)) {
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The User <strong>%s</strong> has been added.', array($this->data['User']['username'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index')); return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -77,7 +102,7 @@ class UsersController extends BackendAppController {
 	public function edit($id = null) {
 		if ($id === null || ($id == 1 && Authenticator::get('User.id') != 1)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index')); return;
 		}
 		$this->_prepareAddEdit();
 		if (!$this->request->is('post') && empty($this->data)) {
@@ -87,7 +112,7 @@ class UsersController extends BackendAppController {
 		} else {
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The user <strong>%s</strong> has been updated successfully.', array($this->data['User']['username'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index')); return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -110,16 +135,13 @@ class UsersController extends BackendAppController {
 
 		if ($id === null || !$this->User->canBeDeleted($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index')); return;
 		}
 
 		if ($this->User->delete($id)) {
 			$this->Session->setFlash(__d('core', 'The user has been deleted.'), 'default', array('class' => 'success'));
 			$this->redirect(array('action' => 'index'));
 		}
-
-		$this->Session->setFlash(__d('core', 'The user has not been deleted.'), 'default', array('class' => 'error'));
-		$this->redirect(array('action' => 'index'));
 	}
 
 	/**
@@ -132,28 +154,22 @@ class UsersController extends BackendAppController {
 		$this->layout = 'Core.login';
 		$this->set('title_for_layout', __d('core', 'Login'));
 
-		if ($this->Session->check('login_referer')) {
-			$this->set('login_referer', $this->Session->read('login_referer'));
-			$this->Session->delete('login_referer');
+		$user = Authenticator::get();
+		if ($user) {
+			$this->redirect($this->_getRedirect()); return;
 		}
 
-		if (!empty($this->data)) {
-			if ($this->Authenticator->login('credentials', $this->data['User'])) {
-				$this->Session->setFlash(__d('core', 'Welcome back, %s!', array($this->Authenticator->get('username'))), 'default', array('class' => 'success'));
+		// user could not be logged in via session/cookie/etc.
+		if ($this->request->is('post')) {
+			if (!empty($this->data)	&& isset($this->data['User'])
+				&& $this->Authenticator->login('credentials', $this->data['User'])
+			) {
+				$this->Session->setFlash(__d('core', 'Welcome back, <strong>%s</strong>!', array($this->Authenticator->get('username'))), 'default', array('class' => 'success'));
+				$this->redirect($this->_getRedirect()); return;
 			} else {
+				$this->Session->write('login_referer', $this->_getRedirect(false));
 				$this->Session->setFlash(__d('core', 'Wrong username or password.'), 'default', array('class' => 'error'));
 			}
-		}
-
-		$user = Authenticator::get();
-		if (!empty($user)) {
-			// default redirect: first primary backend menu item
-			$redirect = $this->viewVars['backend_menu_for_layout']['primary'][0]['url'];
-			// override default redirect if a login_referer is submitted
-			if (!empty($this->data) && isset($this->data['User']['login_referer'])) {
-				$redirect = '/' . $this->data['User']['login_referer'];
-			}
-			$this->redirect($redirect);
 		}
 	}
 
@@ -175,7 +191,7 @@ class UsersController extends BackendAppController {
 	 *
 	 * @return void
 	 */
-	private function _prepareAddEdit() {
+	protected function _prepareAddEdit() {
 		$title = __d('core', 'Add a new User');
 		if ($this->request->params['action'] == 'edit') {
 			$title = __d('core', 'Edit User');
@@ -185,6 +201,18 @@ class UsersController extends BackendAppController {
 			'languages' => $this->User->Language->find('list', array('Language.id', 'Language.name')),
 			'title_for_layout' => $title
 		));
+	}
+
+	protected function _getRedirect($delete_session = true) {
+		$redirect = $this->viewVars['backend_menu_for_layout']['primary'][0]['url'];
+		if ($this->Session->check('login_referer')) {
+			$redirect = $this->Session->read('login_referer');
+			if ($delete_session === true) {
+				$this->Session->delete('login_referer');
+			}
+		}
+
+		return $redirect;
 	}
 
 }
