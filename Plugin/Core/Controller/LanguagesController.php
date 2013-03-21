@@ -109,7 +109,7 @@ class LanguagesController extends BackendAppController {
 
 		if ($this->Language->delete($id)) {
 			$this->Session->setFlash(__d('core', 'The language has been deleted.'), 'default', array('class' => 'success'));
-			$this->redirect(array('action' => 'index')); return;
+			$this->redirect(array('action' => 'index'));
 		}
 	}
 
@@ -145,6 +145,6 @@ class LanguagesController extends BackendAppController {
 		}
 		$lang = $this->Language->findById($id);
 		$this->Session->write('Wasabi.content_language_id', $lang['Language']['id']);
-		$this->redirect($this->referer(array('action' => 'index'))); return;
+		$this->redirect($this->referer(array('action' => 'index')));
 	}
 }
