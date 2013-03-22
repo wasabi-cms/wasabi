@@ -21,6 +21,13 @@
 Configure::write('Wasabi.backend_prefix', 'backend');
 
 /**
+ * The default name of the Session Cookie.
+ * Change this to match your application or domain to prevent
+ * other people from directly seeing that this site is using Wasabi.
+ */
+Configure::write('Session.cookie', 'Wasabi');
+
+/**
  * Pygmentize is a python library to transform code blocks into nice format.
  * Provide the full path to the library here if you want to use it.
  */
