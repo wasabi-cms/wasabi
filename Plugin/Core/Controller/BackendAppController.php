@@ -31,8 +31,8 @@ class BackendAppController extends AppController {
 	public $components = array(
 		'Core.Authenticator' => array(
 			'model' => 'Core.User',
-			'sessionKey' => 'wasabi',
-			'cookieKey' => 'wasabi_remember'
+			'sessionKey' => 'Auth',
+			'cookieKey' => 'AuthRemember'
 		),
 		'RequestHandler'
 	);

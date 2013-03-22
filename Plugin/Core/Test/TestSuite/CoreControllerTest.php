@@ -70,7 +70,7 @@ class CoreControllerTest extends ControllerTestCase {
 	 * @param bool|integer $fake_id
 	 */
 	protected function _loginUser($fake_id = false) {
-		CakeSession::write('wasabi', array(
+		CakeSession::write('Auth', array(
 			'User' => array(
 				'id' => ($fake_id !== false) ? (int) $fake_id : 1,
 				'username' => 'admin'

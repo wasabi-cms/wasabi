@@ -128,8 +128,8 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	 */
 	protected $_tSettings = array(
 		'model' => 'UserTestModel',
-		'sessionKey' => 'wasabi',
-		'cookieKey' => 'wasabi',
+		'sessionKey' => 'Auth',
+		'cookieKey' => 'AuthRemember',
 		'rememberFor' => '2 weeks'
 	);
 
@@ -402,9 +402,9 @@ class AuthenticatorComponentTest extends CakeTestCase {
 
 	public function settings() {
 		return array(
-			array('model'      ,null        ,null     ,null),
-			array('sessionKey' ,'Core.User' ,null     ,null),
-			array('cookieKey'  ,'Core.User' ,'wasabi' ,null)
+			array('model'      ,null        ,null   ,null),
+			array('sessionKey' ,'Core.User' ,null   ,null),
+			array('cookieKey'  ,'Core.User' ,'Auth' ,null)
 		);
 	}
 

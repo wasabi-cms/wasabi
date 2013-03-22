@@ -73,8 +73,8 @@ class AuthenticatorTest1Component extends AuthenticatorComponent {
 	public function __construct(ComponentCollection $collection) {
 		return parent::__construct($collection, array(
 			'model' => 'Foo',
-			'sessionKey' => 'wasabi',
-			'cookieKey' => 'wasabi'
+			'sessionKey' => 'Auth',
+			'cookieKey' => 'AuthRemember'
 		));
 	}
 
@@ -211,7 +211,7 @@ class BackendAppControllerTest extends CoreControllerTest {
 		$this->assertEqual(1, Configure::read('Wasabi.backend_language.id'));
 		$this->assertEqual('eng', Configure::read('Config.language'));
 
-		$this->BackendAppController->Session->write('wasabi', array(
+		$this->BackendAppController->Session->write('Auth', array(
 			'User' => array(
 				'id' => 1
 			),
