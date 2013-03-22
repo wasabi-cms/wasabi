@@ -131,7 +131,6 @@ class BackendAppController extends AppController {
 		$this->_loadBackendMenu();
 		$this->_loadLanguages();
 		$this->layout = 'Core.default';
-		$this->set('backend_prefix', Configure::read('Wasabi.backend_prefix'));
 		$this->formErrorMessage = __d('core', 'Please correct the marked errors.');
 		$this->invalidRequestMessage = __d('core', 'Invalid Request.');
 	}
