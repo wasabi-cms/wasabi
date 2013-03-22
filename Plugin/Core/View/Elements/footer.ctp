@@ -1,3 +1,4 @@
+<?php /** @var CoreView $this */ ?>
 <footer>
 	<div class="inner">
 		Wasabi CMS

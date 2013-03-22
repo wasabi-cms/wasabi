@@ -1,3 +1,4 @@
+<?php /** @var CoreView $this */ ?>
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'All Groups') ?></h1>

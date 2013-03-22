@@ -1,3 +1,4 @@
+<?php /** @var CoreView $this */?>
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo ($this->params['action'] == 'add') ? __d('core', 'Add a new Language') : __d('core', 'Edit Language <strong>%s</strong>', array($this->data['Language']['name'])) ?></h1>
