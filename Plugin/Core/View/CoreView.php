@@ -20,6 +20,8 @@ App::uses('View', 'View');
  * @property CFormHelper $CForm
  * @property NavigationHelper $Navigation
  * @property WasabiAssetHelper $WasabiAsset
+ * @property array $data shorthand for $this->request->data
+ * @property array $params shorthand for $this->request->params
  */
 
 class CoreView extends View {
