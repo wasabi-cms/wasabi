@@ -63,6 +63,15 @@ class BackendAppController extends AppController {
 	);
 
 	/**
+	 * The default View Class for all backend controller actions.
+	 * Main purpose is to reflect properties of custom helpers into the view
+	 * by simple phpdoc annotations ontop of the CoreView class.
+	 *
+	 * @var string
+	 */
+	public $viewClass = 'Core.Core';
+
+	/**
 	 * beforeFilter callback
 	 *
 	 * @return void
