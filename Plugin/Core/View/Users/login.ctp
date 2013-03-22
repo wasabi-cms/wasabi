@@ -1,4 +1,8 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ */
+?>
 <h1>Backend Login</h1>
 <?php
 echo $this->Session->flash();

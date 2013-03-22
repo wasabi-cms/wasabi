@@ -1,4 +1,8 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ */
+?>
 <ul class="lang-switch">
 	<?php
 	foreach (Configure::read('Languages.frontend') as $lang) {

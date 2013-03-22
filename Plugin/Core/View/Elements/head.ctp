@@ -1,4 +1,8 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ */
+?>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <title><?php echo $title_for_layout ?></title>

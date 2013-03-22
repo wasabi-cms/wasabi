@@ -1,4 +1,9 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ * @var array $group
+ */
+?>
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'Delete Group <strong>%s</strong>', array($group['Group']['name'])) ?></h1>

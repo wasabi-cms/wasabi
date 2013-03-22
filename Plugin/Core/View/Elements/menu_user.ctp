@@ -1,4 +1,8 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ */
+?>
 <?php if (Authenticator::get()): ?>
 <div class="user-menu">
 	<a href="#"><?php echo Authenticator::get('User.username'); ?></a>

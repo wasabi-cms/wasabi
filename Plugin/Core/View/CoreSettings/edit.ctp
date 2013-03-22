@@ -1,4 +1,8 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ */
+?>
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'Edit Core Settings') ?></h1>

@@ -1,4 +1,8 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ */
+?>
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo ($this->params['action'] == 'add') ? __d('core', 'Add a new Group') : __d('core', 'Edit Group <strong>%s</strong>', array($this->data['Group']['name'])) ?></h1>
