@@ -13,6 +13,11 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+/**
+ * This is the prefix for backend urls.
+ * By default all backend urls are prefixed with 'backend',
+ * e.g. http://yourdomain.com/backend/users
+ */
 Configure::write('Wasabi.backend_prefix', 'backend');
 
 /**
