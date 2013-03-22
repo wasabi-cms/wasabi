@@ -56,11 +56,17 @@ class TextileTest extends CakeTestCase {
 	public $Textile = null;
 
 	public function setUp() {
-		parent::setUp();
-
 		$Controller = new Controller();
 		$View = new View($Controller);
 		$this->Textile = new TestTextile($View);
+
+		parent::setUp();
+	}
+
+	public function tearDown() {
+		unset($this->Textile);
+
+		parent::setUp();
 	}
 
 	public function testAddFilder() {
@@ -571,10 +577,6 @@ class TextileTest extends CakeTestCase {
 		);
 		$result = $this->Textile->splitIntoParts($text);
 		$this->assertEqual($expected, $result);
-	}
-
-	public function tearDown() {
-		$this->Textile = null;
 	}
 
 	private function _isPygmentizeAvailable() {
