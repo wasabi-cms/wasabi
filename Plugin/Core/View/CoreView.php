@@ -17,6 +17,8 @@ App::uses('View', 'View');
 
 /**
  * @property CFormHelper $CForm
+ * @property NavigationHelper $Navigation
+ * @property WasabiAssetHelper $WasabiAsset
  */
 
 class CoreView extends View {
