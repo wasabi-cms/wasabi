@@ -67,4 +67,5 @@
 		?>
 		</tbody>
 	</table>
+	<?php echo $this->Form->end(); ?>
 </div>
