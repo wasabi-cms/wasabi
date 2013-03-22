@@ -8,7 +8,7 @@
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'All Groups') ?></h1>
 		<ul class="actions">
-			<li><?php echo $this->Html->link(__d('core', 'Add a new Group'), "/${backend_prefix}/groups/add", array('class' => 'add', 'title' => __d('core', 'Add a new Group'))) ?></li>
+			<li><?php echo $this->CHtml->backendLink(__d('core', 'Add a new Group'), '/groups/add', array('class' => 'add', 'title' => __d('core', 'Add a new Group'))) ?></li>
 		</ul>
 	</div>
 	<table class="list bottom-round">
@@ -28,12 +28,17 @@
 			?>
 			<tr<?php echo $class ?>>
 				<td class="right"><?php echo $g['Group']['id'] ?></td>
-				<td><?php echo $this->Html->link($g['Group']['name'], "/${backend_prefix}/groups/edit/" . $g['Group']['id'], array('title' => __d('core', 'Edit this Group'))) ?></td>
+				<td><?php echo $this->CHtml->backendLink($g['Group']['name'], '/groups/edit/' . $g['Group']['id'], array('title' => __d('core', 'Edit this Group'))) ?></td>
 				<td><?php echo $g['Group']['user_count'] ?></td>
 				<td class="actions center">
 					<?php
 					if ($g['Group']['id'] != 1) {
-						echo $this->Html->link(__d('core', 'Delete this Group'), '#', array('title' => __d('core', 'Delete this Group'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Delete the group <strong>%s</strong> ?', array($g['Group']['name'])), 'data-confirm-action' => Router::url("/${backend_prefix}/groups/delete/" . $g['Group']['id']), 'data-modal-title' => __d('core', 'Deletion Confirmation')));
+						echo $this->CHtml->backendConfirmationLink(__d('core', 'Delete this Group'), '/groups/delete/' . $g['Group']['id'], array(
+							'title' => __d('core', 'Delete this Group'),
+							'class' => 'remove',
+							'confirm-message' => __d('core', 'Delete the group <strong>%s</strong> ?', array($g['Group']['name'])),
+							'confirm-title' => __d('core', 'Deletion Confirmation')
+						));
 					} else {
 						echo '-';
 					}

@@ -36,7 +36,7 @@
 	<div class="form-actions-bar">
 		<?php
 		echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button green primary'));
-		echo $this->Html->link(__d('core', 'Reset'), "/${backend_prefix}/settings/edit", array('class' => 'button danger'));
+		echo $this->CHtml->backendLink(__d('core', 'Reset'), '/settings/edit', array('class' => 'button danger'));
 		?>
 	</div>
 	<?php echo $this->Form->end(); ?>

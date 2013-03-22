@@ -20,7 +20,7 @@
 	<div class="form-actions-bar">
 		<?php
 		echo $this->Form->button(__d('core', 'Move Members & Delete Group'), array('div' => false, 'class' => 'button green primary'));
-		echo $this->Html->link(__d('core', 'Cancel'), "/${backend_prefix}/groups", array('class' => 'button danger'));
+		echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/groups', array('class' => 'button danger'));
 		?>
 	</div>
 	<?php echo $this->Form->end(); ?>

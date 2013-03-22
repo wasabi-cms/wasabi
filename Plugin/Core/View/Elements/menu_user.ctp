@@ -3,8 +3,8 @@
 <div class="user-menu">
 	<a href="#"><?php echo Authenticator::get('User.username'); ?></a>
 	<ul>
-		<li><?php echo $this->Html->link(__d('core', 'Edit Profile'), array('plugin' => 'core', 'controller' => 'users', 'action' => 'profile')) ?></li>
-		<li><?php echo $this->Html->link(__d('core', 'Logout'), array('plugin' => 'core', 'controller' => 'users', 'action' => 'logout')) ?></li>
+		<li><?php echo $this->CHtml->backendLink(__d('core', 'Edit Profile'), '/profile') ?></li>
+		<li><?php echo $this->CHtml->backendLink(__d('core', 'Logout'), '/logout') ?></li>
 	</ul>
 </div>
 <?php endif; ?>

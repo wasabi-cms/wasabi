@@ -1,9 +1,14 @@
-<?php /** @var CoreView $this */ ?>
+<?php
+/**
+ * @var CoreView $this
+ * @var array $users
+ */
+?>
 <div class="round-shadow">
 	<div class="title-pad">
 		<h1><?php echo __d('core', 'All Users') ?></h1>
 		<ul class="actions">
-			<li><?php echo $this->Html->link(__d('core', 'Add a new User'), "/${backend_prefix}/users/add", array('class' => 'add', 'title' => __d('core', 'Add a new User'))) ?></li>
+			<li><?php echo $this->CHtml->backendLink(__d('core', 'Add a new User'), '/users/add', array('class' => 'add', 'title' => __d('core', 'Add a new User'))) ?></li>
 		</ul>
 	</div>
 	<table class="list bottom-round">
@@ -29,7 +34,7 @@
 					if ($u['User']['id'] == 1 && Authenticator::get('User.id') != 1) {
 						echo '<strong>' . $u['User']['username'] . '</strong>';
 					} else {
-						echo $this->Html->link($u['User']['username'], "/${backend_prefix}/users/edit/" . $u['User']['id'], array('title' => __d('core', 'Edit this User')));
+						echo $this->CHtml->backendLink($u['User']['username'], '/users/edit/' . $u['User']['id'], array('title' => __d('core', 'Edit this User')));
 					}
 					?>
 				</td>
@@ -48,7 +53,12 @@
 				<td class="actions center">
 					<?php
 					if ($u['User']['id'] != Authenticator::get('id') && $u['User']['id'] != 1) {
-						echo $this->Html->link(__d('core', 'Delete this User'), '#', array('title' => __d('core', 'Delete this User'), 'class' => 'remove confirm', 'data-confirm' => __d('core', 'Delete user <strong>%s</strong> ?', array($u['User']['username'])), 'data-confirm-action' => Router::url("/${backend_prefix}/users/delete/" . $u['User']['id']), 'data-modal-title' => __d('core', 'Deletion Confirmation')));
+						echo $this->CHtml->backendConfirmationLink(__d('core', 'Delete this User'), '/users/delete/' . $u['User']['id'], array(
+							'class' => 'remove',
+							'title' => __d('core', 'Delete this User'),
+							'confirm-message' => __d('core', 'Delete user <strong>%s</strong> ?', array($u['User']['username'])),
+							'confirm-title' => __d('core', 'Deletion Confirmation')
+						));
 					} else {
 						echo '-';
 					}
