@@ -44,7 +44,7 @@
 
         if (that.settings.type == 'confirm') {
           var action = that.source.attr('data-confirm-action') || false;
-          var confirmMessage = that.source.attr('data-confirm') || false;
+          var confirmMessage = that.source.attr('data-confirm-message') || false;
           if (confirmMessage !== false) {
             that.modalBody.append($('<p></p>').html(confirmMessage));
           }
@@ -96,6 +96,11 @@
     this.initModalHeader = function() {
       var modalTitle = that.source.attr('data-modal-title') || false;
       var modalSubTitle = that.source.attr('data-modal-subtitle') || false;
+
+      if (that.settings.type == 'confirm') {
+        modalTitle = that.source.attr('data-confirm-title') || false;
+        modalSubTitle = that.source.attr('data-confirm-subtitle') || false;
+      }
 
       if (modalTitle !== false) {
         that.modalHeader.append($('<h2></h2>').html(modalTitle));
