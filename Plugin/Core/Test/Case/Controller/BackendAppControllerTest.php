@@ -181,11 +181,6 @@ class BackendAppControllerTest extends CoreControllerTest {
 		$expected = 'Core.default';
 		$result = $this->BackendAppController->layout;
 		$this->assertEqual($expected, $result);
-
-		$this->assertTrue(isset($this->BackendAppController->viewVars['backend_prefix']));
-		$expected = Configure::read('Wasabi.backend_prefix');
-		$result = $this->BackendAppController->viewVars['backend_prefix'];
-		$this->assertEqual($expected, $result);
 	}
 
 	public function testLoadBackendMenu() {
