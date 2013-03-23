@@ -26,22 +26,4 @@ App::uses('View', 'View');
 
 class CoreView extends View {
 
-	/**
-	 * The backend url prefix.
-	 *
-	 * @var string
-	 */
-	public $backendPrefix;
-
-	/**
-	 * Constructor
-	 *
-	 * @param Controller $controller A controller object to pull View::_passedVars from.
-	 */
-	public function __construct(Controller $controller = null) {
-		parent::__construct($controller);
-
-		$this->backendPrefix = Configure::read('Wasabi.backend_prefix');
-	}
-
 }

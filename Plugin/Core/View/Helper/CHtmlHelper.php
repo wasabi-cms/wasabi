@@ -99,7 +99,7 @@ class CHtmlHelper extends AppHelper {
 	protected function _getBackendUrl($url, $rel = false) {
 		if (!is_array($url)) {
 			$url = ltrim($url, '/');
-			$url = '/' . $this->_View->backendPrefix . '/' . $url;
+			$url = '/' . Configure::read('Wasabi.backend_prefix') . '/' . $url;
 		}
 		if ($rel !== false) {
 			$url = Router::url($url);
