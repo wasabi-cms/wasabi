@@ -40,8 +40,12 @@ class WasabiRoute extends CakeRoute {
 	 * @return boolean|mixed
 	 */
 	public function match($url) {
-		if (empty($url)) {
+		if (!is_array($url) || empty($url)) {
 			return false;
+		}
+
+		if (!isset($url['plugin']) || $url['plugin'] == false) {
+			$url['plugin'] = null;
 		}
 
 		$identifier = md5(serialize($url));
@@ -51,7 +55,7 @@ class WasabiRoute extends CakeRoute {
 		}
 
 		$conditions = array(
-			'Route.plugin' => ($url['plugin'] == null || $url['plugin'] == false) ? '' : $url['plugin'],
+			'Route.plugin' => ($url['plugin'] == null) ? '' : $url['plugin'],
 			'Route.controller' => $url['controller'],
 			'Route.action' => $url['action'],
 			'Route.status_code' => null
@@ -135,14 +139,17 @@ class WasabiRoute extends CakeRoute {
 				if (!$this->response) {
 					$this->response = new CakeResponse();
 				}
-				$this->response->header(array('Location' => Router::url($redirect_route['Route']['url'], true)));
-				if ($redirect_route['Route']['status_code'] !== null) {
-					$this->response->statusCode((int) $redirect_route['Route']['status_code']);
+				$request = new CakeRequest('/');
+				$base = $request->base;
+				$redirect_url = $base . $redirect_route['Route']['url'];
+				$redirect_url = preg_replace("/\/\//", '/', $redirect_url);
+				$this->response->header(array('Location' => Router::url($redirect_url, true)));
+				if ($route['Route']['status_code'] !== null) {
+					$this->response->statusCode((int) $route['Route']['status_code']);
 				} else {
 					$this->response->statusCode(301);
 				}
-				$this->response->send();
-				$this->_stop();
+				$this->_sendResponse();
 			}
 		}
 
@@ -165,17 +172,11 @@ class WasabiRoute extends CakeRoute {
 	}
 
 	/**
-	 * Stop execution of current script. Wraps exit() making
-	 * testing easier.
-	 *
-	 * taken from Cake/Routing/Route/RedirectRoute.php @ CakePHP
-	 *
-	 * @param int $code see http://php.net/exit for values
-	 * @return void
+	 * Wrapper to send a response.
+	 * Can be easily mocked when testing.
 	 */
-	protected function _stop($code = 0) {
-		if ($this->stop) {
-			exit($code);
-		}
+	protected function _sendResponse() {
+		$this->response->send();
 	}
+
 }
