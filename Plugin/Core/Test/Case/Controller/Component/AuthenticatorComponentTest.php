@@ -223,6 +223,10 @@ class AuthenticatorComponentTest extends CakeTestCase {
 		$expected = 'Administrator';
 		$result = $this->Authenticator->get('Group.name');
 		$this->assertEqual($expected, $result);
+
+		$expected = 'Administrator';
+		$result = Authenticator::get('Group.name');
+		$this->assertEqual($expected, $result);
 	}
 
 	public function testSet() {
