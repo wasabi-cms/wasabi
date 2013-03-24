@@ -52,15 +52,6 @@ class FrontendAppController extends AppController {
 	public $viewClass = 'Core.Core';
 
 	/**
-	 * beforeFilter callback
-	 *
-	 * @return void
-	 */
-	public function beforeFilter() {
-		parent::beforeFilter();
-	}
-
-	/**
 	 * Load and setup all languages and language related config options.
 	 *
 	 * @param integer|null $language_id The id of the current active language
