@@ -53,12 +53,14 @@ class LoginToken extends CoreAppModel {
 	 * @return mixed
 	 */
 	public function add($user_id, $token, $duration) {
-		$this->create(array(
-			$this->alias . '.user_id' => $user_id,
-			$this->alias . '.token'   => $token,
-			$this->alias . '.expires' => date('Y-m-d H:i:s', strtotime($duration))
+		$this->create();
+		return $this->save(array(
+			$this->alias => array(
+				'user_id' => $user_id,
+				'token'   => $token,
+				'expires' => date('Y-m-d H:i:s', strtotime($duration))
+			)
 		));
-		return $this->save();
 	}
 
 	/**
