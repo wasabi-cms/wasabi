@@ -31,86 +31,58 @@ class LanguageTest extends CakeTestCase {
 		parent::setUp();
 	}
 
+	public function tearDown() {
+		unset($this->Language);
+		Cache::delete('languages', 'core.infinite');
+
+		parent::tearDown();
+	}
+
 	public function testFindAll() {
 		$result = $this->Language->findAll();
-		$expected = array(
-			array(
-				'Language' => array(
-					'id' => 1,
-					'name' => 'English',
-					'locale' => 'en',
-					'iso' => 'eng',
-					'lang' => 'en-US',
-					'available_at_frontend' => true,
-					'available_at_backend' => true,
-					'position' => 1,
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				)
-			),
-			array(
-				'Language' => array(
-					'id' => 2,
-					'name' => 'Deutsch',
-					'locale' => 'de',
-					'iso' => 'deu',
-					'lang' => 'de-DE',
-					'available_at_frontend' => false,
-					'available_at_backend' => true,
-					'position' => 2,
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				)
-			)
-		);
-		$this->assertEqual($expected, $result);
+		$this->assertNotEmpty($result);
+		$this->assertEqual(2, count($result));
 
 		$result = $this->Language->findAll(array('conditions' => array('id' => 1)));
-		$expected = array(
-			array(
-				'Language' => array(
-					'id' => 1,
-					'name' => 'English',
-					'locale' => 'en',
-					'iso' => 'eng',
-					'lang' => 'en-US',
-					'available_at_frontend' => true,
-					'available_at_backend' => true,
-					'position' => 1,
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				)
-			)
-		);
-		$this->assertEqual($expected, $result);
+		$this->assertNotEmpty($result);
+		$this->assertEqual(1, count($result));
 	}
 
 	public function testFindById() {
 		$result = $this->Language->findById(1);
-		$expected = array(
-			'Language' => array(
-				'id' => 1,
-				'name' => 'English',
-				'locale' => 'en',
-				'iso' => 'eng',
-				'lang' => 'en-US',
-				'available_at_frontend' => true,
-				'available_at_backend' => true,
-				'position' => 1,
-				'created' => '2013-01-12 14:00:00',
-				'modified' => '2013-01-12 14:00:00'
-			)
-		);
-		$this->assertEqual($expected, $result);
+		$this->assertNotEmpty($result);
+		$this->assertEqual(1, count($result));
 
 		$result = $this->Language->findById(100);
 		$this->assertEmpty($result);
 	}
 
-	public function tearDown() {
-		unset($this->Language);
+	public function testAfterSave() {
+		Cache::write('languages', 'test', 'core.infinite');
+		$this->Language->afterSave(false);
+		$this->assertFalse(Cache::read('languages', 'core.infinite'));
 
-		parent::tearDown();
+		Cache::write('languages', 'test', 'core.infinite');
+		$this->Language->afterSave(true);
+		$this->assertFalse(Cache::read('languages', 'core.infinite'));
+	}
+
+	public function testCanBeDeleted() {
+		$this->assertFalse($this->Language->canBeDeleted(1));
+		$this->assertFalse($this->Language->canBeDeleted(2));
+		$this->assertFalse($this->Language->canBeDeleted(99));
+
+		$this->assertFalse($this->Language->canBeDeleted(3));
+		$this->Language->save(array(
+			'Language' => array(
+				'name' => 'Test Lang',
+				'locale' => 'tl',
+				'iso' => 'tla',
+				'available_at_backend' => false,
+				'available_at_frontend' => false
+			)
+		));
+		$this->assertTrue($this->Language->canBeDeleted(3));
 	}
 
 }
