@@ -34,7 +34,66 @@ class RouteFixture extends CakeTestFixture {
 
 	public function init() {
 		$this->records = array(
-
+			array(
+				'id' => 1,
+				'url' => '/tests/foo',
+				'plugin' => '',
+				'controller' => 'tests',
+				'action' => 'foo',
+				'params' => '',
+				'redirect_to' => null,
+				'status_code' => null,
+				'created' => '0000-00-00 00:00:00',
+				'modified' => '0000-00-00 00:00:00'
+			),
+			array(
+				'id' => 2,
+				'url' => '/tests/foo/3',
+				'plugin' => '',
+				'controller' => 'tests',
+				'action' => 'foo',
+				'params' => '3',
+				'redirect_to' => null,
+				'status_code' => null,
+				'created' => '0000-00-00 00:00:00',
+				'modified' => '0000-00-00 00:00:00'
+			),
+			array(
+				'id' => 3,
+				'url' => '/',
+				'plugin' => 'awesome',
+				'controller' => 'tests',
+				'action' => 'foo',
+				'params' => '3',
+				'redirect_to' => null,
+				'status_code' => null,
+				'created' => '0000-00-00 00:00:00',
+				'modified' => '0000-00-00 00:00:00'
+			),
+			array(
+				'id' => 4,
+				'url' => '/awesome/tests/foo/4',
+				'plugin' => 'awesome',
+				'controller' => 'tests',
+				'action' => 'foo',
+				'params' => '4',
+				'redirect_to' => 2,
+				'status_code' => 307,
+				'created' => '0000-00-00 00:00:00',
+				'modified' => '0000-00-00 00:00:00'
+			),
+			array(
+				'id' => 5,
+				'url' => '/awesome/tests/foo/5',
+				'plugin' => 'awesome',
+				'controller' => 'tests',
+				'action' => 'foo',
+				'params' => '5',
+				'redirect_to' => 2,
+				'status_code' => null,
+				'created' => '0000-00-00 00:00:00',
+				'modified' => '0000-00-00 00:00:00'
+			)
 		);
 		parent::init();
 	}
