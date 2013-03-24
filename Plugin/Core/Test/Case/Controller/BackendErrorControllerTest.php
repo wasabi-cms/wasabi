@@ -17,7 +17,7 @@ App::uses('BackendErrorController', 'Core.Controller');
 App::uses('CoreControllerTest', 'Core.Test/TestSuite');
 
 /**
- * @property BackendErrorController $BackendErrors
+ * @property BackendErrorController $BackendError
  */
 
 class BackendErrorControllerTest extends CoreControllerTest {
@@ -25,24 +25,24 @@ class BackendErrorControllerTest extends CoreControllerTest {
 	public $fixtures = array('plugin.core.language', 'plugin.core.core_setting');
 
 	public function setUp() {
-		$this->BackendErrors = new BackendErrorController();
-		$this->BackendErrors->constructClasses();
+		$this->BackendError = new BackendErrorController();
+		$this->BackendError->constructClasses();
 
 		parent::setUp();
 	}
 
 	public function tearDown() {
-		unset($this->BackendErrors);
+		unset($this->BackendError);
 
 		parent::tearDown();
 	}
 
 	public function testBeforeFilter() {
 		$this->_loginUser();
-		$this->BackendErrors->request->params = Router::parse('/backend/users');
-		$this->BackendErrors->request->url = 'backend/users';
-		$this->BackendErrors->beforeFilter();
-		$this->assertEqual('Core.backend_error', $this->BackendErrors->layout);
+		$this->BackendError->request->params = Router::parse('/backend/users');
+		$this->BackendError->request->url = 'backend/users';
+		$this->BackendError->beforeFilter();
+		$this->assertEqual('Core.backend_error', $this->BackendError->layout);
 	}
 
 }
