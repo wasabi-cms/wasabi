@@ -20,28 +20,24 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-/**
- * Here, we are connecting '/' (base path) to controller called 'Pages',
- * its action called 'display', and we pass a param to select the view file
- * to use (in this case, /app/View/Pages/home.ctp)...
- */
-	#Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
-	#Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
-/**
- * Load all plugin routes.  See the CakePlugin documentation on
- * how to customize the loading of plugin routes.
- */
-	#CakePlugin::routes();
+	if (!file_exists(dirname(__FILE__) . DS . '.installed')) {
+		Router::connect('/backend/install', array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'check'));
+		Router::connect('/backend/install/:action/*', array('plugin' => 'core', 'controller' => 'core_install'));
 
-	WasabiEventManager::trigger(new stdClass(), 'Plugin.Routes.load');
+		$request = Router::getRequest();
+		if (strpos($request->url, 'install') === false) {
+			$url = array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'check');
+			Router::redirect('/*', $url, array('status' => 307));
+		}
+	} else {
+		Router::connect('/backend/install/finish', array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'finish'));
+		WasabiEventManager::trigger(new stdClass(), 'Plugin.Routes.load');
 
-	// add WasabiRoute class to handle routes saved in DB
-	App::uses('WasabiRoute', 'Core.Routing/Route');
-	Router::connect('/', array(), array('routeClass' => 'WasabiRoute'));
+		// add WasabiRoute class to handle routes saved in DB
+		App::uses('WasabiRoute', 'Core.Routing/Route');
+		Router::connect('/', array(), array('routeClass' => 'WasabiRoute'));
+	}
 
 /**
  * Load the CakePHP default routes. Only remove this if you do not want to use
