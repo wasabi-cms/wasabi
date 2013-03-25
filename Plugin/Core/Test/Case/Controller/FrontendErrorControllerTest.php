@@ -38,6 +38,7 @@ class FrontendErrorControllerTest extends CoreControllerTest {
 	}
 
 	public function testBeforeFilter() {
+		$this->FrontendError->request = $this->getMock('CakeRequest');
 		$this->FrontendError->beforeFilter();
 		$this->assertEqual('error', $this->FrontendError->layout);
 		$this->assertEqual('Errors', $this->FrontendError->viewPath);
