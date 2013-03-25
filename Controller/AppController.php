@@ -29,7 +29,9 @@ class AppController extends Controller {
 	public function beforeFilter() {
 		parent::beforeFilter();
 
-		$this->_loadSettings();
+		if ($this->request->params['controller'] !== 'core_install') {
+			$this->_loadSettings();
+		}
 	}
 
 	/**
