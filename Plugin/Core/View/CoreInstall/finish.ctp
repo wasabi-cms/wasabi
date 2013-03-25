@@ -15,5 +15,5 @@
 	<h2><?php echo __d('core', 'Installation Finished') ?></h2>
 </div>
 <div class="form-actions-bar">
-	<?php echo $this->Html->link(__d('core', 'Start Installation'), '/backend/install/database', array('class' => 'button green primary')) ?>
+
 </div>
