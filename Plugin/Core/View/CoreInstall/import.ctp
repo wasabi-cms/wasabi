@@ -19,7 +19,7 @@
 		<p><?php echo __d('core', 'If you want to keep your existing data, please make sure to backup your database before starting the import.') ?></p>
 	</div>
 </div>
-<?php echo $this->Form->create('Install', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'import'))); ?>
+<?php echo $this->Form->create('CoreInstall', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'import'))); ?>
 <div class="form-actions-bar">
 	<?php echo $this->Form->button(__d('core', 'Start Import'), array('div' => false, 'class' => 'button green primary')); ?>
 </div>

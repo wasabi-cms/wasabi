@@ -3,7 +3,7 @@
  * @var CoreView $this
  */
 ?>
-<?php echo $this->Form->create('Install', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'database'), 'novalidate')); ?>
+<?php echo $this->Form->create('CoreInstall', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'database'), 'novalidate')); ?>
 <div class="install-content">
 	<ul class="progress">
 		<li class="active">1</li>
