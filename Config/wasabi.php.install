@@ -25,16 +25,16 @@ Configure::write('Wasabi.backend_prefix', 'backend');
  * Change this to match your application or domain to prevent
  * other people from directly seeing that this site is using Wasabi.
  */
-Configure::write('Session.cookie', 'Wasabi');
+Configure::write('Session.cookie', '{{COOKIE_NAME}}');
 
 /**
  * Pygmentize is a python library to transform code blocks into nice format.
  * Provide the full path to the library here if you want to use it.
  */
-Configure::write('Wasabi.pygmentize_path', 'full_path_to_pygmentize');
+Configure::write('Wasabi.pygmentize_path', '{{PYGMENTIZE_PATH}}');
 
 /**
  * Pygmentize is a python library to transform code blocks into nice format.
  * Provide the full path to the library here if you want to use it.
  */
-Configure::write('Wasabi.pngcrush_path', 'full_path_to_pngcrush');
+Configure::write('Wasabi.pngcrush_path', '{{PNGCRUSH_PATH}}');
