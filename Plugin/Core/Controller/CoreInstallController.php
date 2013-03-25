@@ -157,7 +157,7 @@ class CoreInstallController extends AppController {
 					'encoding' => 'utf8'
 				);
 				$valid_keys = array('host', 'login', 'password', 'database', 'prefix', 'port');
-				$config = $this->request->data['Install'];
+				$config = $this->request->data['CoreInstall'];
 				foreach ($config as $key => $value) {
 					if (!in_array($key, $valid_keys)) {
 						unset($config[$key]);
@@ -232,7 +232,7 @@ class CoreInstallController extends AppController {
 		$this->set('title_for_layout', __d('core', 'Installing Wasabi - Step 3 - Additional Configuration Options'));
 		if ($this->request->is('post')) {
 			$this->CoreInstall->set($this->request->data);
-			$config = $this->request->data['Install'];
+			$config = $this->request->data['CoreInstall'];
 			if (isset($config['pygmentize_path'])
 				&& $config['pygmentize_path'] != ''
 				&& !is_executable($config['pygmentize_path'])
