@@ -72,9 +72,16 @@ class CFormHelper extends AppHelper {
 		if (!isset($this->fields[$this->Form->model()])) {
 			$this->fields[$this->Form->model()] = ClassRegistry::init($this->Form->model())->validate;
 		}
-		$required = isset($this->fields[$this->Form->model()][$this->Form->field()]);
-		if ($required) {
-			$class .= ' required';
+		if (isset($this->fields[$this->Form->model()][$this->Form->field()])) {
+			$allowEmpty = false;
+			foreach ($this->fields[$this->Form->model()][$this->Form->field()] as $key => $value) {
+				if (isset($value['allowEmpty']) && $value['allowEmpty'] === true) {
+					$allowEmpty = true;
+				}
+			}
+			if (!$allowEmpty) {
+				$class .= ' required';
+			}
 		}
 		$info = '';
 		if (isset($options['info'])) {
