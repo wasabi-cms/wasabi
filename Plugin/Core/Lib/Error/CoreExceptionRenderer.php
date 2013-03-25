@@ -18,9 +18,12 @@ App::uses('ExceptionRenderer', 'Error');
 class CoreExceptionRenderer extends ExceptionRenderer {
 
 	protected function _getController(Exception $exception) {
+		App::uses('BackendErrorController', 'Core.Controller');
+		App::uses('CakeErrorController', 'Controller');
 		App::uses('CakeRequest', 'Network');
 		App::uses('CakeResponse', 'Network');
 		App::uses('Controller', 'Controller');
+		App::uses('FrontendErrorController', 'Core.Controller');
 		App::uses('Router', 'Routing');
 
 		if (!$request = Router::getRequest(true)) {
@@ -30,6 +33,13 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 
 		if (method_exists($exception, 'responseHeader')) {
 			$response->header($exception->responseHeader());
+		}
+
+		if (isset($request['plugin']) && $request['plugin'] == 'core' && isset($request['controller']) && $request['controller'] == 'core_install') {
+			$controller = new FrontendErrorController($request, $response);
+			$controller->constructClasses();
+			$controller->startupProcess();
+			return $controller;
 		}
 
 		try {
@@ -52,19 +62,15 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 				unset($plugin_name, $controller_name, $tmp_controller);
 			}
 			if ($parent_class == 'BackendAppController') {
-				App::uses('BackendErrorController', 'Core.Controller');
 				$controller = new BackendErrorController($request, $response);
 			} else if ($parent_class == 'FrontendAppController') {
-				App::uses('FrontendErrorController', 'Core.Controller');
 				$controller = new FrontendErrorController($request, $response);
 			} else {
-				App::uses('CakeErrorController', 'Controller');
 				$controller = new CakeErrorController($request, $response);
 			}
 			$controller->constructClasses();
 			$controller->startupProcess();
 		} catch (Exception $e) {
-			App::uses('FrontendErrorController', 'Core.Controller');
 			$controller = new FrontendErrorController($request, $response);
 			$controller->constructClasses();
 			$controller->startupProcess();
