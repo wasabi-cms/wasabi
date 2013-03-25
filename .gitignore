@@ -1,6 +1,8 @@
 Config/database.php
 Config/email.php
 Config/security.php
+Config/wasabi.php
+Config/.installed
 tmp/
 
 # Ignore Sublime Text files
