@@ -30,4 +30,8 @@ echo $this->fetch('bottom_js');
 <script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
 <script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
 <![endif]-->
-<?php echo $this->element('sql_dump'); ?>
+<?php
+if (!isset($sql_dump) || $sql_dump !== false) {
+	echo $this->element('sql_dump');
+}
+?>
