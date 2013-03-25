@@ -232,7 +232,12 @@
 /* ............................................................................................................. Green */
 
 .button.green {
-  color: #1d731d;
+  //color: #1d731d;
+  border-color: #329c32;
+  border-bottom-color: #218023;
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+  #gradient > .vertical(#53a654, #468c47, #53a654);
 }
 
 .button.green:hover,
@@ -241,14 +246,15 @@
   border-color: #329c32;
   border-bottom-color: #218023;
   color: #fff;
-  #gradient > .vertical(#53a654, #468c47, #53a654);
+  #gradient > .vertical(lighten(#53a654, 5%), #468c47, #53a654);
 }
 
 .button.green:active,
 .button.green.active {
   border-color: #2aa12c;
   border-bottom-color: #3ab53a;
-  #gradient > .vertical(#41a343, #4fc450, #41a343);
+  #gradient > .vertical(#468c47, #53a654, #468c47);
+  //#gradient > .vertical(#41a343, #4fc450, #41a343);
 }
 
 /* ............................................................................................................. Danger */
