@@ -53,9 +53,10 @@ class CoreInstallController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 
-		// TODO: remove this statement as soon as ticket #3724 is closed
-		// https://cakephp.lighthouseapp.com/projects/42648/tickets/3724-Add-a-silent-option-to-ConnectionManager-to-avoid-inclusion-of-databasephp
-		// is closed
+		/**
+		 * TODO: remove this statement as soon as ticket #3724 is closed and a solution is present
+		 * @see https://cakephp.lighthouseapp.com/projects/42648/tickets/3724-Add-a-silent-option-to-ConnectionManager-to-avoid-inclusion-of-databasephp
+		 */
 		$db_config = APP . 'Config' . DS . 'database.php';
 		if (!file_exists($db_config)) {
 			new File($db_config, true);
