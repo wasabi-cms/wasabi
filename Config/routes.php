@@ -21,7 +21,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-	if (!file_exists(dirname(__FILE__) . DS . '.installed')) {
+	if (Configure::read('Wasabi.installed') === false) {
 		Router::connect('/backend/install', array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'check'));
 		Router::connect('/backend/install/:action/*', array('plugin' => 'core', 'controller' => 'core_install'));
 

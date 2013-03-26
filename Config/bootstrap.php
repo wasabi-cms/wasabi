@@ -125,6 +125,16 @@ Cache::config('default', array('engine' => 'File'));
  */
 
 /**
+ * Check if wasabi is installed.
+ */
+Configure::write('Wasabi.installed',
+	file_exists(APP . 'Config' . DS . 'database.php') &&
+	file_exists(APP . 'Config' . DS . 'security.php') &&
+	file_exists(APP . 'Config' . DS . 'wasabi.php') &&
+	file_exists(APP . 'Config' . DS . '.installed')
+);
+
+/**
  * Custom Inflector rules, can be set to correctly pluralize or singularize table, model, controller names or whatever other
  * string is passed to the inflection functions
  *
