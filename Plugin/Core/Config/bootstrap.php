@@ -44,8 +44,12 @@ Cache::config('frontend.pygmentize', array(
 
 unset($cache_folder);
 
-$active_plugins = Cache::read('active_plugins', 'core.infinite');
-if ($active_plugins === false && Configure::read('Wasabi.installed') === true) {
+$active_plugins = array();
+if (Configure::read('Wasabi.installed') === true) {
+	$active_plugins = Cache::read('active_plugins', 'core.infinite');
+}
+
+if ($active_plugins === false) {
 	/**
 	 * @var Plugin $plugin
 	 */
