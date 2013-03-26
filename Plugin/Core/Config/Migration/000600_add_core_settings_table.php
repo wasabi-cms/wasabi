@@ -97,6 +97,15 @@ class AddCoreSettingsTable extends CakeMigration {
  * @access public
  */
 	public function after($direction) {
+		if ($direction === 'up') {
+			$setting = ClassRegistry::init('Core.CoreSetting');
+			$setting->create(array(
+				'application_name' => 'Wasabi',
+				'enable_caching' => '0',
+				'cache_time' => '30 days'
+			));
+			$setting->save();
+		}
 		return true;
 	}
 }
