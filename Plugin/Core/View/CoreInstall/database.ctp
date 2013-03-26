@@ -14,12 +14,12 @@
 	<?php echo $this->Session->flash(); ?>
 	<div class="form-content">
 		<?php
-		echo $this->CForm->input('host', array('label' => __d('core', 'Host').':', 'type' => 'text', 'default' => 'localhost', 'error' => false));
-		echo $this->CForm->input('login', array('label' => __d('core', 'User / Login').':', 'type' => 'text', 'default' => 'root', 'error' => false));
-		echo $this->CForm->input('password', array('label' => __d('core', 'Password').':', 'type' => 'password', 'error' => false));
-		echo $this->CForm->input('database', array('label' => __d('core', 'Database').':', 'type' => 'text', 'default' => 'wasabi', 'error' => false));
-		echo $this->CForm->input('prefix', array('label' => __d('core', 'Prefix').':', 'type' => 'text', 'info' => __d('core', 'useful if you share your database with other applications'), 'error' => false));
-		echo $this->CForm->input('port', array('label' => __d('core', 'Port').':', 'type' => 'text', 'info' => __d('core', 'leave blank if unknown'), 'error' => false));
+		echo $this->CForm->input('host', array('label' => __d('core', 'Host').':', 'type' => 'text', 'default' => 'localhost'));
+		echo $this->CForm->input('login', array('label' => __d('core', 'User / Login').':', 'type' => 'text', 'default' => 'root'));
+		echo $this->CForm->input('password', array('label' => __d('core', 'Password').':', 'type' => 'password'));
+		echo $this->CForm->input('database', array('label' => __d('core', 'Database').':', 'type' => 'text', 'default' => 'wasabi'));
+		echo $this->CForm->input('prefix', array('label' => __d('core', 'Prefix').':', 'type' => 'text', 'info' => __d('core', 'useful if you share your database with other applications')));
+		echo $this->CForm->input('port', array('label' => __d('core', 'Port').':', 'type' => 'text', 'info' => __d('core', 'leave blank if unknown')));
 		?>
 	</div>
 </div>
