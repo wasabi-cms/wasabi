@@ -73,7 +73,9 @@ class Plugin extends CoreAppModel {
 	}
 
 	public function install($plugin) {
-		$install_file = new File($this->getPluginConfigPath($plugin) . '.installed', true, 0755);
+		if (!$this->isInstalled($plugin)) {
+			new File($this->getPluginConfigPath($plugin) . '.installed', true, 0755);
+		}
 		return $this->isInstalled($plugin);
 	}
 
@@ -86,8 +88,10 @@ class Plugin extends CoreAppModel {
 	}
 
 	public function activate($plugin) {
-		$active_file = new File($this->getPluginConfigPath($plugin) . '.active', true, 0755);
-		$this->clearActivePluginCache();
+		if (!$this->isActive($plugin)) {
+			new File($this->getPluginConfigPath($plugin) . '.active', true, 0755);
+			$this->clearActivePluginCache();
+		}
 		return $this->isActive($plugin);
 	}
 
