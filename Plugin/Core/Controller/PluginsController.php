@@ -54,7 +54,7 @@ class PluginsController extends BackendAppController {
 	 * @return void
 	 */
 	public function activate($plugin = null) {
-		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->exists($plugin) || !$this->Plugin->isInstalled($plugin)) {
+		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->isAvailable($plugin) || !$this->Plugin->isInstalled($plugin)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index'));
 		}
@@ -77,7 +77,7 @@ class PluginsController extends BackendAppController {
 	 * @param string $plugin
 	 */
 	public function deactivate($plugin = null) {
-		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->exists($plugin) || !$this->Plugin->isInstalled($plugin)) {
+		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->isAvailable($plugin) || !$this->Plugin->isInstalled($plugin)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index'));
 		}
@@ -101,7 +101,7 @@ class PluginsController extends BackendAppController {
 	 * @return void
 	 */
 	public function install($plugin = null) {
-		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->exists($plugin)) {
+		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->isAvailable($plugin)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index'));
 		}
@@ -125,7 +125,7 @@ class PluginsController extends BackendAppController {
 	 * @return void
 	 */
 	public function uninstall($plugin = null) {
-		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->exists($plugin) || $this->Plugin->isActive($plugin)) {
+		if ($plugin === null || !$this->request->is('post') || !$this->Plugin->isAvailable($plugin) || $this->Plugin->isActive($plugin)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
 			$this->redirect(array('action' => 'index'));
 		}

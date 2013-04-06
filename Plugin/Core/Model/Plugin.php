@@ -44,7 +44,7 @@ class Plugin extends CoreAppModel {
 		return $plugins;
 	}
 
-	public function exists($plugin) {
+	public function isAvailable($plugin) {
 		return file_exists($this->getPluginPath($plugin));
 	}
 
