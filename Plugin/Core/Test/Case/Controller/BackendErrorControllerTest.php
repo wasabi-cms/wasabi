@@ -27,6 +27,7 @@ class BackendErrorControllerTest extends CoreControllerTest {
 	public function setUp() {
 		$this->BackendError = new BackendErrorController();
 		$this->BackendError->constructClasses();
+		$this->BackendError->request = new CakeRequest();
 
 		parent::setUp();
 	}

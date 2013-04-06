@@ -40,7 +40,7 @@ class BackendAppTestController extends BackendAppController {
 		$this->_loadLanguages();
 	}
 
-	public function redirect($url) {
+	public function redirect($url, $status = null, $exit = true) {
 		$this->redirectUrl = $url;
 		return false;
 	}
@@ -78,7 +78,7 @@ class AuthenticatorTest1Component extends AuthenticatorComponent {
 		));
 	}
 
-	public function get() {
+	public function get($field = null) {
 		return array();
 	}
 
@@ -86,7 +86,7 @@ class AuthenticatorTest1Component extends AuthenticatorComponent {
 
 class AuthenticatorTest2Component extends AuthenticatorTest1Component {
 
-	public function get() {
+	public function get($field = null) {
 		return array(
 			'User' => array(
 				'id' => 1,
@@ -108,7 +108,7 @@ class BackendAppControllerTest extends CoreControllerTest {
 	public function setUp() {
 		$this->BackendAppController = new BackendAppTestController();
 		$this->BackendAppController->constructClasses();
-		$this->BackendAppController->Components->init($this->BackendAppController);
+		$this->BackendAppController->request = new CakeRequest();
 
 		parent::setUp();
 	}

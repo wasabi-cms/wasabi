@@ -30,7 +30,7 @@ class UsersTestController extends UsersController {
 		$this->_prepareAddEdit();
 	}
 
-	public function render($view) {
+	public function render($view = null, $layout = null) {
 		$this->renderView = $view;
 	}
 

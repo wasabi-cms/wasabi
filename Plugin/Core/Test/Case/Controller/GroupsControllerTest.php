@@ -26,7 +26,7 @@ class GroupsTestController extends GroupsController {
 		$this->redirectUrl = $url;
 	}
 
-	public function render($view) {
+	public function render($view = null, $layout = null) {
 		$this->renderView = $view;
 	}
 
