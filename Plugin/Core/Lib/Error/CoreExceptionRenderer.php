@@ -17,7 +17,12 @@ App::uses('ExceptionRenderer', 'Error');
 
 class CoreExceptionRenderer extends ExceptionRenderer {
 
-	protected function _getController(Exception $exception) {
+	/**
+	 * @param Exception $exception
+	 * @throws MissingControllerException
+	 * @return BackendErrorController|CakeErrorController|Controller|FrontendErrorController
+	 */
+	protected function _getController($exception) {
 		App::uses('BackendErrorController', 'Core.Controller');
 		App::uses('CakeErrorController', 'Controller');
 		App::uses('CakeRequest', 'Network');
