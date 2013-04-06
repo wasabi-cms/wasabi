@@ -1,0 +1,587 @@
+<?php
+/**
+ *
+ * PHP 5
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the below copyright notice.
+ *
+ * @copyright     Copyright 2013, Frank Förster (http://frankfoerster.com)
+ * @link          http://github.com/frankfoerster/wasabi
+ * @package       Wasabi
+ * @subpackage    Wasabi.Plugin.Core.Model.Behavior
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
+App::uses('Hash', 'Utility');
+App::uses('ModelBehavior', 'Model');
+
+class RelatableBehavior extends ModelBehavior {
+
+	/**
+	 * Supported association types.
+	 *
+	 * @var array
+	 */
+	protected $_assocTypes = array('belongsTo', 'hasOne', 'hasMany');
+
+	/**
+	 * Default query params that are filtered out of the relations
+	 * while building the relation map.
+	 *
+	 * @var array
+	 */
+	protected $_queryParams = array('conditions', 'fields', 'joins', 'order', 'limit', 'offset');
+
+	/**
+	 * Holds the behavior settings for each model.
+	 *
+	 * @var array
+	 */
+	protected $_settings = array();
+
+	/**
+	 * Default query used for supplemental query construction.
+	 *
+	 * @var array
+	 */
+	protected $_defaultQuery = array(
+		'conditions' => null,
+		'fields' => null,
+		'joins' => array(),
+		'limit' => null,
+		'offset' => null,
+		'order' => null,
+		'page' => 1,
+		'group' => null,
+		'callbacks' => true
+	);
+
+	/**
+	 * Holds all relations.
+	 *
+	 * source -> assocType[] -> target[]
+	 *
+	 * @var array
+	 */
+	protected static $_relationMap = array();
+
+	/**
+	 * Keeps references to all used models in the find call.
+	 *
+	 * @var Model[]
+	 */
+	protected static $_model = array();
+
+	/**
+	 * Holds belongsTo queries with results and foreignKeys.
+	 * After a belongsTo query has completed its results are stored here
+	 * along with all possible foreignKeys for followup hasMany calls.
+	 *
+	 * @var array
+	 */
+	protected static $_queries = array();
+
+	/**
+	 * Setup the behavior with supplied settings.
+	 * At the moment RelatedBehavior does not use any settings.
+	 * If settings are needed any time in the future then their defaults can be provided here.
+	 *
+	 * @param Model $model
+	 * @param array $settings
+	 * @return void
+	 */
+	public function setup(Model $model, $settings = array()) {
+		$defaults = array();
+		$this->_settings[$model->alias] = Hash::merge($defaults, $settings);
+	}
+
+	/**
+	 * beforeFind callback
+	 *
+	 * @param Model $model
+	 * @param array $query
+	 * @return array|bool
+	 */
+	public function beforeFind(Model $model, $query) {
+		if (!isset($query['related']) || empty($query['related'])) {
+			return $query;
+		}
+
+		self::$_relationMap = $this->_getRelationMap($model, $query['related']);
+		unset($query['related']);
+
+		foreach (self::$_relationMap as $source => &$types) {
+			foreach ($types as $type => $assocs) {
+				if (!in_array($type, array('belongsTo', 'hasOne'))) {
+					continue;
+				}
+				foreach ($assocs as $related) {
+					if (!is_object($source)) {
+						$source = self::$_model[$source];
+					}
+
+					$keys = array_keys(self::$_queries);
+					$match = array_values(preg_grep("/(^{$source->alias}___|___{$source->alias}___|___{$source->alias}$)/", $keys));
+
+					if (empty($match)) {
+						$rel_query = $this->_mergeQueryParams($this->_defaultQuery, $query);
+						$rel_query = $this->_mergeQueryParams($rel_query, $related['query']);
+						$rel_query = $this->_addFields($source, $rel_query);
+						$rel_query = $this->_addFields($source->{$related['name']}, $rel_query);
+						$rel_query = $this->_addJoin($source, $source->{$related['name']}, $type, $rel_query);
+
+						self::$_queries["{$source->alias}___{$related['name']}"] = array(
+							'query' => $rel_query,
+							'results' => array()
+						);
+
+						continue;
+					}
+
+					self::$_queries[$match[0]]['query'] = $this->_addFields($source, self::$_queries[$match[0]]['query']);
+					self::$_queries[$match[0]]['query'] = $this->_addFields($source->{$related['name']}, self::$_queries[$match[0]]['query']);
+					self::$_queries[$match[0]]['query'] = $this->_addJoin($source, $source->{$related['name']}, $type, self::$_queries[$match[0]]['query']);
+
+					$new_key = $match[0] . '___' . $related['name'];
+					self::$_queries[$new_key] = array(
+						'query' => self::$_queries[$match[0]]['query'],
+						'results' => array()
+					);
+					unset(self::$_queries[$match[0]]);
+				}
+				unset($types[$type]);
+			}
+		}
+
+		$keys = array_keys(self::$_queries);
+		$found_in_queries = preg_grep("/^{$model->alias}___/", $keys);
+
+		if (!empty($found_in_queries)) {
+			$query = Hash::merge($query, self::$_queries[$found_in_queries[0]]['query']);
+			unset(self::$_queries[$found_in_queries[0]]['query']);
+			unset(self::$_queries[$found_in_queries[0]]['results']);
+			self::$_queries[$found_in_queries[0]]['base'] = true;
+		}
+
+
+
+		return $query;
+	}
+
+	/**
+	 * afterFind callback
+	 *
+	 * @param Model $model
+	 * @param array $results
+	 * @param bool $primary
+	 * @return array
+	 */
+	public function afterFind(Model $model, $results, $primary = false) {
+		if (!isset(self::$_relationMap[$model->alias])) {
+			return $results;
+		}
+
+		$foreign_keys = array();
+
+		// check for belongsTo result
+		if (!empty($results)) {
+			$path = '';
+			if (isset($results[0]) && !empty($results[0])) {
+				$path = '{n}.';
+				$models = array_keys($results[0]);
+			} else {
+				$models = array_keys($results);
+			}
+			$lookup = implode('___', $models);
+
+			if (isset(self::$_queries[$lookup])) {
+				// belongsTo query found
+				if (!isset(self::$_queries[$lookup]['base']) || self::$_queries[$lookup]['base'] !== true) {
+					self::$_queries[$lookup]['results'] = $results;
+				}
+				self::$_queries[$lookup]['foreignKeys'] = array();
+
+				foreach ($models as $m) {
+					$source = self::$_model[$m];
+					$fk_path = $path . "{$m}.{$source->primaryKey}";
+					self::$_queries[$lookup]['foreignKeys'][$m] = array_unique(Hash::extract($results, $fk_path));
+				}
+			} else {
+				$fk_path = $path . "{$model->alias}.{$model->primaryKey}";
+				$foreign_keys = array_unique(Hash::extract($results, $fk_path));
+			}
+		}
+
+		foreach (self::$_relationMap as $source => $relations) {
+			foreach ($relations as $type => $targets) {
+				if (in_array($type, array('hasMany'))) {
+					// look for source in queries
+					$keys = array_keys(self::$_queries);
+					$source_query = array_values(preg_grep("/(^{$source}___|___{$source}___|___{$source}$)/", $keys));
+					if (
+						!empty($source_query) &&
+						isset(self::$_queries[$source_query[0]]['foreignKeys']) &&
+						!empty(self::$_queries[$source_query[0]]['foreignKeys']) &&
+						isset(self::$_queries[$source_query[0]]['foreignKeys'][$source])
+					) {
+						$foreign_keys = self::$_queries[$source_query[0]]['foreignKeys'][$source];
+					}
+					foreach ($targets as $target) {
+						$query = array();
+						$push_foreign_keys = false;
+						$lookup = null;
+						$found_in_queries = array_values(preg_grep("/(^{$target['name']}___|___{$target['name']}___|___{$target['name']}$)/", $keys));
+						if (
+							!empty($found_in_queries) &&
+							$found_in_queries[0] !== "{$source}___{$target['name']}" &&
+							$found_in_queries[0] !== "{$target['name']}___{$source}" &&
+							isset(self::$_queries[$found_in_queries[0]]['query']) &&
+							!empty(self::$_queries[$found_in_queries[0]]['query'])
+						) {
+							$query = self::$_queries[$found_in_queries[0]]['query'];
+							$push_foreign_keys = true;
+							$lookup = $found_in_queries[0];
+						}
+						$linkModel = self::$_model[$target['name']];
+						$sourceModel = self::$_model[$source];
+						$query['conditions']["{$linkModel->alias}.{$sourceModel->{$type}[$linkModel->alias]['foreignKey']}"] = $foreign_keys;
+						unset(self::$_relationMap[$target['name']]);
+
+						$assocResults = $linkModel->find('all', $query);
+
+						if ($push_foreign_keys && !empty($assocResults)) {
+							$models = array_keys($assocResults[0]);
+							if (isset(self::$_queries[$lookup])) {
+								self::$_queries[$lookup]['results'] = $assocResults;
+								foreach ($models as $m) {
+									$sm = self::$_model[$m];
+									$path = "{n}.{$sm->alias}.{$sm->primaryKey}";
+									if (!isset(self::$_queries[$lookup]['foreignKeys'])) {
+										self::$_queries[$lookup]['foreignKeys'] = array();
+									}
+									self::$_queries[$lookup]['foreignKeys'][$m] = array_unique(Hash::extract($assocResults, $path));
+								}
+							}
+						}
+
+						if ($lookup !== null) {
+							$base_results = &$results;
+							$sub_results = &self::$_queries[$lookup]['results'];
+						} elseif (
+							!empty($source_query) &&
+							isset($source_query[0]) &&
+							(
+								!isset(self::$_queries[$source_query[0]]['base']) ||
+								self::$_queries[$source_query[0]]['base'] !== true
+							)
+						) {
+							$base_results = &self::$_queries[$source_query[0]]['results'];
+							$sub_results = &$assocResults;
+						} else {
+							$base_results = &$results;
+							$sub_results = &$assocResults;
+						}
+
+						foreach ($base_results as &$r) {
+							foreach ($sub_results as &$ar) {
+								if (!isset($r[$sourceModel->alias][Inflector::pluralize($linkModel->alias)])) {
+									$r[$sourceModel->alias][Inflector::pluralize($linkModel->alias)] = array();
+								}
+								if ($ar[$linkModel->alias][$sourceModel->{$type}[$linkModel->alias]['foreignKey']] === $r[$sourceModel->alias][$sourceModel->primaryKey]) {
+									$r[$sourceModel->alias][Inflector::pluralize($linkModel->alias)][] = &$ar;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		self::$_relationMap = self::$_queries = self::$_model = array();
+
+		return $results;
+	}
+
+	/**
+	 * @param Model $model
+	 * @param Model $linkModel
+	 * @param string $type
+	 * @param array $query
+	 * @return array
+	 */
+	protected function _addJoin(Model $model, Model $linkModel, $type, $query) {
+		$joinTable = $this->_getJoinTable($linkModel);
+
+		/** @var DboSource $db */
+		$db = $model->getDataSource();
+
+		$query['joins'][] = array(
+			'type' => 'LEFT',
+			'alias' => $linkModel->alias,
+			'table' => $joinTable,
+			'conditions' => array(
+				"{$model->alias}.{$model->{$type}[$linkModel->alias]['foreignKey']}" => $db->identifier("{$linkModel->alias}.id"),
+			)
+		);
+
+		return $query;
+	}
+
+	/**
+	 * @param Model $model
+	 * @return mixed
+	 */
+	protected function _getJoinTable(Model $model) {
+		if (!isset($this->_settings['join_tables'][$model->alias])) {
+			if (!empty($model->tablePrefix)) {
+				$tablePrefix = $model->tablePrefix;
+			} else {
+				$db = $model->getDataSource();
+				$tablePrefix = $db->config['prefix'];
+			}
+
+			$joinTable = new stdClass();
+			$joinTable->tablePrefix = $tablePrefix;
+			$joinTable->table = $model->table;
+			$joinTable->schemaName = $model->getDataSource()->getSchemaName();
+
+			$this->_settings['join_tables'][$model->alias] = $joinTable;
+		}
+		return $this->_settings['join_tables'][$model->alias];
+	}
+
+	/**
+	 * @param Model $model
+	 * @param array $query
+	 * @return array
+	 */
+	protected function _addFields(Model $model, $query) {
+		if (is_string($query['fields'])) {
+			$query['fields'] = (array) $query['fields'];
+		}
+		if (empty($query['fields'])) {
+			$query['fields'][] = "{$model->alias}.*";
+		} else {
+			$pk_pos = -1;
+			$fields = array();
+			$all_fields = false;
+			foreach ($query['fields'] as $key => $field) {
+				if (preg_match("/^{$model->alias}\.(.*)/", $field, $matches) > 0) {
+					if ($matches[1] === $model->primaryKey) {
+						$pk_pos = $key;
+					} elseif ($matches[1] === '*') {
+						$all_fields = true;
+					} else {
+						$fields[] = array(
+							'pos' => $key,
+							'fields' => $matches[1]
+						);
+					}
+
+				}
+			}
+			if ($pk_pos === -1 && !empty($fields)) {
+				array_splice($query['fields'], $fields[0]['pos'], 0, "{$model->alias}.{$model->primaryKey}");
+			}
+			if ($pk_pos === -1 && empty($fields) && $all_fields === false) {
+				$query['fields'][] = "{$model->alias}.*";
+			}
+		}
+		return $query;
+	}
+
+	/**
+	 * @param Model $model
+	 * @param array $related
+	 * @return array|null
+	 */
+	protected function _getRelationMap(Model $model, $related = array()) {
+		$map = array();
+		if (empty($related)) {
+			$map[$model->alias] = array();
+		}
+
+		if (!isset(self::$_model[$model->alias])) {
+			self::$_model[$model->alias] = &$model;
+		}
+
+		foreach ($related as $name => $children) {
+			if (is_numeric($name)) {
+				$name = $children;
+				$children = array();
+			}
+
+			$query = array();
+			foreach ($children as $key => $c) {
+				if (!is_numeric($key) && in_array($key, $this->_queryParams)) {
+					$query[$key] = $c;
+					unset($children[$key]);
+				}
+			}
+
+			$type = false;
+			foreach ($this->_assocTypes as $assocType) {
+				if (
+					isset ($model->{$assocType}) &&
+					!empty($model->{$assocType}) &&
+					isset ($model->{$assocType}[$name]) &&
+					isset ($model->{$name}) &&
+					is_object($model->{$name})
+				) {
+					$type = $assocType;
+					if (!isset(self::$_model[$name])) {
+						self::$_model[$name] = &$model->{$name};
+					}
+					break;
+				}
+			}
+
+			if ($type === false) {
+				trigger_error(__d('cake_dev', 'Model "%s" is not associated with model "%s"', $model->alias, $name), E_USER_WARNING);
+				return null;
+			}
+
+			if (!isset($map[$model->alias][$type])) {
+				$map[$model->alias][$type] = array();
+			}
+
+			$assoc = array(
+				'name' => $name,
+				'query' => $query
+			);
+			$map[$model->alias][$type][] = $assoc;
+
+			if (!empty($children)) {
+				$map = Hash::merge($map, $this->_getRelationMap($model->{$name}, $children));
+			}
+		}
+
+		return $map;
+	}
+
+	/**
+	 * @param Model $model
+	 * @param Model $linkModel
+	 * @param string $type
+	 * @param array $options
+	 * @return array
+	 * @TODO: implement this method for supplemental 'fields' support
+	 */
+	protected function _addRequiredFields(Model $model, Model $linkModel, $type, $options) {
+		if (!isset($options['fields'])) {
+			return $options;
+		}
+		if (empty($options['fields'])) {
+			unset($options['fields']);
+			return $options;
+		}
+
+		switch ($type) {
+			case 'hasOne':
+			case 'belongsTo':
+				$found = false;
+				foreach ($options['fields'] as $field) {
+					if ($field === "{$linkModel->alias}.*") {
+						$found = true;
+						break;
+					}
+					if ($field === "{$linkModel->alias}.{$linkModel->primaryKey}") {
+						$found = true;
+						break;
+					}
+				}
+				if (!$found) {
+					array_unshift($options['fields'],
+						"{$linkModel->alias}.{$linkModel->primaryKey}"
+					);
+				}
+				break;
+
+			case 'hasMany':
+				$found = false;
+				foreach ($options['fields'] as $field) {
+					if ($field === "{$linkModel->alias}.*") {
+						$found = true;
+						break;
+					}
+					if ($field === "{$linkModel->alias}.{$model->{$type}[$linkModel->alias]['foreignKey']}") {
+						$found = true;
+						break;
+					}
+				}
+				if (!$found) {
+
+					array_unshift($options['fields'],
+						"{$linkModel->alias}.{$linkModel->primaryKey}",
+						"{$linkModel->alias}.{$model->{$type}[$linkModel->alias]['foreignKey']}"
+					);
+				}
+				break;
+		}
+
+		$options['fields'] = array_unique($options['fields']);
+
+		return $options;
+	}
+
+	/**
+	 * @param array $a
+	 * @param array $b
+	 * @return array
+	 */
+	protected function _mergeQueryParams($a, $b) {
+		if (isset($b['fields']) && $b['fields'] !== null && !empty($b['fields'])) {
+			if (is_string($b['fields']) && preg_match("/^COUNT/", $b['fields'])) {
+				$a['fields'] = $b['fields'];
+			} else {
+				if (!is_array($b['fields'])) {
+					$b['fields'] = (array) $b['fields'];
+				}
+				if (!isset($a['fields'])) {
+					$a['fields'] = array();
+				}
+				if (!is_array($a['fields'])) {
+					$a['fields'] = (array) $a['fields'];
+				}
+				$a['fields'] = array_unique(array_merge($a['fields'], $b['fields']));
+			}
+		}
+		if (isset($b['limit']) && $b['limit'] !== null) {
+			$a['limit'] = $b['limit'];
+		}
+		if (isset($b['offset']) && $b['offset'] !== null) {
+			$a['offset'] = $b['offset'];
+		}
+		if (isset($b['order']) && $b['order'] !== null && !empty($b['order'])) {
+			foreach ($b['order'] as $o) {
+				if ($o !== null) {
+					if (!isset($a['order'])) {
+						$a['order'] = array();
+					}
+					if (!is_array($a['order']) && $a['order'] !== null) {
+						$a['order'] = (array) $a['order'];
+					}
+					$a['order'][] = $o;
+				}
+			}
+		}
+		if (isset($b['group']) && $b['group'] !== null) {
+			$a['group'] = $b['group'];
+		}
+		if (isset($b['conditions']) && $b['conditions'] !== null) {
+			if (!is_array($b['conditions'])) {
+				$b['conditions'] = (array) $b['conditions'];
+			}
+			if (!isset($a['conditions'])) {
+				$a['conditions'] = array();
+			}
+			if (!is_array($a['conditions'])) {
+				$a['conditions'] = (array) $a['conditions'];
+			}
+			$a['conditions'] = array_merge($a['conditions'], $b['conditions']);
+		}
+
+		return $a;
+	}
+}
