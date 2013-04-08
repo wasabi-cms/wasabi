@@ -48,6 +48,8 @@ class Textile {
 		)
 	);
 
+	// @codingStandardsIgnoreStart
+
 	protected $_blockTags = array(
 		'code'   => '<pre><code{{ATTR}}>{{CONTENT}}</code></pre>',
 		'quote'  => '<blockquote{{ATTR}}>{{CONTENT}}</blockquote>',
@@ -73,6 +75,8 @@ class Textile {
 		'~'  => array( '~'    , 'sub'    ),
 		'^'  => array( '\^'   , 'sup'    )
 	);
+
+	// @codingStandardsIgnoreEnd
 
 	protected $_urls = '[\w"$\-_.+!*\'(),";\/?:@=&%#{}|\\^~\[\]`]';
 
@@ -173,7 +177,7 @@ class Textile {
 						$info = strtoupper(trim($attributes[0]));
 					}
 
-					$out  = '<div class="code-title">' . $info . '</div>';
+					$out = '<div class="code-title">' . $info . '</div>';
 					$out .= '<div class="code">';
 					$out .= '<table><tbody><tr>';
 
@@ -276,8 +280,7 @@ class Textile {
 				),
 				$template
 			);
-		// no block tags found
-		} else {
+		} else { // no block tags found
 			// Process Lists
 			$sublines = preg_split("/\n(?=[*#])/m", $text);
 			$isListItem = (boolean) preg_match("/^[*#]\s{1}/", $sublines[0]);

@@ -38,7 +38,7 @@ class LoginToken extends CoreAppModel {
 	 */
 	public function findActiveToken($token, $options = array()) {
 		$opts['conditions'] = array(
-			$this->alias . '.token'      => $token,
+			$this->alias . '.token' => $token,
 			$this->alias . '.expires >=' => date('Y-m-d H:i:s')
 		);
 		return $this->find('first', Hash::merge($options, $opts));
@@ -57,7 +57,7 @@ class LoginToken extends CoreAppModel {
 		return $this->save(array(
 			$this->alias => array(
 				'user_id' => $userId,
-				'token'   => $token,
+				'token' => $token,
 				'expires' => date('Y-m-d H:i:s', strtotime($duration))
 			)
 		));

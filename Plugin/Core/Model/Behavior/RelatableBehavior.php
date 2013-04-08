@@ -163,7 +163,7 @@ class RelatableBehavior extends ModelBehavior {
 			unset(self::$_queries[$foundInQueries[0]]['results']);
 			self::$_queries[$foundInQueries[0]]['base'] = true;
 		}
-		
+
 		return $query;
 	}
 
@@ -421,10 +421,10 @@ class RelatableBehavior extends ModelBehavior {
 			$type = false;
 			foreach ($this->_assocTypes as $assocType) {
 				if (
-					isset ($model->{$assocType}) &&
+					isset($model->{$assocType}) &&
 					!empty($model->{$assocType}) &&
-					isset ($model->{$assocType}[$name]) &&
-					isset ($model->{$name}) &&
+					isset($model->{$assocType}[$name]) &&
+					isset($model->{$name}) &&
 					is_object($model->{$name})
 				) {
 					$type = $assocType;

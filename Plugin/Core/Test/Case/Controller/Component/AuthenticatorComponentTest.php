@@ -406,11 +406,13 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	}
 
 	public function settings() {
+		// @codingStandardsIgnoreStart
 		return array(
 			array('model'      ,null        ,null   ,null),
 			array('sessionKey' ,'Core.User' ,null   ,null),
 			array('cookieKey'  ,'Core.User' ,'Auth' ,null)
 		);
+		// @codingStandardsIgnoreEnd
 	}
 
 }

@@ -24,7 +24,7 @@ class LanguageFixture extends CakeTestFixture {
 		'iso' => array('type' => 'string', 'length' => 3, 'null' => false),
 		'lang' => array('type' => 'string', 'length' => 5, 'null' => false),
 		'available_at_frontend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
-		'available_at_backend'  => array('type' => 'boolean', 'null' => false, 'default' => 0),
+		'available_at_backend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 		'position' => array('type' => 'integer', 'null' => true),
 		'created' => 'datetime',
 		'modified' => 'datetime'

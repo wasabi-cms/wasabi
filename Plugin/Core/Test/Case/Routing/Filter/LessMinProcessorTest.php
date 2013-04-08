@@ -23,29 +23,29 @@ App::uses('LessMinProcessor', 'Core.Routing/Filter');
 
 class LessMinProcessorTest extends CakeTestCase {
 
-/**
- * Holds the webroot of the test_app
- *
- * @var string
- */
+	/**
+	 * Holds the webroot of the test_app
+	 *
+	 * @var string
+	 */
 	protected $_testAppWebroot;
 
-/**
- * Setup the webroot of the test_app.
- *
- * @return void
- */
+	/**
+	 * Setup the webroot of the test_app.
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		$this->_testAppWebroot = CakePlugin::path('Core') . 'Test' . DS . 'test_app' . DS . 'webroot' . DS;
 
 		parent::setUp();
 	}
 
-/**
- * Delete css files/folders that have been created during the tests.
- *
- * @return void
- */
+	/**
+	 * Delete css files/folders that have been created during the tests.
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		$cssFolder = new Folder($this->_testAppWebroot . 'css');
 		$cssFolder->delete();
@@ -58,12 +58,12 @@ class LessMinProcessorTest extends CakeTestCase {
 		parent::tearDown();
 	}
 
-/**
- * Test the functionality of LessMinFilter::processLessFiles
- *
- * @covers LessMinProcessor::processLessFiles
- * @return void
- */
+	/**
+	 * Test the functionality of LessMinFilter::processLessFiles
+	 *
+	 * @covers LessMinProcessor::processLessFiles
+	 * @return void
+	 */
 	public function testProcessLessFiles() {
 		$filter = new LessMinProcessor();
 		$cssFolder = $this->_testAppWebroot . 'css' . DS;
@@ -87,12 +87,12 @@ class LessMinProcessorTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-/**
- * Test Less compilation and minification for plugins.
- *
- * @covers LessMinProcessor::beforeDispatch
- * @return void
- */
+	/**
+	 * Test Less compilation and minification for plugins.
+	 *
+	 * @covers LessMinProcessor::beforeDispatch
+	 * @return void
+	 */
 	public function testPluginCompilation() {
 		$filter = new LessMinProcessor();
 		$request = new CakeRequest('/');
@@ -124,12 +124,12 @@ class LessMinProcessorTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-/**
- * Test 'LessMin.SKIP_ON_PRODUCTION' setting
- *
- * @covers LessMinProcessor::beforeDispatch
- * @return void
- */
+	/**
+	 * Test 'LessMin.SKIP_ON_PRODUCTION' setting
+	 *
+	 * @covers LessMinProcessor::beforeDispatch
+	 * @return void
+	 */
 	public function testSkipOnProduction() {
 		$filter = new LessMinProcessor();
 		$request = new CakeRequest('/');

@@ -26,20 +26,20 @@ App::import('Vendor', 'Core.CssMin');
 
 class LessMinProcessor extends DispatcherFilter {
 
-/**
- * Priority value
- *
- * @var int
- * @see http://book.cakephp.org/2.0/en/development/dispatch-filters.html
- */
+	/**
+	 * Priority value
+	 *
+	 * @var int
+	 * @see http://book.cakephp.org/2.0/en/development/dispatch-filters.html
+	 */
 	public $priority = 9;
 
-/**
- * beforeDispatch middleware entry point
- *
- * @param CakeEvent $event
- * @return string|null
- */
+	/**
+	 * beforeDispatch middleware entry point
+	 *
+	 * @param CakeEvent $event
+	 * @return string|null
+	 */
 	public function beforeDispatch(CakeEvent $event) {
 		// check DEBUG Level and SKIP_ON_PRODUCTION setting
 		if (Configure::read('debug') === 0 && Configure::read('LessMin.SKIP_ON_PRODUCTION') === true) {
@@ -59,15 +59,15 @@ class LessMinProcessor extends DispatcherFilter {
 		return null;
 	}
 
-/**
- * Process all *.less files in $lessDir and minify them afterwards.
- * Corresponding *.css files are saved in app/webroot/css or app/Plugin/PluginName/webroot/css
- * depending on the specified Less directory and webroot.
- *
- * @param Folder $lessDir folder holding the *.less files to be processed
- * @param string $webroot absolute path to webroot with trailing DS
- * @return void
- */
+	/**
+	 * Process all *.less files in $lessDir and minify them afterwards.
+	 * Corresponding *.css files are saved in app/webroot/css or app/Plugin/PluginName/webroot/css
+	 * depending on the specified Less directory and webroot.
+	 *
+	 * @param Folder $lessDir folder holding the *.less files to be processed
+	 * @param string $webroot absolute path to webroot with trailing DS
+	 * @return void
+	 */
 	public function processLessFiles(Folder $lessDir, $webroot) {
 		foreach ($lessDir->find('.*\.less') as $lessFile) {
 			$lessInfo = pathinfo($lessFile);

@@ -21,7 +21,7 @@ class CoreSettingFixture extends CakeTestFixture {
 		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'application_name' => array('type' => 'string', 'length' => 255, 'null' => false),
 		'enable_caching' => array('type' => 'boolean', 'null' => false, 'default' => 0),
-		'cache_time'  => array('type' => 'string', 'length' => 255, 'null' => false),
+		'cache_time' => array('type' => 'string', 'length' => 255, 'null' => false),
 		'created' => 'datetime',
 		'modified' => 'datetime'
 	);

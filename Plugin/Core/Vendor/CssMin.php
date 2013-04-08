@@ -1,4 +1,5 @@
 <?php
+// @codingStandardsIgnoreFile
 
 /*!
  * cssmin.php rev 91c5ea5

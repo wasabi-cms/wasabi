@@ -54,13 +54,16 @@ class WasabiEventManager {
 
 	protected function _loadEventListener($plugin) {
 		$class = $plugin . 'Events';
-		$file  = CakePlugin::path($plugin) . 'Lib' . DS . $class . '.php';
+		$file = CakePlugin::path($plugin) . 'Lib' . DS . $class . '.php';
 
 		if (file_exists($file)) {
 			$this->_loadEventHandlers($plugin, $class);
 		}
 	}
 
+	/**
+	 * @throws NotImplementedException
+	 */
 	protected function _loadEventHandlers($plugin, $class) {
 		App::uses($class, $plugin . '.Lib');
 		$eventClass = new $class();
@@ -73,7 +76,7 @@ class WasabiEventManager {
 			$priority = $handler['priority'];
 			$this->_addEventHandler($eventName, array(
 				'plugin' => $plugin,
-				'class'  => $class,
+				'class' => $class,
 				'method' => $method,
 				'priority' => $priority
 			));
@@ -91,7 +94,7 @@ class WasabiEventManager {
 	}
 
 	protected function _dispatchEvent(&$eventOrigin, $eventName, $data = null) {
-		if (!isset($this->_events[$eventName]) ||!count($this->_events[$eventName])) {
+		if (!isset($this->_events[$eventName]) || !count($this->_events[$eventName])) {
 			return array();
 		}
 
