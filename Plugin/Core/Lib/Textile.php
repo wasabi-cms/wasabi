@@ -156,7 +156,6 @@ class Textile {
 				case 'code':
 					if ($this->_ignoreCodeBlocks) {
 						return '';
-						break;
 					}
 					$disableFormat = true;
 					$sublines = preg_split("/\\n/", $content);
@@ -226,7 +225,6 @@ class Textile {
 					$out .= '</div>';
 
 					return $out;
-					break;
 
 				case 'table':
 					$sublines = preg_split("/\|$/m", $content);
