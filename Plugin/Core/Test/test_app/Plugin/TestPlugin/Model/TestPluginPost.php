@@ -7,7 +7,12 @@ class TestPluginPost extends Model {
 	public $useDbConfig = 'test';
 
 	public $actsAs = array(
-		'Core.Relatable'
+		'Core.Relatable',
+		'Core.Translatable' => array(
+			'fields' => array(
+				'title'
+			)
+		)
 	);
 
 	public $belongsTo = array(

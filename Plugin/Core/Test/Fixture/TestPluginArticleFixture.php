@@ -20,7 +20,9 @@ class TestPluginArticleFixture extends CakeTestFixture {
 	public $fields = array(
 		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'test_plugin_category_id' => array('type' => 'integer', 'null' => false),
-		'title' => array('type' => 'string', 'length' => 255, 'null' => false)
+		'title' => array('type' => 'string', 'length' => 255, 'null' => false),
+		'subtitle' => array('type' => 'string', 'length' => 255, 'null' => false),
+		'content' => array('type' => 'text', 'null' => false)
 	);
 
 	public $records;
@@ -30,22 +32,30 @@ class TestPluginArticleFixture extends CakeTestFixture {
 			array(
 				'id' => 1,
 				'test_plugin_category_id' => 1,
-				'title' => 'Article 1'
+				'title' => 'Title 1',
+				'subtitle' => 'Subtitle 1',
+				'content' => 'Content 1'
 			),
 			array(
 				'id' => 2,
 				'test_plugin_category_id' => 2,
-				'title' => 'Article 2'
+				'title' => 'Title 2',
+				'subtitle' => 'Subtitle',
+				'content' => 'Content 2'
 			),
 			array(
 				'id' => 3,
 				'test_plugin_category_id' => 3,
-				'title' => 'Article 3'
+				'title' => 'Title 3',
+				'subtitle' => 'Subtitle',
+				'content' => 'Content 3'
 			),
 			array(
 				'id' => 4,
 				'test_plugin_category_id' => 1,
-				'title' => 'Article 4'
+				'title' => 'Title 4',
+				'subtitle' => 'Subtitle 4',
+				'content' => 'Content 4'
 			)
 		);
 		parent::init();

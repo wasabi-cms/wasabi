@@ -5,7 +5,12 @@ class TestPluginCategory extends Model {
 	public $useDbConfig = 'test';
 
 	public $actsAs = array(
-		'Core.Relatable'
+		'Core.Relatable',
+		'Core.Translatable' => array(
+			'fields' => array(
+				'name'
+			)
+		)
 	);
 
 	public $hasMany = array(
