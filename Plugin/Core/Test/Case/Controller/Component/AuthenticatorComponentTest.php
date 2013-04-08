@@ -129,8 +129,9 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	protected $_tSettings = array(
 		'model' => 'UserTestModel',
 		'sessionKey' => 'Auth',
-		'cookieKey' => 'AuthRemember',
-		'rememberFor' => '2 weeks'
+		'cookieName' => 'remember',
+		'cookieKey' => 'me',
+		'rememberFor' => '+2 weeks'
 	);
 
 	protected $_tSession = array(

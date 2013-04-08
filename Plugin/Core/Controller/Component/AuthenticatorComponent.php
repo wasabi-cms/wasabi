@@ -43,9 +43,10 @@ class AuthenticatorComponent extends Component {
 	 */
 	protected $_settings = array(
 		'model' => null,
-		'sessionKey' => null,
-		'cookieKey' => null,
-		'rememberFor' => null
+		'sessionKey' => 'Auth',
+		'cookieName' => 'remember',
+		'cookieKey' => 'me',
+		'rememberFor' => '+2 weeks'
 	);
 
 	/**
@@ -81,6 +82,8 @@ class AuthenticatorComponent extends Component {
 		if (!empty($this->components)) {
 			$this->_componentMap = ComponentCollection::normalizeObjectArray($this->components);
 		}
+
+		$this->Cookie->name = $this->_settings['cookieName'];
 
 		new Authenticator($this);
 	}
