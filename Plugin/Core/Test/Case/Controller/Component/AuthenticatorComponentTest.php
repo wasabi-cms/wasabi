@@ -95,7 +95,7 @@ class UserTestModel extends Model {
 		);
 	}
 
-	public function persist($user_id, $duration) {
+	public function persist($userId, $duration) {
 		return 'test_persist_token';
 	}
 
@@ -109,17 +109,17 @@ class AuthenticatorComponentTest extends CakeTestCase {
 	/**
 	 * @var AuthenticatorTestComponent
 	 */
-	protected $Authenticator;
+	public $Authenticator;
 
 	/**
 	 * @var AuthenticatorTestController
 	 */
-	protected $Controller;
+	public $Controller;
 
 	/**
 	 * @var ComponentCollection
 	 */
-	protected $Collection;
+	public $Collection;
 
 	/**
 	 * Test configuration settings

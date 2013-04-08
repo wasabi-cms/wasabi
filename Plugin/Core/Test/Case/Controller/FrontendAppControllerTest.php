@@ -59,11 +59,11 @@ class FrontendAppControllerTest extends CoreControllerTest {
 		$this->assertEqual('eng', Configure::read('Config.language'));
 
 		/**
-		 * @var Language $language_model
+		 * @var Language $languageModel
 		 */
-		$language_model = ClassRegistry::init('Core.Language');
-		$language_model->id = 2;
-		$language_model->saveField('available_at_frontend', true);
+		$languageModel = ClassRegistry::init('Core.Language');
+		$languageModel->id = 2;
+		$languageModel->saveField('available_at_frontend', true);
 
 		$this->Frontend->loadLanguages(2);
 

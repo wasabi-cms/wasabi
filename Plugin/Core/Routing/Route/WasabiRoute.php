@@ -63,19 +63,19 @@ class WasabiRoute extends CakeRoute {
 
 		unset($url['plugin'], $url['controller'], $url['action']);
 
-		$passed_params = array();
-		$named_params = array();
+		$passedParams = array();
+		$namedParams = array();
 
 		foreach ($url as $key => $value) {
 			if (is_int($key)) {
-				$passed_params[] = $value;
+				$passedParams[] = $value;
 			}
 			if (is_string($key)) {
-				$named_params[] = $key . ':' . $value;
+				$namedParams[] = $key . ':' . $value;
 			}
 		}
 
-		$conditions['Route.params'] = implode('|', $passed_params);
+		$conditions['Route.params'] = implode('|', $passedParams);
 
 		$route = ClassRegistry::init('Core.Route')->find('first', array(
 			'conditions' => $conditions
@@ -85,8 +85,8 @@ class WasabiRoute extends CakeRoute {
 			return false;
 		}
 
-		if (!empty($named_params)) {
-			$route['Route']['url'] .= '/' . implode('/', $named_params);
+		if (!empty($namedParams)) {
+			$route['Route']['url'] .= '/' . implode('/', $namedParams);
 		}
 
 		Cache::write($identifier, $route['Route']['url'], 'core.routes');
@@ -112,38 +112,38 @@ class WasabiRoute extends CakeRoute {
 		);
 
 		// check for named params
-		$url_parts = explode('/', $url);
-		foreach ($url_parts as $key => $value) {
+		$urlParts = explode('/', $url);
+		foreach ($urlParts as $key => $value) {
 			if ($value === '') {
-				unset($url_parts[$key]);
+				unset($urlParts[$key]);
 				continue;
 			}
 			if (strpos($value, ':') !== false) {
-				$named_params = explode(':', $value);
-				$params['named'][$named_params[0]] = $named_params[1];
-				unset($url_parts[$key]);
+				$namedParams = explode(':', $value);
+				$params['named'][$namedParams[0]] = $namedParams[1];
+				unset($urlParts[$key]);
 			}
 		}
 
-		$route_model = ClassRegistry::init('Core.Route');
+		$routeModel = ClassRegistry::init('Core.Route');
 
-		$route = $route_model->find('first', array(
+		$route = $routeModel->find('first', array(
 			'conditions' => array(
-				'Route.url' => '/' . implode('/', $url_parts)
+				'Route.url' => '/' . implode('/', $urlParts)
 			)
 		));
 
 		if ($route && $route['Route']['redirect_to'] !== null) {
-			$redirect_route = $route_model->findById($route['Route']['redirect_to']);
-			if ($redirect_route) {
+			$redirectRoute = $routeModel->findById($route['Route']['redirect_to']);
+			if ($redirectRoute) {
 				if (!$this->response) {
 					$this->response = new CakeResponse();
 				}
 				$request = new CakeRequest('/');
 				$base = $request->base;
-				$redirect_url = $base . $redirect_route['Route']['url'];
-				$redirect_url = preg_replace("/\/\//", '/', $redirect_url);
-				$this->response->header(array('Location' => Router::url($redirect_url, true)));
+				$redirectUrl = $base . $redirectRoute['Route']['url'];
+				$redirectUrl = preg_replace("/\/\//", '/', $redirectUrl);
+				$this->response->header(array('Location' => Router::url($redirectUrl, true)));
 				if ($route['Route']['status_code'] !== null) {
 					$this->response->statusCode((int) $route['Route']['status_code']);
 				} else {

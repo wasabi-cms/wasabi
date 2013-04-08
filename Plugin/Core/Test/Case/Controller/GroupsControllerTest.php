@@ -73,7 +73,7 @@ class GroupsControllerTest extends CoreControllerTest {
 	}
 
 	public function testAddActionPost() {
-		$grp_count = $this->Groups->Group->find('count');
+		$groupCount = $this->Groups->Group->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/groups/add', array(
 			'method' => 'post',
@@ -85,14 +85,14 @@ class GroupsControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEmpty($this->Groups->Group->validationErrors);
-		$this->assertEqual(($grp_count + 1), $this->Groups->Group->find('count'));
+		$this->assertEqual(($groupCount + 1), $this->Groups->Group->find('count'));
 		$this->assertTrue($this->Groups->Group->hasAny(array('name' => 'Added Group')));
 		$this->assertEqual('success', $this->Groups->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Groups->redirectUrl);
 	}
 
 	public function testAddActionPostValidationError() {
-		$grp_count = $this->Groups->Group->find('count');
+		$groupCount = $this->Groups->Group->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/groups/add', array(
 			'method' => 'post',
@@ -104,7 +104,7 @@ class GroupsControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertNotEmpty($this->Groups->Group->validationErrors);
-		$this->assertEqual($grp_count, $this->Groups->Group->find('count'));
+		$this->assertEqual($groupCount, $this->Groups->Group->find('count'));
 		$this->assertEqual('error', $this->Groups->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Groups->redirectUrl);
 	}
@@ -136,7 +136,7 @@ class GroupsControllerTest extends CoreControllerTest {
 	}
 
 	public function testEditActionPost() {
-		$grp_count = $this->Groups->Group->find('count');
+		$groupCount = $this->Groups->Group->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/groups/edit/1', array(
 			'method' => 'post',
@@ -149,14 +149,14 @@ class GroupsControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEmpty($this->Groups->Group->validationErrors);
-		$this->assertEqual($grp_count, $this->Groups->Group->find('count'));
+		$this->assertEqual($groupCount, $this->Groups->Group->find('count'));
 		$this->assertTrue($this->Groups->Group->hasAny(array('name' => 'Administrator modified')));
 		$this->assertEqual('success', $this->Groups->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Groups->redirectUrl);
 	}
 
 	public function testEditActionPostValidationError() {
-		$grp_count = $this->Groups->Group->find('count');
+		$groupCount = $this->Groups->Group->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/groups/edit/1', array(
 			'method' => 'post',
@@ -169,7 +169,7 @@ class GroupsControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertNotEmpty($this->Groups->Group->validationErrors);
-		$this->assertEqual($grp_count, $this->Groups->Group->find('count'));
+		$this->assertEqual($groupCount, $this->Groups->Group->find('count'));
 		$this->assertTrue($this->Groups->Group->hasAny(array('name' => 'Administrator')));
 		$this->assertEqual('error', $this->Groups->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Groups->redirectUrl);

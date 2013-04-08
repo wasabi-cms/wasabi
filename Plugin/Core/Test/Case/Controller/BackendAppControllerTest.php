@@ -21,7 +21,9 @@ App::uses('CoreControllerTest', 'Core.Test/TestSuite');
 class BackendAppTestController extends BackendAppController {
 
 	public $redirectUrl;
+
 	public $checkPermissionsCalled = false;
+
 	public $setupBackendCalled = false;
 
 	public function checkPermisions() {
@@ -61,7 +63,7 @@ class BackendAppTestTwoController extends BackendAppTestController {
 
 	public $triggerEventCalled = false;
 
-	protected function _triggerEvent(&$origin, $event_name, $data = null) {
+	protected function _triggerEvent(&$origin, $eventName, $data = null) {
 		$this->triggerEventCalled = true;
 		return array();
 	}

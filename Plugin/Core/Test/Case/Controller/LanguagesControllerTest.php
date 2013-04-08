@@ -73,7 +73,7 @@ class LanguagesControllerTest extends CoreControllerTest {
 	}
 
 	public function testAddActionPost() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/add', array(
 			'method' => 'post',
@@ -90,14 +90,14 @@ class LanguagesControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEmpty($this->Languages->Language->validationErrors);
-		$this->assertEqual(($lang_count + 1), $this->Languages->Language->find('count'));
+		$this->assertEqual(($langCount + 1), $this->Languages->Language->find('count'));
 		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'Added Language')));
 		$this->assertEqual('success', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testAddActionPostValidationError() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/add', array(
 			'method' => 'post',
@@ -114,7 +114,7 @@ class LanguagesControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertNotEmpty($this->Languages->Language->validationErrors);
-		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Languages->redirectUrl);
 	}
@@ -146,7 +146,7 @@ class LanguagesControllerTest extends CoreControllerTest {
 	}
 
 	public function testEditActionPost() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array(
 			'method' => 'post',
@@ -159,14 +159,14 @@ class LanguagesControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEmpty($this->Languages->Language->validationErrors);
-		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'English modified')));
 		$this->assertEqual('success', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testEditActionPostValidationError() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array(
 			'method' => 'post',
@@ -179,7 +179,7 @@ class LanguagesControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertNotEmpty($this->Languages->Language->validationErrors);
-		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'English')));
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Languages->redirectUrl);
@@ -192,31 +192,31 @@ class LanguagesControllerTest extends CoreControllerTest {
 	}
 
 	public function testDeleteActionPostInvalidRequest1() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/delete', array('method' => 'post'));
 
-		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testDeleteActionInvalidRequest2() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/delete/1', array('method' => 'post'));
 
-		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
 	public function testDeleteActionInvalidRequest3() {
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/delete/99', array('method' => 'post'));
 
-		$this->assertEqual($lang_count, $this->Languages->Language->find('count'));
+		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
@@ -233,11 +233,11 @@ class LanguagesControllerTest extends CoreControllerTest {
 			)
 		));
 		$id = $this->Languages->Language->getLastInsertID();
-		$lang_count = $this->Languages->Language->find('count');
+		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/delete/' . $id, array('method' => 'post'));
 
-		$this->assertEqual(($lang_count - 1), $this->Languages->Language->find('count'));
+		$this->assertEqual(($langCount - 1), $this->Languages->Language->find('count'));
 		$this->assertFalse($this->Languages->Language->exists($id));
 		$this->assertEqual('success', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);

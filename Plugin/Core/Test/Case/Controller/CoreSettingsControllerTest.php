@@ -69,7 +69,7 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 	}
 
 	public function testEditActionPost() {
-		$cs_count = $this->CoreSettings->CoreSetting->find('count');
+		$csCount = $this->CoreSettings->CoreSetting->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/settings/edit', array(
 			'method' => 'post',
@@ -82,14 +82,14 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEmpty($this->CoreSettings->CoreSetting->validationErrors);
-		$this->assertEqual($cs_count, $this->CoreSettings->CoreSetting->find('count'));
+		$this->assertEqual($csCount, $this->CoreSettings->CoreSetting->find('count'));
 		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array('application_name' => 'TestApp modified')));
 		$this->assertEqual('success', $this->CoreSettings->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'edit'), $this->CoreSettings->redirectUrl);
 	}
 
 	public function testEditActionPostValidationError() {
-		$cs_count = $this->CoreSettings->CoreSetting->find('count');
+		$csCount = $this->CoreSettings->CoreSetting->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/settings/edit', array(
 			'method' => 'post',
@@ -102,7 +102,7 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertNotEmpty($this->CoreSettings->CoreSetting->validationErrors);
-		$this->assertEqual($cs_count, $this->CoreSettings->CoreSetting->find('count'));
+		$this->assertEqual($csCount, $this->CoreSettings->CoreSetting->find('count'));
 		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array('application_name' => 'TestApp')));
 		$this->assertEqual('error', $this->CoreSettings->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->CoreSettings->redirectUrl);

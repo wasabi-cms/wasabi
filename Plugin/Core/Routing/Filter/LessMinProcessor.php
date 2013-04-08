@@ -49,41 +49,41 @@ class LessMinProcessor extends DispatcherFilter {
 		$plugins = CakePlugin::loaded();
 		foreach ($plugins as $plugin) {
 			$webroot = CakePlugin::path($plugin) . 'webroot' . DS;
-			$less_dir = new Folder($webroot . 'less', false);
-			$this->processLessFiles($less_dir, $webroot);
+			$lessDir = new Folder($webroot . 'less', false);
+			$this->processLessFiles($lessDir, $webroot);
 		}
 		// process *.less files of the app itself
 		$webroot = APP . WEBROOT_DIR . DS;
-		$less_dir = new Folder($webroot . 'less');
-		$this->processLessFiles($less_dir, $webroot);
+		$lessDir = new Folder($webroot . 'less');
+		$this->processLessFiles($lessDir, $webroot);
 		return null;
 	}
 
 /**
- * Process all *.less files in $less_dir and minify them afterwards.
+ * Process all *.less files in $lessDir and minify them afterwards.
  * Corresponding *.css files are saved in app/webroot/css or app/Plugin/PluginName/webroot/css
  * depending on the specified Less directory and webroot.
  *
- * @param Folder $less_dir folder holding the *.less files to be processed
+ * @param Folder $lessDir folder holding the *.less files to be processed
  * @param string $webroot absolute path to webroot with trailing DS
  * @return void
  */
-	public function processLessFiles(Folder $less_dir, $webroot) {
-		foreach ($less_dir->find('.*\.less') as $less_file) {
-			$less_info = pathinfo($less_file);
-			$css_file = $webroot . 'css' . DS . $less_info['filename'] . '.css';
-			$less_file = $less_dir->path . DS . $less_file;
+	public function processLessFiles(Folder $lessDir, $webroot) {
+		foreach ($lessDir->find('.*\.less') as $lessFile) {
+			$lessInfo = pathinfo($lessFile);
+			$cssFile = $webroot . 'css' . DS . $lessInfo['filename'] . '.css';
+			$lessFile = $lessDir->path . DS . $lessFile;
 			// automatically create the css file and its folder if it does not exist
-			if (!file_exists($css_file)) {
-				$created_css_file = new File($css_file, true, 0755);
+			if (!file_exists($cssFile)) {
+				$createdCssFile = new File($cssFile, true, 0755);
 				// set the creation date to way in the past
-				touch($created_css_file->path, 0);
+				touch($createdCssFile->path, 0);
 			}
-			if (lessc::ccompile($less_file, $css_file)) {
+			if (lessc::ccompile($lessFile, $cssFile)) {
 				// only minify the css file if less compilation was neccessary (file modified)
-				$css_min = new CSSmin();
-				$min = $css_min->run(file_get_contents($css_file));
-				file_put_contents($css_file, $min);
+				$cssMin = new CSSmin();
+				$min = $cssMin->run(file_get_contents($cssFile));
+				file_put_contents($cssFile, $min);
 			}
 		}
 	}
