@@ -38,7 +38,6 @@ class CoreEvents {
 	);
 
 	public static function loadPluginRoutes(WasabiEvent $event) {
-
 		// Handle .json and application/json requests
 		Router::parseExtensions('json');
 
@@ -105,7 +104,7 @@ class CoreEvents {
 	public static function loadJsTranslations(WasabiEvent $event) {
 		return array(
 			'Yes' => __d('core', 'Yes'),
-			'No'  => __d('core', 'No')
+			'No' => __d('core', 'No')
 		);
 	}
 
@@ -118,17 +117,17 @@ class CoreEvents {
 	public static function loadSettings(WasabiEvent $event) {
 		if (!$settings = Cache::read('core_settings', 'core.infinite')) {
 			/**
-			 * @var $core_setting CoreSetting
+			 * @var $coreSetting CoreSetting
 			 */
-			$core_setting = ClassRegistry::init('Core.CoreSetting');
-			$core_settings = $core_setting->findById(1);
+			$coreSetting = ClassRegistry::init('Core.CoreSetting');
+			$coreSettings = $coreSetting->findById(1);
 
 			$settings = array();
-			if ($core_settings) {
-				$core_settings = $core_settings['CoreSetting'];
-				unset($core_settings['id'], $core_settings['created'], $core_settings['modified']);
+			if ($coreSettings) {
+				$coreSettings = $coreSettings['CoreSetting'];
+				unset($coreSettings['id'], $coreSettings['created'], $coreSettings['modified']);
 				$settings = array(
-					'core' => $core_settings
+					'core' => $coreSettings
 				);
 			}
 

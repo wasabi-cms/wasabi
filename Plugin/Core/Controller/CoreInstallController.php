@@ -57,9 +57,9 @@ class CoreInstallController extends AppController {
 		 * TODO: remove this statement as soon as ticket #3724 is closed and a solution is present
 		 * @see https://cakephp.lighthouseapp.com/projects/42648/tickets/3724-Add-a-silent-option-to-ConnectionManager-to-avoid-inclusion-of-databasephp
 		 */
-		$db_config = APP . 'Config' . DS . 'database.php';
-		if (!file_exists($db_config)) {
-			new File($db_config, true);
+		$dbConfig = APP . 'Config' . DS . 'database.php';
+		if (!file_exists($dbConfig)) {
+			new File($dbConfig, true);
 		}
 
 		$this->layout = 'install';
@@ -157,10 +157,10 @@ class CoreInstallController extends AppController {
 					'persistent' => false,
 					'encoding' => 'utf8'
 				);
-				$valid_keys = array('host', 'login', 'password', 'database', 'prefix', 'port');
+				$validKeys = array('host', 'login', 'password', 'database', 'prefix', 'port');
 				$config = $this->request->data['CoreInstall'];
 				foreach ($config as $key => $value) {
-					if (!in_array($key, $valid_keys)) {
+					if (!in_array($key, $validKeys)) {
 						unset($config[$key]);
 					}
 				}
@@ -206,13 +206,13 @@ class CoreInstallController extends AppController {
 					'autoinit' => true
 				));
 				$messages[] = __d('core', 'Migration tables');
-				$migrations_map = $migration->getMapping('Core');
-				end($migrations_map);
-				$latest_version = key($migrations_map);
+				$migrationsMap = $migration->getMapping('Core');
+				end($migrationsMap);
+				$latestVersion = key($migrationsMap);
 				$migration->run(array(
 					'type' => 'Core',
 					'direction' => 'up',
-					'version' => $latest_version
+					'version' => $latestVersion
 				));
 			} catch (MigrationVersionException $e) {
 				$this->Session->setFlash(__d('core', 'Something went wrong migrating the database: %s', array($e->getMessage())), 'default', array('class' => 'error'));
@@ -272,10 +272,12 @@ class CoreInstallController extends AppController {
 				$installed = new File(APP . 'Config' . DS . '.installed', true);
 				if ($installed->exists()) {
 					$this->Session->setFlash(__d('core', 'The setup of all <strong>config files</strong> succeeded.'), 'default', array('class' => 'success'));
-					$this->redirect(array('action' => 'finish')); return;
+					$this->redirect(array('action' => 'finish'));
+					return;
 				}
 				$this->Session->setFlash(__d('core', 'The Installation could not be finished.'), 'default', array('class' => 'error'));
-				$this->redirect(array('action' => 'check')); return;
+				$this->redirect(array('action' => 'check'));
+				return;
 			} else {
 				$this->Session->setFlash(__d('core', 'Please correct the marked errors.'), 'default', array('class' => 'error'));
 			}
@@ -306,17 +308,17 @@ class CoreInstallController extends AppController {
 	protected function _writeConfig($name, $config) {
 		$replacements = array();
 		foreach ($config as $key => $value) {
-			$replacement_key = '{{' . strtoupper($key) . '}}';
-			$replacements[$replacement_key] = $value;
+			$replacementKey = '{{' . strtoupper($key) . '}}';
+			$replacements[$replacementKey] = $value;
 		}
 
 		$install = new File(APP . 'Config' . DS . $name . '.php.install', false);
-		$install_content = $install->read();
+		$installContent = $install->read();
 		$install->close();
 
-		$final_content = strtr($install_content, $replacements);
+		$finalContent = strtr($installContent, $replacements);
 		$final = new File(APP . 'Config' . DS . $name . '.php', true);
-		if (!$final->write($final_content)) {
+		if (!$final->write($finalContent)) {
 			throw new Exception();
 		}
 		$final->close();
@@ -333,15 +335,15 @@ class CoreInstallController extends AppController {
 	protected function _generateSecurityHash($length = 40, $numbersOnly = false) {
 		$hash = '';
 
-		$char_list = '0123456789';
+		$charList = '0123456789';
 		if (!$numbersOnly) {
 			$alpha = 'abcdefghijklmnopqrstuvwxyz';
-			$char_list .= $alpha . strtoupper($alpha);
+			$charList .= $alpha . strtoupper($alpha);
 		}
 
 		for ($i = 0; $i < $length; $i++) {
-			$pos = round(mt_rand(0, strlen($char_list)));
-			$hash .= substr($char_list, $pos, 1);
+			$pos = round(mt_rand(0, strlen($charList)));
+			$hash .= substr($charList, $pos, 1);
 		}
 
 		return $hash;

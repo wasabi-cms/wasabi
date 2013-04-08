@@ -24,7 +24,7 @@ class SluggableBehavior extends ModelBehavior {
 	 *
 	 * @var array
 	 */
-	protected $_char_mappings = array(
+	protected $_charMappings = array(
 		'Ā' => 'A', 'Ă' => 'A', 'Ą' => 'A', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Å' => 'A', 'Ǎ' => 'A', 'Ǟ' => 'A', 'Ǡ' => 'A', 'Ǻ' => 'A', 'Ȁ' => 'A', 'Ȃ' => 'A', 'Ȧ' => 'A', 'Ⱥ' => 'A', 'Ǽ' => 'AE', 'Ǣ' => 'AE', 'Æ' => 'AE', 'Ä' => 'Ae',
 		'ā' => 'a', 'ă' => 'a', 'ą' => 'a', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'å' => 'a', 'ǎ' => 'a', 'ǟ' => 'a', 'ǡ' => 'a', 'ǻ' => 'a',	'ȁ' => 'a', 'ȃ' => 'a', 'ȧ' => 'a', 'ǽ' => 'ae', 'ǣ' => 'ae', 'ä' => 'ae', 'æ' => 'ae',
 		'Ɓ' => 'B', 'Ƃ' => 'B', 'Ƅ' => 'B', 'Ƀ' => 'B',
@@ -119,7 +119,7 @@ class SluggableBehavior extends ModelBehavior {
 			'delimiters' => array(),
 			'lowercase' => true,
 			'checkTree' => true,
-			'charMappings' => $this->_char_mappings
+			'charMappings' => $this->_charMappings
 		);
 		$this->_settings[$model->alias] = Hash::merge($defaults, $settings);
 	}
@@ -145,16 +145,16 @@ class SluggableBehavior extends ModelBehavior {
 			throw new CakeException('The field `' . $slugField . '` is missing from DB table `' . $model->table . '`.');
 		}
 
-		$field_content = '';
+		$fieldContent = '';
 		if (isset($model->data[$model->alias][$field]) && !empty($model->data[$model->alias][$field])) {
-			$field_content = $model->data[$model->alias][$field];
+			$fieldContent = $model->data[$model->alias][$field];
 		}
 
-		if ($field_content == '') {
+		if ($fieldContent == '') {
 			return parent::beforeSave($model);
 		}
 
-		$slug = $this->generateSlug($model, $field_content);
+		$slug = $this->generateSlug($model, $fieldContent);
 		$slug = $this->makeSlugUnique($model, $slug);
 
 		$model->data[$model->alias][$slugField] = $slug;
@@ -204,48 +204,48 @@ class SluggableBehavior extends ModelBehavior {
 		if (isset($model->data[$model->alias]['id']) && !empty($model->data[$model->alias]['id'])) {
 			$options['conditions'] = array($model->alias . '.id <>' => $model->data[$model->alias]['id']);
 		}
-		$model_entries = $model->find('all', $options);
+		$modelEntries = $model->find('all', $options);
 
 		if ($this->_settings[$model->alias]['checkTree'] === true && $model->Behaviors->loaded('Tree')) {
 			$paths = array();
-			foreach ($model_entries as $entry) {
+			foreach ($modelEntries as $entry) {
 				$paths[] = implode('|', Set::extract('/' . $model->alias . '/' . $this->_settings[$model->alias]['slugField'], $model->getPath($entry[$model->alias]['id'])));
 			}
-			$current_path = array();
+			$currentPath = array();
 			if (!isset($model->data[$model->alias]['id'])) {
 				if (!isset($model->data[$model->alias]['parent_id'])) {
-					$current_path[] = $model->data[$model->alias];
+					$currentPath[] = $model->data[$model->alias];
 				} else {
-					$current_path = $model->getPath($model->data[$model->alias]['parent_id']);
-					$current_path[] = $model->data[$model->alias];
+					$currentPath = $model->getPath($model->data[$model->alias]['parent_id']);
+					$currentPath[] = $model->data[$model->alias];
 				}
 			} else {
-				$current_path = $model->getPath($model->data[$model->alias]['id']);
+				$currentPath = $model->getPath($model->data[$model->alias]['id']);
 			}
-			if (array_pop($current_path) !== null) {
-				$current_path = implode('|', Set::extract('/' . $model->alias . '/' . $this->_settings[$model->alias]['slugField'], $current_path));
+			if (array_pop($currentPath) !== null) {
+				$currentPath = implode('|', Set::extract('/' . $model->alias . '/' . $this->_settings[$model->alias]['slugField'], $currentPath));
 			}
-			if ($current_path != '') {
-				$current_path .= '|';
+			if ($currentPath != '') {
+				$currentPath .= '|';
 			}
-			$beginning_slug = $slug;
-			$path = $current_path . $beginning_slug;
+			$beginningSlug = $slug;
+			$path = $currentPath . $beginningSlug;
 			$i = 1;
-			$current_slug = $beginning_slug;
+			$currentSlug = $beginningSlug;
 			while (in_array($path, $paths)) {
-				$current_slug = $beginning_slug . $this->_settings[$model->alias]['separator'] . $i++;
-				$path = $current_path . $current_slug;
+				$currentSlug = $beginningSlug . $this->_settings[$model->alias]['separator'] . $i++;
+				$path = $currentPath . $currentSlug;
 			}
 		} else {
-			$existing_slugs = Set::extract('/' . $model->alias . '/' . $this->_settings[$model->alias]['slugField'], $model_entries);
+			$existingSlugs = Set::extract('/' . $model->alias . '/' . $this->_settings[$model->alias]['slugField'], $modelEntries);
 			$i = 1;
-			$beginning_slug = $slug;
-			$current_slug = $slug;
-			while (in_array($current_slug, $existing_slugs)) {
-				$current_slug = $beginning_slug . $this->_settings[$model->alias]['separator'] . $i++;
+			$beginningSlug = $slug;
+			$currentSlug = $slug;
+			while (in_array($currentSlug, $existingSlugs)) {
+				$currentSlug = $beginningSlug . $this->_settings[$model->alias]['separator'] . $i++;
 			}
 		}
 
-		return $current_slug;
+		return $currentSlug;
 	}
 }

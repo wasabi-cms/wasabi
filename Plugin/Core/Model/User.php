@@ -91,7 +91,7 @@ class User extends CoreAppModel {
 			)
 		),
 		'password_confirmation' => array(
-			'password_equal'  => array(
+			'password_equal' => array(
 				'rule' => 'checkPasswords',
 				'message' => 'The Password Confirmation doesn\'t match the Password field.',
 				'required' => false
@@ -171,8 +171,8 @@ class User extends CoreAppModel {
 		if (!$user) {
 			return false;
 		}
-		$bcrypt_password = Security::hash($password, 'blowfish', $user[$this->alias]['password']);
-		return ($bcrypt_password == $user[$this->alias]['password']) ? $user : false;
+		$bcryptPassword = Security::hash($password, 'blowfish', $user[$this->alias]['password']);
+		return ($bcryptPassword == $user[$this->alias]['password']) ? $user : false;
 	}
 
 	/**
@@ -252,16 +252,16 @@ class User extends CoreAppModel {
 	 * Persist a user login by generating a unique login token for that user
 	 * that expires after the specified $duration.
 	 *
-	 * @param integer $user_id
+	 * @param integer $userId
 	 * @param string $duration
 	 * @return bool|string the generated token, or false if db error
 	 */
-	public function persist($user_id, $duration) {
+	public function persist($userId, $duration) {
 		$token = $this->generateToken();
 		while ($this->LoginToken->alreadyExists($token)) {
 			$token = $this->generateToken();
 		}
-		if ($this->LoginToken->add($user_id, $token, $duration)) {
+		if ($this->LoginToken->add($userId, $token, $duration)) {
 			return $token;
 		}
 		return false;
@@ -280,17 +280,17 @@ class User extends CoreAppModel {
 	 * Check if a user account by given $id can be deleted,
 	 *
 	 * @param integer $id
-	 * @param integer $auth_user_id
+	 * @param integer $authUserId
 	 * @return bool
 	 */
-	public function canBeDeleted($id, $auth_user_id) {
+	public function canBeDeleted($id, $authUserId) {
 		// global administrative user cannot be delete
 		if ($id == 1) {
 			return false;
 		}
 
 		// a user cannot delete his own user account
-		if ($id == $auth_user_id) {
+		if ($id == $authUserId) {
 			return false;
 		}
 
@@ -300,13 +300,13 @@ class User extends CoreAppModel {
 		}
 
 		// check that at least one active account remains after deletion
-		$user_count = $this->find('count', array(
+		$userCount = $this->find('count', array(
 			'conditions' => array(
 				$this->alias . '.active' => true,
 				$this->alias . '.id <>' => $id
 			)
 		));
-		if ($user_count < 1) {
+		if ($userCount < 1) {
 			return false;
 		}
 

@@ -93,13 +93,13 @@ class BackendAppController extends AppController {
 		$action = $this->request->params['action'];
 		$path = "${plugin}.${controller}.${action}";
 
-		$guest_actions = array(
+		$guestActions = array(
 			'core.users.login',
 			'core.users.logout'
 		);
 
 		// action requires login
-		if (!in_array($path, $guest_actions)) {
+		if (!in_array($path, $guestActions)) {
 
 			// user is not logged in -> save current request and redirect to login page
 			if (!$this->Authenticator->get()) {
@@ -140,38 +140,38 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _loadBackendMenu() {
-		$event_name = 'Backend.Menu.load';
-		$menu_items = $this->_triggerEvent($this, $event_name);
-		if (empty($menu_items)) {
+		$eventName = 'Backend.Menu.load';
+		$menuItems = $this->_triggerEvent($this, $eventName);
+		if (empty($menuItems)) {
 			return;
 		}
-		$menu_items = $menu_items[$event_name];
+		$menuItems = $menuItems[$eventName];
 
-		$primary_menu = array();
-		$secondary_menu = array();
+		$primaryMenu = array();
+		$secondaryMenu = array();
 
-		foreach ($menu_items as $items) {
-			$secondary_active_found = false;
-			$secondary_items = $items['primary']['children'];
-			foreach ($secondary_items as &$secondary_item) {
-				if ($secondary_item['url']['plugin'] === $this->request->params['plugin']
-					&& $secondary_item['url']['controller'] === $this->request->params['controller']) {
-					$secondary_active_found = true;
-					$secondary_item['active'] = true;
-					$secondary_menu = $secondary_items;
+		foreach ($menuItems as $items) {
+			$secondaryActiveFound = false;
+			$secondaryItems = $items['primary']['children'];
+			foreach ($secondaryItems as &$secondaryItem) {
+				if ($secondaryItem['url']['plugin'] === $this->request->params['plugin']
+					&& $secondaryItem['url']['controller'] === $this->request->params['controller']) {
+					$secondaryActiveFound = true;
+					$secondaryItem['active'] = true;
+					$secondaryMenu = $secondaryItems;
 					break;
 				}
 			}
-			if ($secondary_active_found) {
+			if ($secondaryActiveFound) {
 				$items['primary']['active'] = true;
 			}
 			unset($items['primary']['children']);
-			$primary_menu[] = $items['primary'];
+			$primaryMenu[] = $items['primary'];
 		}
 
 		$this->set('backend_menu_for_layout', array(
-			'primary' => $primary_menu,
-			'secondary' => $secondary_menu
+			'primary' => $primaryMenu,
+			'secondary' => $secondaryMenu
 		));
 	}
 
@@ -184,13 +184,13 @@ class BackendAppController extends AppController {
 		// All available languages for frontend / backend
 		if (!$languages = Cache::read('languages', 'core.infinite')) {
 			$language = ClassRegistry::init('Core.Language');
-			$all_languages = $language->findAll();
+			$allLanguages = $language->findAll();
 
 			$languages = array(
 				'frontend' => array(),
 				'backend' => array()
 			);
-			foreach ($all_languages as $lang) {
+			foreach ($allLanguages as $lang) {
 				if ($lang['Language']['available_at_backend'] === true) {
 					$languages['backend'][] = $lang['Language'];
 				}
@@ -204,30 +204,30 @@ class BackendAppController extends AppController {
 
 		// current backend language of the logged in user
 		$user = Authenticator::get();
-		$user_language = $languages['backend'][0];
+		$userLanguage = $languages['backend'][0];
 		if ($user && isset($user['Language']) && isset($user['Language']['id'])) {
-			foreach ($languages['backend'] as $b_lang) {
-				if ($b_lang['id'] == $user['Language']['id']) {
-					$user_language = $b_lang;
+			foreach ($languages['backend'] as $bLang) {
+				if ($bLang['id'] == $user['Language']['id']) {
+					$userLanguage = $bLang;
 					break;
 				}
 			}
 		}
-		Configure::write('Wasabi.backend_language', $user_language);
-		Configure::write('Config.language', $user_language['iso']);
+		Configure::write('Wasabi.backend_language', $userLanguage);
+		Configure::write('Config.language', $userLanguage['iso']);
 
 		// current content language the user has active
-		$content_language = $languages['frontend'][0];
+		$contentLanguage = $languages['frontend'][0];
 		if ($this->Session->check('Wasabi.content_language_id')) {
-			$c_lang_id = $this->Session->read('Wasabi.content_language_id');
-			foreach ($languages['frontend'] as $c_lang) {
-				if ($c_lang['id'] == $c_lang_id) {
-					$content_language = $c_lang;
+			$cLangId = $this->Session->read('Wasabi.content_language_id');
+			foreach ($languages['frontend'] as $cLang) {
+				if ($cLang['id'] == $cLangId) {
+					$contentLanguage = $cLang;
 					break;
 				}
 			}
 		}
-		Configure::write('Wasabi.content_language', $content_language);
+		Configure::write('Wasabi.content_language', $contentLanguage);
 	}
 
 	/**
@@ -235,12 +235,12 @@ class BackendAppController extends AppController {
 	 * The wrapper is needed to easily mock _triggerEvent for controller tests.
 	 *
 	 * @param object $origin
-	 * @param string $event_name
+	 * @param string $eventName
 	 * @param null|mixed $data
 	 * @return array
 	 */
-	protected function _triggerEvent(&$origin, $event_name, $data = null) {
-		return WasabiEventManager::trigger($origin, $event_name, $data);
+	protected function _triggerEvent(&$origin, $eventName, $data = null) {
+		return WasabiEventManager::trigger($origin, $eventName, $data);
 	}
 
 }

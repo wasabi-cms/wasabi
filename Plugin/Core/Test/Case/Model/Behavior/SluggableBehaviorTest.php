@@ -179,21 +179,21 @@ class SluggableBehaviorTest extends CakeTestCase {
 	}
 
 	public function testBeforeSave() {
-		$saved_data = $this->TestSluggable->save(array(
+		$savedData = $this->TestSluggable->save(array(
 			$this->TestSluggable->alias => array(
 				'name' => 'Testing beforeSave'
 			)
 		));
 		$expected = 'testing-beforesave';
-		$result = $saved_data[$this->TestSluggable->alias]['slug'];
+		$result = $savedData[$this->TestSluggable->alias]['slug'];
 		$this->assertEqual($expected, $result);
 
-		$saved_data = $this->TestSluggable->save(array(
+		$savedData = $this->TestSluggable->save(array(
 			$this->TestSluggable->alias => array(
 				'name' => ''
 			)
 		));
-		$this->assertFalse(isset($saved_data[$this->TestSluggable->alias]['slug']));
+		$this->assertFalse(isset($savedData[$this->TestSluggable->alias]['slug']));
 	}
 
 	public function testMissingFieldThrowsException() {
@@ -201,7 +201,7 @@ class SluggableBehaviorTest extends CakeTestCase {
 			'field' => 'non_existent'
 		));
 		$this->setExpectedException('CakeException', 'The field `non_existent` is missing from DB table `test_sluggables`');
-		$saved_data = $this->TestSluggable->save(array(
+		$savedData = $this->TestSluggable->save(array(
 			$this->TestSluggable->alias => array(
 				'name' => 'Testing beforeSave'
 			)
@@ -213,7 +213,7 @@ class SluggableBehaviorTest extends CakeTestCase {
 			'slugField' => 'non_existent'
 		));
 		$this->setExpectedException('CakeException', 'The field `non_existent` is missing from DB table `test_sluggables`');
-		$saved_data = $this->TestSluggable->save(array(
+		$savedData = $this->TestSluggable->save(array(
 			$this->TestSluggable->alias => array(
 				'name' => 'Testing beforeSave'
 			)

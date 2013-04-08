@@ -80,7 +80,7 @@ class UsersControllerTest extends CoreControllerTest {
 	public function testAddActionPostWithInvalidData() {
 		$this->_loginUser();
 
-		$user_count = $this->Users->User->find('count');
+		$userCount = $this->Users->User->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/users/add', array(
 			'method' => 'post',
@@ -95,7 +95,7 @@ class UsersControllerTest extends CoreControllerTest {
 			)
 		));
 
-		$this->assertEqual($user_count, $this->Users->User->find('count'));
+		$this->assertEqual($userCount, $this->Users->User->find('count'));
 		$this->assertFalse($this->Users->User->hasAny(array('username' => 'test user')));
 		$this->assertEqual('error', $this->Users->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Users->redirectUrl);
@@ -104,7 +104,7 @@ class UsersControllerTest extends CoreControllerTest {
 	public function testAddActionPost() {
 		$this->_loginUser();
 
-		$user_count = $this->Users->User->find('count');
+		$userCount = $this->Users->User->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/users/add', array(
 			'method' => 'post',
@@ -119,7 +119,7 @@ class UsersControllerTest extends CoreControllerTest {
 			)
 		));
 
-		$this->assertEqual(($user_count + 1), $this->Users->User->find('count'));
+		$this->assertEqual(($userCount + 1), $this->Users->User->find('count'));
 		$this->assertTrue($this->Users->User->hasAny(array('username' => 'test user')));
 		$this->assertEqual('success', $this->Users->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Users->redirectUrl);
@@ -177,7 +177,7 @@ class UsersControllerTest extends CoreControllerTest {
 	public function testEditActionPost() {
 		$this->_loginUser();
 
-		$user_count = $this->Users->User->find('count');
+		$userCount = $this->Users->User->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/users/edit/1', array(
 			'method' => 'post',
@@ -189,7 +189,7 @@ class UsersControllerTest extends CoreControllerTest {
 			)
 		));
 
-		$this->assertEqual($user_count, $this->Users->User->find('count'));
+		$this->assertEqual($userCount, $this->Users->User->find('count'));
 		$this->assertTrue($this->Users->User->hasAny(array('username' => 'admin modified')));
 		$this->assertEqual('success', $this->Users->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Users->redirectUrl);
@@ -233,11 +233,11 @@ class UsersControllerTest extends CoreControllerTest {
 	public function testDeleteActionPost() {
 		$this->_loginUser();
 
-		$user_count = $this->Users->User->find('count');
+		$userCount = $this->Users->User->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/users/delete/2', array('method' => 'post'));
 
-		$this->assertEqual(($user_count - 1), $this->Users->User->find('count'));
+		$this->assertEqual(($userCount - 1), $this->Users->User->find('count'));
 		$this->assertEqual('success', $this->Users->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'index'), $this->Users->redirectUrl);
 	}

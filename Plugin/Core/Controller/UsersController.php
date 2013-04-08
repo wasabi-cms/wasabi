@@ -85,7 +85,8 @@ class UsersController extends BackendAppController {
 		if ($this->request->is('post') && !empty($this->data)) {
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The User <strong>%s</strong> has been added.', array($this->data['User']['username'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index')); return;
+				$this->redirect(array('action' => 'index'));
+				return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -102,7 +103,8 @@ class UsersController extends BackendAppController {
 	public function edit($id = null) {
 		if ($id === null || ($id == 1 && $this->Authenticator->get('User.id') != 1)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index')); return;
+			$this->redirect(array('action' => 'index'));
+			return;
 		}
 		$this->_prepareAddEdit();
 		if (!$this->request->is('post') && empty($this->data)) {
@@ -112,7 +114,8 @@ class UsersController extends BackendAppController {
 		} else {
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The user <strong>%s</strong> has been updated successfully.', array($this->data['User']['username'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index')); return;
+				$this->redirect(array('action' => 'index'));
+				return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -135,7 +138,8 @@ class UsersController extends BackendAppController {
 
 		if ($id === null || !$this->User->canBeDeleted($id, $this->Authenticator->get('User.id'))) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index')); return;
+			$this->redirect(array('action' => 'index'));
+			return;
 		}
 
 		if ($this->User->delete($id)) {
@@ -156,7 +160,8 @@ class UsersController extends BackendAppController {
 
 		$user = $this->Authenticator->get();
 		if ($user) {
-			$this->redirect($this->_getRedirect()); return;
+			$this->redirect($this->_getRedirect());
+			return;
 		}
 
 		// user could not be logged in via session/cookie/etc.
@@ -173,7 +178,8 @@ class UsersController extends BackendAppController {
 					$this->Authenticator->persist();
 				}
 				$this->Session->setFlash(__d('core', 'Welcome back, <strong>%s</strong>!', array($this->Authenticator->get('username'))), 'default', array('class' => 'success'));
-				$this->redirect($this->_getRedirect()); return;
+				$this->redirect($this->_getRedirect());
+				return;
 			} else {
 				$this->Session->write('login_referer', $this->_getRedirect(false));
 				$this->Session->setFlash(__d('core', 'Wrong username or password.'), 'default', array('class' => 'error'));
@@ -211,11 +217,11 @@ class UsersController extends BackendAppController {
 		));
 	}
 
-	protected function _getRedirect($delete_session = true) {
+	protected function _getRedirect($deleteSession = true) {
 		$redirect = $this->viewVars['backend_menu_for_layout']['primary'][0]['url'];
 		if ($this->Session->check('login_referer')) {
 			$redirect = $this->Session->read('login_referer');
-			if ($delete_session === true) {
+			if ($deleteSession === true) {
 				$this->Session->delete('login_referer');
 			}
 		}

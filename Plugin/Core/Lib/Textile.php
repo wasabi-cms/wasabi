@@ -34,6 +34,7 @@ class Textile {
 	protected $_ignoreCodeBlocks = false;
 
 	public $forceFullUrl = false;
+
 	public $urlParams = false;
 
 	/**
@@ -62,15 +63,15 @@ class Textile {
 	protected $_inlineTags = array(
 		'@@' => array( '\@\@' , 'code'   ),
 		'**' => array( '\*\*' , 'b'      ),
-		'*' => array( '\*'   , 'strong' ),
+		'*'  => array( '\*'   , 'strong' ),
 		'??' => array( '\?\?' , 'cite'   ),
-		'-' => array( '-'    , 'del'    ),
+		'-'  => array( '-'    , 'del'    ),
 		'__' => array( '__'   , 'i'      ),
-		'_' => array( '_'    , 'em'     ),
-		'%' => array( '%'    , 'span'   ),
-		'+' => array( '\+'   , 'ins'    ),
-		'~' => array( '~'    , 'sub'    ),
-		'^' => array( '\^'   , 'sup'    )
+		'_'  => array( '_'    , 'em'     ),
+		'%'  => array( '%'    , 'span'   ),
+		'+'  => array( '\+'   , 'ins'    ),
+		'~'  => array( '~'    , 'sub'    ),
+		'^'  => array( '\^'   , 'sup'    )
 	);
 
 	protected $_urls = '[\w"$\-_.+!*\'(),";\/?:@=&%#{}|\\^~\[\]`]';
@@ -103,9 +104,9 @@ class Textile {
 		$text = $this->_cleanUpLineEndings($text);
 		$this->_parts = $this->_splitIntoParts($text);
 		foreach ($this->_parts as &$part) {
-			$disable_format = false;
-			$part = $this->_processPart($part, $disable_format);
-			if (!$disable_format) {
+			$disableFormat = false;
+			$part = $this->_processPart($part, $disableFormat);
+			if (!$disableFormat) {
 				$part = $this->_formatText($part);
 			}
 		}
@@ -118,14 +119,14 @@ class Textile {
 	 * Process a part of textile
 	 *
 	 * @param $text
-	 * @param $disable_format
+	 * @param $disableFormat
 	 *
 	 * @return string
 	 */
-	protected function _processPart($text, &$disable_format) {
+	protected function _processPart($text, &$disableFormat) {
 		$out = '';
 		// match block tags
-		preg_match("/^(".implode('|', array_keys($this->_blockTags)).")(\(.*\))?\.\s(\n)?/", $text, $m);
+		preg_match("/^(" . implode('|', array_keys($this->_blockTags)) . ")(\(.*\))?\.\s(\n)?/", $text, $m);
 		if (!empty($m)) {
 			$tag = $m[1];
 			$attributes = (isset($m[2])) ? ' ' . ltrim(rtrim($m[2], ')'), '(') : '';
@@ -147,7 +148,7 @@ class Textile {
 					// this allows for nested block elements within blockquotes and divs
 					$sublines = preg_split("/\\n\\n/", $content);
 					foreach ($sublines as &$line) {
-						$line = $this->_processPart($line, $disable_format);
+						$line = $this->_processPart($line, $disableFormat);
 					}
 					$content = implode('', $sublines);
 					break;
@@ -157,12 +158,12 @@ class Textile {
 						return '';
 						break;
 					}
-					$disable_format = true;
+					$disableFormat = true;
 					$sublines = preg_split("/\\n/", $content);
 					foreach ($sublines as &$line) {
 						$line = preg_replace("/^\s{2}/", '', $line);
 					}
-					$code_content = implode("\n", $sublines);
+					$codeContent = implode("\n", $sublines);
 					$attributes = explode('|', $attributes);
 
 					if (count($attributes) > 1) {
@@ -181,25 +182,25 @@ class Textile {
 
 					if ($pygmentize != 'full_path_to_pygmentize' && $pygmentize != '' && $pygmentize != false && $pygmentize != null) {
 						// check the cache
-						$cache_key = md5($code_content);
+						$cacheKey = md5($codeContent);
 
-						$output = Cache::read($cache_key, 'frontend.pygmentize');
+						$output = Cache::read($cacheKey, 'frontend.pygmentize');
 						if (!$output) {
-							$tmp_name = tempnam('/tmp', 'pygmentize_');
-							$file_handle = fopen($tmp_name, 'w');
-							fwrite($file_handle, $code_content);
-							fclose($file_handle);
+							$tmpName = tempnam('/tmp', 'pygmentize_');
+							$fileHandle = fopen($tmpName, 'w');
+							fwrite($fileHandle, $codeContent);
+							fclose($fileHandle);
 
 							$pygments = Configure::read('Wasabi.pygmentize_path');
 
-							$command = '"' . $pygments . '" -l ' . $lang . ' -f html -O linenos=1,nowrap,encoding=utf-8,startinline "' . $tmp_name . '"';
+							$command = '"' . $pygments . '" -l ' . $lang . ' -f html -O linenos=1,nowrap,encoding=utf-8,startinline "' . $tmpName . '"';
 							$output = array();
 							$retval = -1;
 
 							exec($command, $output, $retval);
-							unlink($tmp_name);
+							unlink($tmpName);
 
-							Cache::write($cache_key, $output, 'frontend.pygmentize');
+							Cache::write($cacheKey, $output, 'frontend.pygmentize');
 						}
 
 						// line nos
@@ -216,7 +217,7 @@ class Textile {
 
 						// simple code (not pygmentized)
 						$out .= '<td class="code ' . $lang . '"><pre>';
-						$out .= $this->_encodeHtml($code_content);
+						$out .= $this->_encodeHtml($codeContent);
 						$out .= '</pre></td>';
 
 					}
@@ -229,8 +230,8 @@ class Textile {
 
 				case 'table':
 					$sublines = preg_split("/\|$/m", $content);
-					$thead_tds = array();
-					$tbody_tds = array();
+					$theadTds = array();
+					$tbodyTds = array();
 					$content = '';
 					foreach ($sublines as $key => $tr) {
 						$tr = preg_replace("/^(\\n)?\s{2}\|/", '', $tr);
@@ -240,18 +241,18 @@ class Textile {
 						$tds = explode('|', $tr);
 						foreach ($tds as $td) {
 							if (preg_match("/^_\.\s(.*)?/", $td, $m)) {
-								$thead_tds[] = '{{FORMAT}}' . $m[1] . '{{/FORMAT}}';
+								$theadTds[] = '{{FORMAT}}' . $m[1] . '{{/FORMAT}}';
 							} else {
-								$tbody_tds[$key][] = '{{FORMAT}}' . $td  . '{{FORMAT}}';
+								$tbodyTds[$key][] = '{{FORMAT}}' . $td . '{{FORMAT}}';
 							}
 						}
 					}
-					if (!empty($thead_tds)) {
-						$content .= '<thead><tr><th>' . implode('</th><th>', $thead_tds) . '</th></tr></thead>';
+					if (!empty($theadTds)) {
+						$content .= '<thead><tr><th>' . implode('</th><th>', $theadTds) . '</th></tr></thead>';
 					}
-					if (!empty($tbody_tds)) {
+					if (!empty($tbodyTds)) {
 						$content .= '<tbody>';
-						foreach ($tbody_tds as $row => $tds) {
+						foreach ($tbodyTds as $row => $tds) {
 							$content .= '<tr><td>' . implode('</td><td>', $tds) . '</td></tr>';
 						}
 						$content .= '</tbody>';
@@ -281,56 +282,56 @@ class Textile {
 		} else {
 			// Process Lists
 			$sublines = preg_split("/\n(?=[*#])/m", $text);
-			$is_list_item = (boolean) preg_match("/^[*#]\s{1}/", $sublines[0]);
-			if ($is_list_item) {
-				$ul_li_items = array();
-				$ol_li_items = array();
+			$isListItem = (boolean) preg_match("/^[*#]\s{1}/", $sublines[0]);
+			if ($isListItem) {
+				$ulListItems = array();
+				$olListItems = array();
 
 				foreach ($sublines as &$item) {
 					preg_match("/^([*#]+)?\s(.*)?/", $item, $m);
 					if (!empty($m)) {
 						if ($m[1] == '*') {
-							$ul_li_items[] = array('content' => $m[2], 'children' => array());
+							$ulListItems[] = array('content' => $m[2], 'children' => array());
 						}
 						if ($m[1] == '#') {
-							$ol_li_items[] = array('content' => $m[2], 'children' => array());
+							$olListItems[] = array('content' => $m[2], 'children' => array());
 						}
 						if (mb_strlen($item) > mb_strlen($m[0])) {
-							$sub_content = mb_substr($item, mb_strlen($m[0]));
-							$sub_content_lines = preg_split("/\\n/", $sub_content);
-							foreach ($sub_content_lines as $key => &$line) {
+							$subContent = mb_substr($item, mb_strlen($m[0]));
+							$subContentLines = preg_split("/\\n/", $subContent);
+							foreach ($subContentLines as $key => &$line) {
 								$line = preg_replace("/^\s{2}/", '', $line);
 								if ($line == '') {
-									unset($sub_content_lines[$key]);
+									unset($subContentLines[$key]);
 								}
 							}
 							if ($m[1] == '*') {
-								$ul_li_items[$this->_endKey($ul_li_items)]['children'] = $sub_content_lines;
+								$ulListItems[$this->_endKey($ulListItems)]['children'] = $subContentLines;
 							}
 							if ($m[1] == '#') {
-								$ol_li_items[$this->_endKey($ol_li_items)]['children'] = $sub_content_lines;
+								$olListItems[$this->_endKey($olListItems)]['children'] = $subContentLines;
 							}
 						}
 					}
 				}
-				if (!empty($ul_li_items)) {
+				if (!empty($ulListItems)) {
 					$out = '<ul>';
-					foreach ($ul_li_items as &$item) {
+					foreach ($ulListItems as &$item) {
 						$out .= '<li>{{FORMAT}}' . $item['content'] . '{{/FORMAT}}';
 						if (!empty($item['children'])) {
 							$item['children'] = implode("\n", $item['children']);
-							$out .= $this->_processPart($item['children'], $disable_format);
+							$out .= $this->_processPart($item['children'], $disableFormat);
 						}
 						$out .= '</li>';
 					}
 					$out .= '</ul>';
-				} elseif (!empty($ol_li_items)) {
+				} elseif (!empty($olListItems)) {
 					$out = '<ol>';
-					foreach ($ol_li_items as &$item) {
-						$out .= '<li>{{FORMAT}}' . $item['content'] .'{{/FORMAT}}';
+					foreach ($olListItems as &$item) {
+						$out .= '<li>{{FORMAT}}' . $item['content'] . '{{/FORMAT}}';
 						if (!empty($item['children'])) {
 							$item['children'] = implode("\n", $item['children']);
-							$out .= $this->_processPart($item['children'], $disable_format);
+							$out .= $this->_processPart($item['children'], $disableFormat);
 						}
 						$out .= '</li>';
 					}
@@ -383,11 +384,11 @@ class Textile {
 	}
 
 	protected function _formatText($text) {
-		$format_splits = preg_split('/((\{\{FORMAT\}\})|(\{\{\\/FORMAT\}\}))/', $text);
-		foreach ($format_splits as &$split) {
+		$formatSplits = preg_split('/((\{\{FORMAT\}\})|(\{\{\\/FORMAT\}\}))/', $text);
+		foreach ($formatSplits as &$split) {
 			$pnct = ".,\"'?!;:";
 
-			foreach($this->_inlineTags as $f) {
+			foreach ($this->_inlineTags as $f) {
 				$f = $f[0];
 				$split = preg_replace_callback("/
 					(^|(?<=[\s>$pnct\(])|[{[])
@@ -403,21 +404,21 @@ class Textile {
 			}
 
 			$split = preg_replace_callback('/
-				"([^"]+?)"            # link text
-				(\[.*\])?             # title
-				(\|\|.*\|\|)?         # atts
-				([!])?                # target blank?
+				"([^"]+?)"                 # link text
+				(\[.*\])?                  # title
+				(\|\|.*\|\|)?              # atts
+				([!])?                     # target blank?
 				:
-				('.$this->_urls.'+?)   # url
-				(\/)?                 # slashes in url
-				([^\w\/;]*?)          # post vars in url
+				(' . $this->_urls . '+?)   # url
+				(\/)?                      # slashes in url
+				([^\w\/;]*?)               # post vars in url
 				([\]}]|(?=\s|$|\)))
 				/x', array(&$this, "_formatLink"), $split
 			);
 
 		}
 
-		return implode('', $format_splits);
+		return implode('', $formatSplits);
 	}
 
 	protected function _formatInlineTags($m) {
@@ -436,7 +437,7 @@ class Textile {
 	}
 
 	protected function _formatLink($m) {
-		$link_text = $m[1];
+		$linkText = $m[1];
 		$title = '';
 		if ($m[2] != '') {
 			$title = ltrim(rtrim($m[2], ']'), '[');
@@ -454,7 +455,7 @@ class Textile {
 		if ($m[7] != null) {
 			$post = $m[7];
 		}
-		return '<a href="'. $url .'" title="' . $title . '"' . $attributes . $target . '>' . $link_text . '</a>' . $post;
+		return '<a href="' . $url . '" title="' . $title . '"' . $attributes . $target . '>' . $linkText . '</a>' . $post;
 	}
 
 	protected function _splitIntoParts($text) {

@@ -159,7 +159,7 @@ class TranslatableBehavior extends ModelBehavior {
 
 		foreach ($query['conditions'] as $col => $value) {
 			foreach ($this->_settings[$model->alias]['fields'] as $field) {
-				$col_parts = is_numeric($col) ? preg_split("/\./", $value) : preg_split("/\./", $col);
+				$colParts = is_numeric($col) ? preg_split("/\./", $value) : preg_split("/\./", $col);
 
 				if (!is_numeric($col) && $col == $field) {
 					unset($query['conditions'][$col]);
@@ -167,9 +167,9 @@ class TranslatableBehavior extends ModelBehavior {
 					break;
 				}
 
-				if (count($col_parts) >= 1 &&
-					$col_parts[0] == $model->alias &&
-					$col_parts[1] == $field
+				if (count($colParts) >= 1 &&
+					$colParts[0] == $model->alias &&
+					$colParts[1] == $field
 				) {
 					unset($query['conditions'][$col]);
 					$query = $this->_addJoinForTranslatedField($model, $query, $field, $value);

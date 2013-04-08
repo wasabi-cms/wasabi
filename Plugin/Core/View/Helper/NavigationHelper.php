@@ -30,13 +30,13 @@ class NavigationHelper extends AppHelper {
 	 * Render provided $items as <li> elements
 	 *
 	 * @param array $items
-	 * @param string $active_class css class to add to active items
+	 * @param string $activeClass css class to add to active items
 	 * @return string
 	 */
-	public function render($items, $active_class = 'active') {
+	public function render($items, $activeClass = 'active') {
 		$out = '';
-		$group_id = Authenticator::get('Group.id');
 		// TODO: implement AuthorizorComponent and static Authorizor wrapper class
+		//$group_id = Authenticator::get('Group.id');
 		//$group_permissions = Authorizor::getPermissions($group_id);
 		foreach ($items as $item) {
 			#if (($group_id !== 1) && !in_array($item['path'], $group_permissions)) {
@@ -44,7 +44,7 @@ class NavigationHelper extends AppHelper {
 			#}
 			$class = '';
 			if (isset($item['active']) && $item['active'] === true) {
-				$class = ' class="' . $active_class . '"';
+				$class = ' class="' . $activeClass . '"';
 			}
 			$out .= '<li' . $class . '>';
 			$out .= $this->Html->link($item['name'], $item['url']);

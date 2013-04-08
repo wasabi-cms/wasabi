@@ -32,7 +32,6 @@ class RouteTest extends CakeTestCase {
 	}
 
 	public function testNothingToTestRightNow() {
-
 	}
 
 	public function tearDown() {

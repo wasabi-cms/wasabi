@@ -34,7 +34,7 @@ class TestSluggableFixture extends CakeTestFixture {
 		$this->records = array(
 			array(
 				'id' => 1,
-				'parent_id' => NULL,
+				'parent_id' => null,
 				'lft' => 1,
 				'rght' => 7,
 				'name' => 'Hello World',

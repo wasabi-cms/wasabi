@@ -49,15 +49,15 @@ class CoreControllerTest extends ControllerTestCase {
 		CakeSession::destroy();
 		ClassRegistry::flush();
 
-		$cache_configs = array(
+		$cacheConfigs = array(
 			'core.infinite',
 			'core.routes',
 			'frontend.pygmentize'
 		);
-		foreach ($cache_configs as $config) {
+		foreach ($cacheConfigs as $config) {
 			$cache = Cache::config($config);
-			$cache_folder = new Folder($cache['settings']['path']);
-			$cache_folder->delete();
+			$cacheFolder = new Folder($cache['settings']['path']);
+			$cacheFolder->delete();
 		}
 
 		parent::tearDown();
@@ -67,12 +67,12 @@ class CoreControllerTest extends ControllerTestCase {
 	 * Login a user via Session.
 	 * This method should be used for controller tests that require a logged in user.
 	 *
-	 * @param bool|integer $fake_id
+	 * @param bool|integer $fakeId
 	 */
-	protected function _loginUser($fake_id = false) {
+	protected function _loginUser($fakeId = false) {
 		CakeSession::write('Auth', array(
 			'User' => array(
-				'id' => ($fake_id !== false) ? (int) $fake_id : 1,
+				'id' => ($fakeId !== false) ? (int) $fakeId : 1,
 				'username' => 'admin'
 			)
 		));

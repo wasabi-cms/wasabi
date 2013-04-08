@@ -45,11 +45,11 @@ class LoginTokenTest extends CakeTestCase {
 	}
 
 	public function testAdd() {
-		$token_count = $this->LoginToken->find('count');
+		$tokenCount = $this->LoginToken->find('count');
 
 		$this->assertFalse($this->LoginToken->hasAny(array('user_id' => 99)));
 		$this->assertNotEmpty($this->LoginToken->add(99, 'yoyo', '2 weeks'));
-		$this->assertEqual(($token_count + 1), $this->LoginToken->find('count'));
+		$this->assertEqual(($tokenCount + 1), $this->LoginToken->find('count'));
 		$this->assertTrue($this->LoginToken->hasAny(array('user_id' => 99)));
 	}
 

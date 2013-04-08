@@ -48,27 +48,27 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 		}
 
 		try {
-			$parent_class = '';
+			$parentClass = '';
 			if (isset($request->params['controller']) && $request->params['controller'] != '') {
-				$plugin_name = '';
+				$pluginName = '';
 				if (isset($request->params['plugin'])) {
-					$plugin_name = Inflector::camelize($request->params['plugin']) . '.';
+					$pluginName = Inflector::camelize($request->params['plugin']) . '.';
 				}
 
-				$controller_name = Inflector::camelize($request->params['controller']) . 'Controller';
-				App::uses($controller_name, $plugin_name . 'Controller');
+				$controllerName = Inflector::camelize($request->params['controller']) . 'Controller';
+				App::uses($controllerName, $pluginName . 'Controller');
 
-				if (!class_exists($controller_name)) {
-					throw new MissingControllerException($controller_name);
+				if (!class_exists($controllerName)) {
+					throw new MissingControllerException($controllerName);
 				}
-				$tmp_controller = new $controller_name(new CakeRequest(), new CakeResponse());
+				$tmpController = new $controllerName(new CakeRequest(), new CakeResponse());
 
-				$parent_class = get_parent_class($tmp_controller);
-				unset($plugin_name, $controller_name, $tmp_controller);
+				$parentClass = get_parent_class($tmpController);
+				unset($pluginName, $controllerName, $tmpController);
 			}
-			if ($parent_class == 'BackendAppController') {
+			if ($parentClass == 'BackendAppController') {
 				$controller = new BackendErrorController($request, $response);
-			} else if ($parent_class == 'FrontendAppController') {
+			} else if ($parentClass == 'FrontendAppController') {
 				$controller = new FrontendErrorController($request, $response);
 			} else {
 				$controller = new CakeErrorController($request, $response);

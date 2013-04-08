@@ -52,9 +52,9 @@ class CFormHelper extends AppHelper {
 			$class .= ' checkbox';
 			$out = '<div class="form-row{CLASS}">{TITLE}<div class="field">{INPUT}{LABEL}{ERROR}{INFO}</div></div>';
 		}
-		$title = (isset($options['title'])) ? '<label>'.$options['title'].'</label>' : '';
+		$title = (isset($options['title'])) ? '<label>' . $options['title'] . '</label>' : '';
 		if (isset($options['label_info'])) {
-			$options['label'] .= '<small>'. $options['label_info'] .'</small>';
+			$options['label'] .= '<small>' . $options['label_info'] . '</small>';
 			unset($options['label_info']);
 		}
 		$label = $this->Form->label($field, $options['label']);
@@ -64,11 +64,11 @@ class CFormHelper extends AppHelper {
 		$error = $this->Form->tagIsInvalid();
 		if ($error) {
 			$class .= ' error';
-			$error = '<span class="error-message">'. $error[0] .'</span>';
+			$error = '<span class="error-message">' . $error[0] . '</span>';
 		}
-		$field_options = $options;
-		unset($field_options['info']);
-		$input = $this->Form->input($field, $field_options);
+		$fieldOptions = $options;
+		unset($fieldOptions['info']);
+		$input = $this->Form->input($field, $fieldOptions);
 		if (!isset($this->fields[$this->Form->model()])) {
 			$this->fields[$this->Form->model()] = ClassRegistry::init($this->Form->model())->validate;
 		}
@@ -85,7 +85,7 @@ class CFormHelper extends AppHelper {
 		}
 		$info = '';
 		if (isset($options['info'])) {
-			$info .= '<small>'. $options['info']. '</small>';
+			$info .= '<small>' . $options['info'] . '</small>';
 			unset($options['info']);
 		}
 		$out = str_replace(

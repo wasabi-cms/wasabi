@@ -56,7 +56,8 @@ class GroupsController extends BackendAppController {
 		if ($this->request->is('post') && !empty($this->data)) {
 			if ($this->Group->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The group <strong>%s</strong> has been added.', array($this->data['Group']['name'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index')); return;
+				$this->redirect(array('action' => 'index'));
+				return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -73,7 +74,8 @@ class GroupsController extends BackendAppController {
 	public function edit($id = null) {
 		if ($id === null || !$this->Group->exists($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index')); return;
+			$this->redirect(array('action' => 'index'));
+			return;
 		}
 		$this->set('title_for_layout', __d('core', 'Edit Group'));
 		if (!$this->request->is('post') && empty($this->data)) {
@@ -81,7 +83,8 @@ class GroupsController extends BackendAppController {
 		} else {
 			if ($this->Group->save($this->data)) {
 				$this->Session->setFlash(__d('core', 'The group <strong>%s</strong> has been updated successfully.', array($this->data['Group']['name'])), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index')); return;
+				$this->redirect(array('action' => 'index'));
+				return;
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
@@ -104,17 +107,18 @@ class GroupsController extends BackendAppController {
 
 		if ($id === null || $id == 1 || !$this->Group->exists($id)) {
 			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
-			$this->redirect(array('action' => 'index')); return;
+			$this->redirect(array('action' => 'index'));
+			return;
 		}
 
 		$group = $this->Group->findById($id);
 
-		$group_can_be_deleted = false;
+		$groupCanBeDeleted = false;
 
 		// check user count of group
-		$user_count = (int) $group['Group']['user_count'];
-		if ($user_count == 0) {
-			$group_can_be_deleted = true;
+		$userCount = (int) $group['Group']['user_count'];
+		if ($userCount == 0) {
+			$groupCanBeDeleted = true;
 		}
 
 		// check if alternative $data['Group']['alternative_group_id'] is set
@@ -122,14 +126,14 @@ class GroupsController extends BackendAppController {
 		if (isset($this->data['Group']['alternative_group_id'])) {
 			// move users to this group
 			if ($this->Group->moveUsersToNewGroup($id, $this->data['Group']['alternative_group_id'])) {
-				$group_can_be_deleted = true;
+				$groupCanBeDeleted = true;
 			}
 		}
 
-		if ($group_can_be_deleted === true) {
+		if ($groupCanBeDeleted === true) {
 			if ($this->Group->delete($id)) {
-				if ($user_count > 0) {
-					$this->Session->setFlash(__d('core', 'The group has been deleted. Prior %s group members have been moved to the alternative group.', array($user_count)), 'default', array('class' => 'success'));
+				if ($userCount > 0) {
+					$this->Session->setFlash(__d('core', 'The group has been deleted. Prior %s group members have been moved to the alternative group.', array($userCount)), 'default', array('class' => 'success'));
 				} else {
 					$this->Session->setFlash(__d('core', 'The group has been deleted.'), 'default', array('class' => 'success'));
 				}

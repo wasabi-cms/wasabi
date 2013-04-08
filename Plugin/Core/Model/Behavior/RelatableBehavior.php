@@ -125,14 +125,14 @@ class RelatableBehavior extends ModelBehavior {
 					$match = array_values(preg_grep("/(^{$source->alias}___|___{$source->alias}___|___{$source->alias}$)/", $keys));
 
 					if (empty($match)) {
-						$rel_query = $this->_mergeQueryParams($this->_defaultQuery, $query);
-						$rel_query = $this->_mergeQueryParams($rel_query, $related['query']);
-						$rel_query = $this->_addFields($source, $rel_query);
-						$rel_query = $this->_addFields($source->{$related['name']}, $rel_query);
-						$rel_query = $this->_addJoin($source, $source->{$related['name']}, $type, $rel_query);
+						$relQuery = $this->_mergeQueryParams($this->_defaultQuery, $query);
+						$relQuery = $this->_mergeQueryParams($relQuery, $related['query']);
+						$relQuery = $this->_addFields($source, $relQuery);
+						$relQuery = $this->_addFields($source->{$related['name']}, $relQuery);
+						$relQuery = $this->_addJoin($source, $source->{$related['name']}, $type, $relQuery);
 
 						self::$_queries["{$source->alias}___{$related['name']}"] = array(
-							'query' => $rel_query,
+							'query' => $relQuery,
 							'results' => array()
 						);
 
@@ -143,8 +143,8 @@ class RelatableBehavior extends ModelBehavior {
 					self::$_queries[$match[0]]['query'] = $this->_addFields($source->{$related['name']}, self::$_queries[$match[0]]['query']);
 					self::$_queries[$match[0]]['query'] = $this->_addJoin($source, $source->{$related['name']}, $type, self::$_queries[$match[0]]['query']);
 
-					$new_key = $match[0] . '___' . $related['name'];
-					self::$_queries[$new_key] = array(
+					$newKey = $match[0] . '___' . $related['name'];
+					self::$_queries[$newKey] = array(
 						'query' => self::$_queries[$match[0]]['query'],
 						'results' => array()
 					);
@@ -155,17 +155,15 @@ class RelatableBehavior extends ModelBehavior {
 		}
 
 		$keys = array_keys(self::$_queries);
-		$found_in_queries = preg_grep("/^{$model->alias}___/", $keys);
+		$foundInQueries = preg_grep("/^{$model->alias}___/", $keys);
 
-		if (!empty($found_in_queries)) {
-			$query = Hash::merge($query, self::$_queries[$found_in_queries[0]]['query']);
-			unset(self::$_queries[$found_in_queries[0]]['query']);
-			unset(self::$_queries[$found_in_queries[0]]['results']);
-			self::$_queries[$found_in_queries[0]]['base'] = true;
+		if (!empty($foundInQueries)) {
+			$query = Hash::merge($query, self::$_queries[$foundInQueries[0]]['query']);
+			unset(self::$_queries[$foundInQueries[0]]['query']);
+			unset(self::$_queries[$foundInQueries[0]]['results']);
+			self::$_queries[$foundInQueries[0]]['base'] = true;
 		}
-
-
-
+		
 		return $query;
 	}
 
@@ -182,7 +180,7 @@ class RelatableBehavior extends ModelBehavior {
 			return $results;
 		}
 
-		$foreign_keys = array();
+		$foreignKeys = array();
 
 		// check for belongsTo result
 		if (!empty($results)) {
@@ -204,12 +202,12 @@ class RelatableBehavior extends ModelBehavior {
 
 				foreach ($models as $m) {
 					$source = self::$_model[$m];
-					$fk_path = $path . "{$m}.{$source->primaryKey}";
-					self::$_queries[$lookup]['foreignKeys'][$m] = array_unique(Hash::extract($results, $fk_path));
+					$fkPath = $path . "{$m}.{$source->primaryKey}";
+					self::$_queries[$lookup]['foreignKeys'][$m] = array_unique(Hash::extract($results, $fkPath));
 				}
 			} else {
-				$fk_path = $path . "{$model->alias}.{$model->primaryKey}";
-				$foreign_keys = array_unique(Hash::extract($results, $fk_path));
+				$fkPath = $path . "{$model->alias}.{$model->primaryKey}";
+				$foreignKeys = array_unique(Hash::extract($results, $fkPath));
 			}
 		}
 
@@ -218,39 +216,39 @@ class RelatableBehavior extends ModelBehavior {
 				if (in_array($type, array('hasMany'))) {
 					// look for source in queries
 					$keys = array_keys(self::$_queries);
-					$source_query = array_values(preg_grep("/(^{$source}___|___{$source}___|___{$source}$)/", $keys));
+					$sourceQuery = array_values(preg_grep("/(^{$source}___|___{$source}___|___{$source}$)/", $keys));
 					if (
-						!empty($source_query) &&
-						isset(self::$_queries[$source_query[0]]['foreignKeys']) &&
-						!empty(self::$_queries[$source_query[0]]['foreignKeys']) &&
-						isset(self::$_queries[$source_query[0]]['foreignKeys'][$source])
+						!empty($sourceQuery) &&
+						isset(self::$_queries[$sourceQuery[0]]['foreignKeys']) &&
+						!empty(self::$_queries[$sourceQuery[0]]['foreignKeys']) &&
+						isset(self::$_queries[$sourceQuery[0]]['foreignKeys'][$source])
 					) {
-						$foreign_keys = self::$_queries[$source_query[0]]['foreignKeys'][$source];
+						$foreignKeys = self::$_queries[$sourceQuery[0]]['foreignKeys'][$source];
 					}
 					foreach ($targets as $target) {
 						$query = array();
-						$push_foreign_keys = false;
+						$pushForeignKeys = false;
 						$lookup = null;
-						$found_in_queries = array_values(preg_grep("/(^{$target['name']}___|___{$target['name']}___|___{$target['name']}$)/", $keys));
+						$foundInQueries = array_values(preg_grep("/(^{$target['name']}___|___{$target['name']}___|___{$target['name']}$)/", $keys));
 						if (
-							!empty($found_in_queries) &&
-							$found_in_queries[0] !== "{$source}___{$target['name']}" &&
-							$found_in_queries[0] !== "{$target['name']}___{$source}" &&
-							isset(self::$_queries[$found_in_queries[0]]['query']) &&
-							!empty(self::$_queries[$found_in_queries[0]]['query'])
+							!empty($foundInQueries) &&
+							$foundInQueries[0] !== "{$source}___{$target['name']}" &&
+							$foundInQueries[0] !== "{$target['name']}___{$source}" &&
+							isset(self::$_queries[$foundInQueries[0]]['query']) &&
+							!empty(self::$_queries[$foundInQueries[0]]['query'])
 						) {
-							$query = self::$_queries[$found_in_queries[0]]['query'];
-							$push_foreign_keys = true;
-							$lookup = $found_in_queries[0];
+							$query = self::$_queries[$foundInQueries[0]]['query'];
+							$pushForeignKeys = true;
+							$lookup = $foundInQueries[0];
 						}
 						$linkModel = self::$_model[$target['name']];
 						$sourceModel = self::$_model[$source];
-						$query['conditions']["{$linkModel->alias}.{$sourceModel->{$type}[$linkModel->alias]['foreignKey']}"] = $foreign_keys;
+						$query['conditions']["{$linkModel->alias}.{$sourceModel->{$type}[$linkModel->alias]['foreignKey']}"] = $foreignKeys;
 						unset(self::$_relationMap[$target['name']]);
 
 						$assocResults = $linkModel->find('all', $query);
 
-						if ($push_foreign_keys && !empty($assocResults)) {
+						if ($pushForeignKeys && !empty($assocResults)) {
 							$models = array_keys($assocResults[0]);
 							if (isset(self::$_queries[$lookup])) {
 								self::$_queries[$lookup]['results'] = $assocResults;
@@ -266,25 +264,25 @@ class RelatableBehavior extends ModelBehavior {
 						}
 
 						if ($lookup !== null) {
-							$base_results = &$results;
-							$sub_results = &self::$_queries[$lookup]['results'];
+							$baseResults = &$results;
+							$subResults = &self::$_queries[$lookup]['results'];
 						} elseif (
-							!empty($source_query) &&
-							isset($source_query[0]) &&
+							!empty($sourceQuery) &&
+							isset($sourceQuery[0]) &&
 							(
-								!isset(self::$_queries[$source_query[0]]['base']) ||
-								self::$_queries[$source_query[0]]['base'] !== true
+								!isset(self::$_queries[$sourceQuery[0]]['base']) ||
+								self::$_queries[$sourceQuery[0]]['base'] !== true
 							)
 						) {
-							$base_results = &self::$_queries[$source_query[0]]['results'];
-							$sub_results = &$assocResults;
+							$baseResults = &self::$_queries[$sourceQuery[0]]['results'];
+							$subResults = &$assocResults;
 						} else {
-							$base_results = &$results;
-							$sub_results = &$assocResults;
+							$baseResults = &$results;
+							$subResults = &$assocResults;
 						}
 
-						foreach ($base_results as &$r) {
-							foreach ($sub_results as &$ar) {
+						foreach ($baseResults as &$r) {
+							foreach ($subResults as &$ar) {
 								if (!isset($r[$sourceModel->alias][Inflector::pluralize($linkModel->alias)])) {
 									$r[$sourceModel->alias][Inflector::pluralize($linkModel->alias)] = array();
 								}
@@ -363,15 +361,15 @@ class RelatableBehavior extends ModelBehavior {
 		if (empty($query['fields'])) {
 			$query['fields'][] = "{$model->alias}.*";
 		} else {
-			$pk_pos = -1;
+			$pkPos = -1;
 			$fields = array();
-			$all_fields = false;
+			$allFields = false;
 			foreach ($query['fields'] as $key => $field) {
 				if (preg_match("/^{$model->alias}\.(.*)/", $field, $matches) > 0) {
 					if ($matches[1] === $model->primaryKey) {
-						$pk_pos = $key;
+						$pkPos = $key;
 					} elseif ($matches[1] === '*') {
-						$all_fields = true;
+						$allFields = true;
 					} else {
 						$fields[] = array(
 							'pos' => $key,
@@ -381,10 +379,10 @@ class RelatableBehavior extends ModelBehavior {
 
 				}
 			}
-			if ($pk_pos === -1 && !empty($fields)) {
+			if ($pkPos === -1 && !empty($fields)) {
 				array_splice($query['fields'], $fields[0]['pos'], 0, "{$model->alias}.{$model->primaryKey}");
 			}
-			if ($pk_pos === -1 && empty($fields) && $all_fields === false) {
+			if ($pkPos === -1 && empty($fields) && $allFields === false) {
 				$query['fields'][] = "{$model->alias}.*";
 			}
 		}

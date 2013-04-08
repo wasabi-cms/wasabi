@@ -28,7 +28,7 @@ class LessMinProcessorTest extends CakeTestCase {
  *
  * @var string
  */
-	protected $testAppWebroot;
+	protected $_testAppWebroot;
 
 /**
  * Setup the webroot of the test_app.
@@ -36,7 +36,7 @@ class LessMinProcessorTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
-		$this->testAppWebroot = CakePlugin::path('Core') . 'Test' . DS . 'test_app' . DS . 'webroot' . DS;
+		$this->_testAppWebroot = CakePlugin::path('Core') . 'Test' . DS . 'test_app' . DS . 'webroot' . DS;
 
 		parent::setUp();
 	}
@@ -47,12 +47,12 @@ class LessMinProcessorTest extends CakeTestCase {
  * @return void
  */
 	public function tearDown() {
-		$css_folder = new Folder($this->testAppWebroot . 'css');
-		$css_folder->delete();
+		$cssFolder = new Folder($this->_testAppWebroot . 'css');
+		$cssFolder->delete();
 
 		foreach (CakePlugin::loaded() as $p) {
-			$css_folder = new Folder(CakePlugin::path($p) . 'webroot' . DS . 'css' . DS);
-			$css_folder->delete();
+			$cssFolder = new Folder(CakePlugin::path($p) . 'webroot' . DS . 'css' . DS);
+			$cssFolder->delete();
 		}
 
 		parent::tearDown();
@@ -66,24 +66,24 @@ class LessMinProcessorTest extends CakeTestCase {
  */
 	public function testProcessLessFiles() {
 		$filter = new LessMinProcessor();
-		$css_folder = $this->testAppWebroot . 'css' . DS;
+		$cssFolder = $this->_testAppWebroot . 'css' . DS;
 
 		// css folder does not exist first hand
-		$this->assertFalse(is_dir($css_folder));
+		$this->assertFalse(is_dir($cssFolder));
 
 		// process less files
-		$filter->processLessFiles(new Folder($this->testAppWebroot . 'less' . DS, false), $this->testAppWebroot);
+		$filter->processLessFiles(new Folder($this->_testAppWebroot . 'less' . DS, false), $this->_testAppWebroot);
 
 		// css folder should be there now
-		$this->assertTrue(is_dir($css_folder));
+		$this->assertTrue(is_dir($cssFolder));
 
 		// and the compiled css file should be present
-		$css_file = $css_folder . 'style.css';
-		$this->assertTrue(file_exists($css_file));
+		$cssFile = $cssFolder . 'style.css';
+		$this->assertTrue(file_exists($cssFile));
 
 		// check that the less file is correctly compiled to css and minified
 		$expected = 'body{color:#333;padding:0;margin:0}';
-		$result = file_get_contents($css_file);
+		$result = file_get_contents($cssFile);
 		$this->assertEqual($expected, $result);
 	}
 
@@ -102,25 +102,25 @@ class LessMinProcessorTest extends CakeTestCase {
 		), APP::RESET);
 
 		CakePlugin::load('TestPlugin');
-		$plugin_webroot = CakePlugin::path('TestPlugin') . 'webroot' . DS;
-		$css_folder = $plugin_webroot . 'css' . DS;
+		$pluginWebroot = CakePlugin::path('TestPlugin') . 'webroot' . DS;
+		$cssFolder = $pluginWebroot . 'css' . DS;
 
 		// css folder does not exist first hand
-		$this->assertFalse(is_dir($css_folder));
+		$this->assertFalse(is_dir($cssFolder));
 
 		$event = new CakeEvent('DispatcherTest', $this, compact('request', 'response'));
 		$filter->beforeDispatch($event);
 
 		// css folder should be there now
-		$this->assertTrue(is_dir($css_folder));
+		$this->assertTrue(is_dir($cssFolder));
 
 		// and the compiled css file should be present
-		$css_file = $css_folder . 'style.css';
-		$this->assertTrue(file_exists($css_file));
+		$cssFile = $cssFolder . 'style.css';
+		$this->assertTrue(file_exists($cssFile));
 
 		// check that the less file is correctly compiled to css and minified
 		$expected = 'body{color:#333;padding:0;margin:0}';
-		$result = file_get_contents($css_file);
+		$result = file_get_contents($cssFile);
 		$this->assertEqual($expected, $result);
 	}
 
@@ -136,7 +136,7 @@ class LessMinProcessorTest extends CakeTestCase {
 		$response = $this->getMock('CakeResponse');
 
 		// check 'SKIP_ON_PRODUCTION' setting
-		$old_debug_lvl = Configure::read('debug');
+		$oldDebugLvl = Configure::read('debug');
 		Configure::write('LessMin.SKIP_ON_PRODUCTION', true);
 		Configure::write('debug', 0);
 		$event = new CakeEvent('DispatcherTest', $this, compact('request', 'response'));
@@ -146,7 +146,7 @@ class LessMinProcessorTest extends CakeTestCase {
 		$event = new CakeEvent('DispatcherTest', $this, compact('request', 'response'));
 		$this->assertNull($filter->beforeDispatch($event));
 
-		Configure::write('debug', $old_debug_lvl);
+		Configure::write('debug', $oldDebugLvl);
 	}
 
 }

@@ -23,12 +23,12 @@ class Plugin extends CoreAppModel {
 	 * @return array
 	 */
 	public function findAll() {
-		$plugin_folder = new Folder(APP . 'Plugin' . DS, false);
-		$plugin_folders = $plugin_folder->read(true, array('.', 'Core', 'Migrations'));
-		$plugin_folders = $plugin_folders[0];
+		$pluginFolder = new Folder(APP . 'Plugin' . DS, false);
+		$pluginFolders = $pluginFolder->read(true, array('.', 'Core', 'Migrations'));
+		$pluginFolders = $pluginFolders[0];
 
 		$plugins = array();
-		foreach ($plugin_folders as $plugin) {
+		foreach ($pluginFolders as $plugin) {
 			$plugins[] = array(
 				'Plugin' => array(
 					'name' => $plugin,
@@ -81,8 +81,8 @@ class Plugin extends CoreAppModel {
 
 	public function uninstall($plugin) {
 		if ($this->isInstalled($plugin)) {
-			$install_file = new File($this->getPluginConfigPath($plugin) . '.installed', false);
-			$install_file->delete();
+			$installFile = new File($this->getPluginConfigPath($plugin) . '.installed', false);
+			$installFile->delete();
 		}
 		return !$this->isInstalled($plugin);
 	}
@@ -97,8 +97,8 @@ class Plugin extends CoreAppModel {
 
 	public function deactivate($plugin) {
 		if ($this->isActive($plugin)) {
-			$active_file = new File($this->getPluginConfigPath($plugin) . '.active', false);
-			$active_file->delete();
+			$activeFile = new File($this->getPluginConfigPath($plugin) . '.active', false);
+			$activeFile->delete();
 		}
 		$this->clearActivePluginCache();
 		return !$this->isActive($plugin);
@@ -109,11 +109,11 @@ class Plugin extends CoreAppModel {
 	}
 
 	public function getInfo($plugin) {
-		$info_file = APP . 'Plugin' . DS . $plugin . DS . 'Config' . DS . 'plugin.json';
+		$infoFile = APP . 'Plugin' . DS . $plugin . DS . 'Config' . DS . 'plugin.json';
 
 		$info = array();
-		if (file_exists($info_file)) {
-			$info = file_get_contents($info_file);
+		if (file_exists($infoFile)) {
+			$info = file_get_contents($infoFile);
 			$info = (array) json_decode($info);
 		}
 

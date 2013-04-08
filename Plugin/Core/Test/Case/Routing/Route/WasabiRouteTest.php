@@ -20,6 +20,7 @@ App::uses('WasabiRoute', 'Core.Routing/Route');
 class TestWasabiRoute extends WasabiRoute {
 
 	public $stopped = false;
+
 	public $responseSent = false;
 
 	public function sendResponse() {
@@ -179,10 +180,10 @@ class WasabiRouteTest extends CakeTestCase {
 
 	protected function _clearCache() {
 		$cache = Cache::config('core.routes');
-		$cache_folder = new Folder($cache['settings']['path']);
-		$cache_folder->delete();
+		$cacheFolder = new Folder($cache['settings']['path']);
+		$cacheFolder->delete();
 
-		unset($cache, $cache_folder);
+		unset($cache, $cacheFolder);
 	}
 
 }

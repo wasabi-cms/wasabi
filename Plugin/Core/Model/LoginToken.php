@@ -47,16 +47,16 @@ class LoginToken extends CoreAppModel {
 	/**
 	 * Add a new token.
 	 *
-	 * @param integer $user_id
+	 * @param integer $userId
 	 * @param string $token
 	 * @param string $duration
 	 * @return mixed
 	 */
-	public function add($user_id, $token, $duration) {
+	public function add($userId, $token, $duration) {
 		$this->create();
 		return $this->save(array(
 			$this->alias => array(
-				'user_id' => $user_id,
+				'user_id' => $userId,
 				'token'   => $token,
 				'expires' => date('Y-m-d H:i:s', strtotime($duration))
 			)

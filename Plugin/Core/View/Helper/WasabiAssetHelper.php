@@ -17,8 +17,8 @@ App::uses('AppHelper', 'View/Helper');
 
 class WasabiAssetHelper extends AppHelper {
 
-	public function css($path, $plugin = false, $append_time = true) {
-		$time = $append_time ? $this->_getModifiedTime($path, $plugin) : '';
+	public function css($path, $plugin = false, $appendTime = true) {
+		$time = $appendTime ? $this->_getModifiedTime($path, $plugin) : '';
 
 		if ($plugin !== false) {
 			$path = '/' . strtolower($plugin) . $path;
@@ -27,8 +27,8 @@ class WasabiAssetHelper extends AppHelper {
 		return '<link rel="stylesheet" type="text/css" href="' . Router::url($path) . $time . '">';
 	}
 
-	public function js($path, $plugin = false, $append_time = true) {
-		$time = $append_time ? $this->_getModifiedTime($path, $plugin) : '';
+	public function js($path, $plugin = false, $appendTime = true) {
+		$time = $appendTime ? $this->_getModifiedTime($path, $plugin) : '';
 
 		if ($plugin !== false) {
 			$path = '/' . strtolower($plugin) . $path;
@@ -37,20 +37,20 @@ class WasabiAssetHelper extends AppHelper {
 		return '<script type="text/javascript" src="' . Router::url($path) . $time . '"></script>';
 	}
 
-	private function _getBasePath($path, $plugin = false) {
+	protected function _getBasePath($path, $plugin = false) {
 		$path = preg_replace("/\//", DS, $path);
-		$base_path = APP;
+		$basePath = APP;
 
 		if ($plugin !== false) {
-			$base_path .= 'Plugin' . DS . $plugin . DS;
+			$basePath .= 'Plugin' . DS . $plugin . DS;
 		}
 
-		$base_path .= WEBROOT_DIR . $path;
+		$basePath .= WEBROOT_DIR . $path;
 
-		return $base_path;
+		return $basePath;
 	}
 
-	private function _getModifiedTime($path, $plugin = false) {
+	protected function _getModifiedTime($path, $plugin = false) {
 		$path = $this->_getBasePath($path, $plugin);
 
 		$time = '';

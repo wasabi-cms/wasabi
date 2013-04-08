@@ -207,9 +207,9 @@ class AuthenticatorComponent extends Component {
 		if (!method_exists($userModel, 'persist')) {
 			throw new NotImplementedException($userModel->alias . '::persist() is not implemented!');
 		}
-		$user_id = $this->get('id');
+		$userId = $this->get('id');
 		$duration = $this->_settings['rememberFor'];
-		$token = $userModel->persist($user_id, $duration);
+		$token = $userModel->persist($userId, $duration);
 		$this->Cookie->write($this->_settings['cookieKey'], $token, true /* encrypt */, $duration);
 		return true;
 	}

@@ -74,25 +74,25 @@ class Group extends CoreAppModel {
 	/**
 	 * Move all users from a specific group to another group.
 	 *
-	 * @param integer $from_id
-	 * @param integer $to_id
+	 * @param integer $fromId
+	 * @param integer $toId
 	 * @return bool
 	 */
-	public function moveUsersToNewGroup($from_id, $to_id) {
-		if ($this->exists($from_id) && $this->exists($to_id)) {
-			$user_ids = $this->User->find('list', array(
+	public function moveUsersToNewGroup($fromId, $toId) {
+		if ($this->exists($fromId) && $this->exists($toId)) {
+			$userIds = $this->User->find('list', array(
 				'fields' => 'User.id',
 				'contain' => array('Group'),
 				'conditions' => array(
-					'Group.id' => $from_id
+					'Group.id' => $fromId
 				)
 			));
 			$data = array();
-			foreach ($user_ids as $key => $user_id) {
+			foreach ($userIds as $key => $userId) {
 				$data[] = array(
 					'User' => array(
-						'id' => $user_id,
-						'group_id' => $to_id
+						'id' => $userId,
+						'group_id' => $toId
 					)
 				);
 			}

@@ -54,20 +54,20 @@ class FrontendAppController extends AppController {
 	/**
 	 * Load and setup all languages and language related config options.
 	 *
-	 * @param integer|null $language_id The id of the current active language
+	 * @param integer|null $langId The id of the current active language
 	 * @return void
 	 */
-	public function loadLanguages($language_id = null) {
+	public function loadLanguages($langId = null) {
 		// All available languages for frontend / backend
 		if (!$languages = Cache::read('languages', 'core.infinite')) {
 			$language = ClassRegistry::init('Core.Language');
-			$all_languages = $language->findAll();
+			$allLanguages = $language->findAll();
 
 			$languages = array(
 				'frontend' => array(),
 				'backend' => array()
 			);
-			foreach ($all_languages as $lang) {
+			foreach ($allLanguages as $lang) {
 				if ($lang['Language']['available_at_backend'] === true) {
 					$languages['backend'][] = $lang['Language'];
 				}
@@ -79,11 +79,11 @@ class FrontendAppController extends AppController {
 		}
 		Configure::write('Languages', $languages);
 
-		if ($language_id !== null) {
-			foreach ($languages['frontend'] as $frontend_language) {
-				if ($frontend_language['id'] == $language_id) {
-					Configure::write('Wasabi.content_language', $frontend_language);
-					Configure::write('Config.language', $frontend_language['iso']);
+		if ($langId !== null) {
+			foreach ($languages['frontend'] as $frontendLanguage) {
+				if ($frontendLanguage['id'] == $langId) {
+					Configure::write('Wasabi.content_language', $frontendLanguage);
+					Configure::write('Config.language', $frontendLanguage['iso']);
 					break;
 				}
 			}
@@ -98,12 +98,12 @@ class FrontendAppController extends AppController {
 	 * The wrapper is needed to easily mock _triggerEvent for controller tests.
 	 *
 	 * @param object $origin
-	 * @param string $event_name
+	 * @param string $eventName
 	 * @param null|mixed $data
 	 * @return array
 	 */
-	protected function _triggerEvent(&$origin, $event_name, $data = null) {
-		return WasabiEventManager::trigger($origin, $event_name, $data);
+	protected function _triggerEvent(&$origin, $eventName, $data = null) {
+		return WasabiEventManager::trigger($origin, $eventName, $data);
 	}
 
 }

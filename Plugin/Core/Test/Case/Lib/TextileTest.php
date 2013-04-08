@@ -70,21 +70,21 @@ class TextileTest extends CakeTestCase {
 	}
 
 	public function testAddFilder() {
-		$current_filters = TestTextile::$filters;
-		$this->assertEqual(count($current_filters['text']), 1);
+		$currentFilters = TestTextile::$filters;
+		$this->assertEqual(count($currentFilters['text']), 1);
 
 		TestTextile::addFilter('text', 'TestClass::textFilter');
 		$result = TestTextile::$filters;
 		$this->assertEqual(count($result['text']), 2);
 
-		TestTextile::$filters = $current_filters;
+		TestTextile::$filters = $currentFilters;
 
 		TestTextile::addFilter('link', 'TestClass::linkFilter');
 		$result = TestTextile::$filters;
 		$this->assertEqual(count($result['text']), 1);
 		$this->assertEqual(count($result['link']), 1);
 
-		TestTextile::$filters = $current_filters;
+		TestTextile::$filters = $currentFilters;
 	}
 
 	public function testCleanUpLineEndings() {
@@ -388,13 +388,13 @@ class TextileTest extends CakeTestCase {
 			$this->assertEqual($expected, $result);
 
 			// test pygmentize block caching
-			$cache_key = md5("$('html').trigger('test_event');");
-			$is_cached = (boolean) Cache::read($cache_key, 'frontend.pygmentize');
-			$this->assertTrue($is_cached);
+			$cacheKey = md5("$('html').trigger('test_event');");
+			$isCached = (boolean) Cache::read($cacheKey, 'frontend.pygmentize');
+			$this->assertTrue($isCached);
 
 			// reset pygmentize config & delete cache
 			Configure::write('Wasabi.pygmentize_path', 'full_path_to_pygmentize');
-			Cache::delete($cache_key, 'frontend.pygmentize');
+			Cache::delete($cacheKey, 'frontend.pygmentize');
 		}
 	}
 
@@ -579,15 +579,15 @@ class TextileTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-	private function _isPygmentizeAvailable() {
-		$pygmentize_path = Configure::read('Wasabi.pygmentize_path');
+	protected function _isPygmentizeAvailable() {
+		$pygmentizePath = Configure::read('Wasabi.pygmentize_path');
 		if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
-			$fp = popen("where $pygmentize_path", "r");
+			$fp = popen("where $pygmentizePath", "r");
 			$result = fgets($fp, 255);
 			$exists = !preg_match('#Could not find files#', $result);
 			pclose($fp);
-		} else {  # non-Windows
-			$fp = popen("which $pygmentize_path", "r");
+		} else { // non-Windows
+			$fp = popen("which $pygmentizePath", "r");
 			$result = fgets($fp, 255);
 			$exists = !empty($result);
 			pclose($fp);

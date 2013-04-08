@@ -63,30 +63,30 @@ class CHtmlHelper extends AppHelper {
 			throw new CakeException('\'confirm-title\' option is not set in confirmationLink.');
 		}
 
-		$confirm_options = array(
+		$confirmOptions = array(
 			'class' => 'confirm',
 			'data-confirm-action' => $this->_getBackendUrl($url, true)
 		);
 
 		if (isset($options['class']) && $options['class'] != '') {
-			$confirm_options['class'] .= ' ' . trim($options['class']);
+			$confirmOptions['class'] .= ' ' . trim($options['class']);
 			unset($options['class']);
 		}
 
-		$confirm_options['data-confirm-message'] = $options['confirm-message'];
+		$confirmOptions['data-confirm-message'] = $options['confirm-message'];
 		unset($options['confirm-message']);
 
-		$confirm_options['data-confirm-title'] = $options['confirm-title'];
+		$confirmOptions['data-confirm-title'] = $options['confirm-title'];
 		unset($options['confirm-title']);
 
 		if (isset($options['confirm-subtitle'])) {
-			$confirm_options['data-confirm-subtitle'] = $options['confirm-subtitle'];
+			$confirmOptions['data-confirm-subtitle'] = $options['confirm-subtitle'];
 			unset($options['confirm-subtitle']);
 		}
 
-		$confirm_options = Hash::merge($confirm_options, $options);
+		$confirmOptions = Hash::merge($confirmOptions, $options);
 
-		return $this->Html->link($title, '#', $confirm_options);
+		return $this->Html->link($title, '#', $confirmOptions);
 	}
 
 	/**

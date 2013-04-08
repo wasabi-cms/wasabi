@@ -287,7 +287,6 @@ class UserTest extends CakeTestCase {
 			'modified' => '2013-01-12 14:00:00'
 		));
 
-
 		$token = 'i_am_a_very_secret_token';
 		$expected = array(
 			'User' => array(
