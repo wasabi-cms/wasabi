@@ -122,6 +122,8 @@ class LessMinProcessorTest extends CakeTestCase {
 		$expected = 'body{color:#333;padding:0;margin:0}';
 		$result = file_get_contents($cssFile);
 		$this->assertEqual($expected, $result);
+
+		CakePlugin::unload('TestPlugin');
 	}
 
 	/**

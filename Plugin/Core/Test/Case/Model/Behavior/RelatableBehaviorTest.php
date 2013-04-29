@@ -42,6 +42,8 @@ class RelatableBehaviorTest extends CakeTestCase {
 	public function tearDown() {
 		unset($this->TestPluginPost);
 
+		CakePlugin::unload('TestPlugin');
+
 		parent::tearDown();
 	}
 

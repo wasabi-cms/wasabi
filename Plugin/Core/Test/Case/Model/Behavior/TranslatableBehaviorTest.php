@@ -46,6 +46,8 @@ class TranslatableBehaviorTest extends CakeTestCase {
 	public function tearDown() {
 		unset($this->Article);
 
+		CakePlugin::unload('TestPlugin');
+
 		parent::tearDown();
 	}
 
