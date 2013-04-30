@@ -154,6 +154,7 @@ Configure::write('Wasabi.installed',
  */
 
 CakePlugin::load('Core', array('bootstrap' => true, 'routes' => false));
+CakePlugin::load('Lessy', array('bootstrap' => false, 'routes' => false));
 CakePlugin::load('Migrations');
 
 /**
@@ -173,6 +174,7 @@ CakePlugin::load('Migrations');
  * ));
  */
 Configure::write('Dispatcher.filters', array(
+	'Lessy.LessMinFilter',
 	'AssetDispatcher',
 	'CacheDispatcher'
 ));
