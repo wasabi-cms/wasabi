@@ -13,88 +13,39 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('CakeMigration', 'Migrations.Lib');
+App::uses('Migration', 'Migrations.Model');
 
-class AddGroupPermissionsTable extends CakeMigration {
-
-	/**
-	 * Migration description
-	 *
-	 * @var string
-	 * @access public
-	 */
-	public $description = '';
+class AddGroupPermissionsTable extends Migration {
 
 	/**
-	 * Actions to be performed
+	 * Migrate up
 	 *
-	 * @var array $migration
-	 * @access public
+	 * @return void
 	 */
-	public $migration = array(
-		'up' => array(
-			'create_table' => array(
-				'group_permissions' => array(
-					'id' => array(
-						'type' => 'integer',
-						'key' => 'primary'
-					),
-					'group_id' => array(
-						'type' => 'integer',
-						'null' => false
-					),
-					'path' => array(
-						'type' => 'string',
-						'null' => false
-					),
-					'allowed' => array(
-						'type' => 'boolean',
-						'null' => false,
-						'default' => 0
-					),
-					'created' => array(
-						'type' => 'datetime',
-						'null' => false
-					),
-					'modified' => array(
-						'type' => 'datetime',
-						'null' => false
-					),
-					'indexes' => array(
-						'PRIMARY' => array(
-							'column' => 'id',
-							'unique' => 1
-						)
-					)
+	public function up() {
+		$this->createTable('group_permissions', array(
+			'id' => array('type' => 'integer', 'key' => 'primary'),
+			'group_id' => array('type' => 'integer', 'null' => false),
+			'path' => array('type' => 'string', 'null' => false),
+			'allowed' => array('type' => 'boolean', 'null' => false, 'default' => 0),
+			'created' => array('type' => 'datetime', 'null' => false),
+			'modified' => array('type' => 'datetime', 'null' => false),
+			'indexes' => array(
+				'PRIMARY' => array(
+					'column' => 'id',
+					'unique' => 1
 				)
 			)
-		),
-		'down' => array(
-			'drop_table' => array(
-				'group_permissions'
-			)
-		),
-	);
-
-	/**
-	 * Before migration callback
-	 *
-	 * @param string $direction, up or down direction of migration process
-	 * @return boolean Should process continue
-	 * @access public
-	 */
-	public function before($direction) {
-		return true;
+		));
 	}
 
 	/**
-	 * After migration callback
+	 * Migrate down
 	 *
-	 * @param string $direction, up or down direction of migration process
-	 * @return boolean Should process continue
-	 * @access public
+	 * @return void
 	 */
-	public function after($direction) {
-		return true;
+	public function down() {
+		$this->dropTable('group_permissions');
 	}
+
 }

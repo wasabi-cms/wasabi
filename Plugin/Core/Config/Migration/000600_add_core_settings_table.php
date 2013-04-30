@@ -13,99 +13,49 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('CakeMigration', 'Migrations.Lib');
+App::uses('ClassRegistry', 'Utility');
+App::uses('CoreSetting', 'Core.Model');
+App::uses('Migration', 'Migrations.Model');
 
-class AddCoreSettingsTable extends CakeMigration {
-
-	/**
-	 * Migration description
-	 *
-	 * @var string
-	 * @access public
-	 */
-	public $description = '';
+class AddCoreSettingsTable extends Migration {
 
 	/**
-	 * Actions to be performed
+	 * Migrate up
 	 *
-	 * @var array $migration
-	 * @access public
+	 * @return void
 	 */
-	public $migration = array(
-		'up' => array(
-			'create_table' => array(
-				'core_settings' => array(
-					'id' => array(
-						'type' => 'integer',
-						'key' => 'primary'
-					),
-					'application_name' => array(
-						'type' => 'string',
-						'length' => 255,
-						'null' => false
-					),
-					'enable_caching' => array(
-						'type' => 'boolean',
-						'null' => false,
-						'default' => 0
-					),
-					'cache_time' => array(
-						'type' => 'string',
-						'length' => 255,
-						'null' => false
-					),
-					'created' => array(
-						'type' => 'datetime',
-						'null' => false
-					),
-					'modified' => array(
-						'type' => 'datetime',
-						'null' => false
-					),
-					'indexes' => array(
-						'PRIMARY' => array(
-							'column' => 'id',
-							'unique' => 1
-						)
-					)
+	public function up() {
+		$this->createTable('core_settings', array(
+			'id' => array('type' => 'integer', 'key' => 'primary'),
+			'application_name' => array('type' => 'string', 'length' => 255, 'null' => false),
+			'enable_caching' => array('type' => 'boolean', 'null' => false, 'default' => 0),
+			'cache_time' => array('type' => 'string', 'length' => 255, 'null' => false),
+			'created' => array('type' => 'datetime', 'null' => false),
+			'modified' => array('type' => 'datetime', 'null' => false),
+			'indexes' => array(
+				'PRIMARY' => array(
+					'column' => 'id',
+					'unique' => 1
 				)
 			)
-		),
-		'down' => array(
-			'drop_table' => array(
-				'core_settings'
-			)
-		),
-	);
+		));
 
-	/**
-	 * Before migration callback
-	 *
-	 * @param string $direction, up or down direction of migration process
-	 * @return boolean Should process continue
-	 * @access public
-	 */
-	public function before($direction) {
-		return true;
+		$setting = ClassRegistry::init('Core.CoreSetting');
+		$setting->create(array(
+			'application_name' => 'Wasabi',
+			'enable_caching' => '0',
+			'cache_time' => '30 days'
+		));
+		$setting->save();
 	}
 
 	/**
-	 * After migration callback
+	 * Migrate down
 	 *
-	 * @param string $direction, up or down direction of migration process
-	 * @return boolean Should process continue
-	 * @access public
+	 * @return void
 	 */
-	public function after($direction) {
-		if ($direction === 'up') {
-			$setting = ClassRegistry::init('Core.CoreSetting');
-			$setting->create(array(
-				'application_name' => 'Wasabi',
-				'enable_caching' => '0',
-				'cache_time' => '30 days'
-			));
-			$setting->save();
-		}
-		return true;
+	public function down() {
+		$this->dropTable('core_settings');
 	}
+
 }

@@ -17,7 +17,7 @@ App::uses('AppController', 'Controller');
 App::uses('ConnectionManager', 'Model');
 App::uses('File', 'Utility');
 App::uses('Hash', 'Utility');
-App::uses('MigrationVersion', 'Migrations.Lib');
+App::uses('Migrations', 'Migrations.Lib');
 
 /**
  * @property CoreInstall $CoreInstall
@@ -202,19 +202,12 @@ class CoreInstallController extends AppController {
 		$this->set('title_for_layout', __d('core', 'Installing Wasasbi - Step 2 - Data Import'));
 		if ($this->request->is('post')) {
 			try {
-				$migration = new MigrationVersion(array(
-					'autoinit' => true
-				));
-				$messages[] = __d('core', 'Migration tables');
-				$migrationsMap = $migration->getMapping('Core');
-				end($migrationsMap);
-				$latestVersion = key($migrationsMap);
-				$migration->run(array(
-					'type' => 'Core',
+				$migrations = new Migrations();
+				$migrations->migrate(array(
 					'direction' => 'up',
-					'version' => $latestVersion
+					'scope' => 'Core'
 				));
-			} catch (MigrationVersionException $e) {
+			} catch (Exception $e) {
 				$this->Session->setFlash(__d('core', 'Something went wrong migrating the database: %s', array($e->getMessage())), 'default', array('class' => 'error'));
 				return;
 			}
