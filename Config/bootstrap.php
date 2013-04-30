@@ -173,7 +173,6 @@ CakePlugin::load('Migrations');
  * ));
  */
 Configure::write('Dispatcher.filters', array(
-	'Core.LessMinProcessor',
 	'AssetDispatcher',
 	'CacheDispatcher'
 ));
