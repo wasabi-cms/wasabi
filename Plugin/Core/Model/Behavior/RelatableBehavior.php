@@ -127,8 +127,11 @@ class RelatableBehavior extends ModelBehavior {
 					if (empty($match)) {
 						$relQuery = $this->_mergeQueryParams($this->_defaultQuery, $query);
 						$relQuery = $this->_mergeQueryParams($relQuery, $related['query']);
-						$relQuery = $this->_addFields($source, $relQuery);
-						$relQuery = $this->_addFields($source->{$related['name']}, $relQuery);
+						$isCountQuery = is_string($relQuery['fields']) && strpos($relQuery['fields'], 'COUNT(*) AS ') !== false;
+						if (!$isCountQuery) {
+							$relQuery = $this->_addFields($source, $relQuery);
+							$relQuery = $this->_addFields($source->{$related['name']}, $relQuery);
+						}
 						$relQuery = $this->_addJoin($source, $source->{$related['name']}, $type, $relQuery);
 
 						self::$_queries["{$source->alias}___{$related['name']}"] = array(
@@ -158,7 +161,7 @@ class RelatableBehavior extends ModelBehavior {
 		$foundInQueries = preg_grep("/^{$model->alias}___/", $keys);
 
 		if (!empty($foundInQueries)) {
-			$query = Hash::merge($query, self::$_queries[$foundInQueries[0]]['query']);
+			$query = self::$_queries[$foundInQueries[0]]['query'];
 			unset(self::$_queries[$foundInQueries[0]]['query']);
 			unset(self::$_queries[$foundInQueries[0]]['results']);
 			self::$_queries[$foundInQueries[0]]['base'] = true;
@@ -246,6 +249,7 @@ class RelatableBehavior extends ModelBehavior {
 						$query['conditions']["{$linkModel->alias}.{$sourceModel->{$type}[$linkModel->alias]['foreignKey']}"] = $foreignKeys;
 						unset(self::$_relationMap[$target['name']]);
 
+						$query = $this->_addFields($linkModel, $query);
 						$assocResults = $linkModel->find('all', $query);
 
 						if ($pushForeignKeys && !empty($assocResults)) {
@@ -355,37 +359,62 @@ class RelatableBehavior extends ModelBehavior {
 	 * @return array
 	 */
 	protected function _addFields(Model $model, $query) {
+		if (!isset($query['fields'])) {
+			$query['fields'] = array();
+		}
 		if (is_string($query['fields'])) {
 			$query['fields'] = (array) $query['fields'];
 		}
-		if (empty($query['fields'])) {
-			$query['fields'][] = "{$model->alias}.*";
-		} else {
-			$pkPos = -1;
-			$fields = array();
-			$allFields = false;
-			foreach ($query['fields'] as $key => $field) {
-				if (preg_match("/^{$model->alias}\.(.*)/", $field, $matches) > 0) {
-					if ($matches[1] === $model->primaryKey) {
-						$pkPos = $key;
-					} elseif ($matches[1] === '*') {
-						$allFields = true;
-					} else {
-						$fields[] = array(
-							'pos' => $key,
-							'fields' => $matches[1]
-						);
-					}
 
+		/** @var DboSource $db */
+		$db = $model->getDataSource();
+
+		if (empty($query['fields'])) {
+			$query['fields'] = $db->fields($model);
+			return $query;
+		}
+
+		$primaryKeyFound = false;
+		$allFields = false;
+		$allFieldsPos = 0;
+		$fieldFound = false;
+		$firstPos = 0;
+		foreach ($query['fields'] as $key => &$field) {
+			if (preg_match("/^{$model->alias}\.(.*)/", $field, $match) > 0 ||
+				preg_match("/^\"{$model->alias}\"\.\"(.*)\"\s/", $field, $match) > 0 ||
+				preg_match("/^`{$model->alias}`\.`(.*)`$/", $field, $match) > 0
+			) {
+				if (!$fieldFound) {
+					$fieldFound = true;
+					$firstPos = $key;
+				}
+				if ($match[1] === $model->primaryKey) {
+					$primaryKeyFound = true;
+					break;
+				}
+				if ($match[1] === '*') {
+					$allFields = true;
+					$allFieldsPos = $key;
+					break;
 				}
 			}
-			if ($pkPos === -1 && !empty($fields)) {
-				array_splice($query['fields'], $fields[0]['pos'], 0, "{$model->alias}.{$model->primaryKey}");
-			}
-			if ($pkPos === -1 && empty($fields) && $allFields === false) {
-				$query['fields'][] = "{$model->alias}.*";
-			}
 		}
+
+		if ($primaryKeyFound) {
+			return $query;
+		}
+		if ($fieldFound && !$allFields) {
+			array_splice($query['fields'], $firstPos, 0, $db->fields($model, null, "{$model->alias}.{$model->primaryKey}"));
+			return $query;
+		}
+		if ($allFields) {
+			unset($query['fields'][$allFieldsPos]);
+			array_splice($query['fields'], $allFieldsPos, 0, $db->fields($model));
+			return $query;
+		}
+
+		$query['fields'] = array_merge($query['fields'], $db->fields($model));
+
 		return $query;
 	}
 
