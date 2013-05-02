@@ -43,8 +43,8 @@ class RouteFixture extends CakeTestFixture {
 				'params' => '',
 				'redirect_to' => null,
 				'status_code' => null,
-				'created' => '0000-00-00 00:00:00',
-				'modified' => '0000-00-00 00:00:00'
+				'created' => '2013-01-01 00:00:00',
+				'modified' => '2013-01-01 00:00:00'
 			),
 			array(
 				'id' => 2,
@@ -55,8 +55,8 @@ class RouteFixture extends CakeTestFixture {
 				'params' => '3',
 				'redirect_to' => null,
 				'status_code' => null,
-				'created' => '0000-00-00 00:00:00',
-				'modified' => '0000-00-00 00:00:00'
+				'created' => '2013-01-01 00:00:00',
+				'modified' => '2013-01-01 00:00:00'
 			),
 			array(
 				'id' => 3,
@@ -67,8 +67,8 @@ class RouteFixture extends CakeTestFixture {
 				'params' => '3',
 				'redirect_to' => null,
 				'status_code' => null,
-				'created' => '0000-00-00 00:00:00',
-				'modified' => '0000-00-00 00:00:00'
+				'created' => '2013-01-01 00:00:00',
+				'modified' => '2013-01-01 00:00:00'
 			),
 			array(
 				'id' => 4,
@@ -79,8 +79,8 @@ class RouteFixture extends CakeTestFixture {
 				'params' => '4',
 				'redirect_to' => 2,
 				'status_code' => 307,
-				'created' => '0000-00-00 00:00:00',
-				'modified' => '0000-00-00 00:00:00'
+				'created' => '2013-01-01 00:00:00',
+				'modified' => '2013-01-01 00:00:00'
 			),
 			array(
 				'id' => 5,
@@ -91,8 +91,8 @@ class RouteFixture extends CakeTestFixture {
 				'params' => '5',
 				'redirect_to' => 2,
 				'status_code' => null,
-				'created' => '0000-00-00 00:00:00',
-				'modified' => '0000-00-00 00:00:00'
+				'created' => '2013-01-01 00:00:00',
+				'modified' => '2013-01-01 00:00:00'
 			)
 		);
 		parent::init();
