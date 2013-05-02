@@ -166,13 +166,11 @@ class UsersController extends BackendAppController {
 
 		// user could not be logged in via session/cookie/etc.
 		if ($this->request->is('post')) {
-			if (
-				!empty($this->data)	&&
+			if (!empty($this->data) &&
 				isset($this->data['User']) &&
 				$this->Authenticator->login('credentials', $this->data['User'])
 			) {
-				if (
-					isset($this->data['User']['remember']) &&
+				if (isset($this->data['User']['remember']) &&
 					$this->data['User']['remember'] === '1'
 				) {
 					$this->Authenticator->persist();
