@@ -19,6 +19,9 @@
 		</tr>
 		</thead>
 		<tbody>
+		<?php if (empty($plugins)): ?>
+			<tr><td class="center warn" colspan="5"><?php echo __d('core', 'There are no plugins available.') ?></td></tr>
+		<?php endif; ?>
 		<?php
 		$i = 1;
 		foreach($plugins as $p) {

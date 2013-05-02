@@ -313,6 +313,10 @@ header {
       &:last-child {
         .border-radius(0 0 5px 0);
       }
+
+      &.warn {
+        .border-radius(0 0 5px 5px);
+      }
     }
   }
 }
@@ -453,7 +457,6 @@ header {
     &.even {
 
       td {
-        //background-color: #f9f9f9;
         background-color: #fcfcfc;
       }
     }
@@ -461,8 +464,11 @@ header {
     &.hover, &.hover.even {
 
       td {
-        //background-color: #f0f0f0;
         background-color: #f5f5f5;
+
+        &.warn {
+          background-color: #fff6bf;
+        }
       }
     }
   }
@@ -487,6 +493,7 @@ header {
   .center { text-align: center; }
   .right  { text-align: right;  }
   .valign-middle { vertical-align: middle; }
+  .warn { background-color: #fff6bf; }
 }
 
 /** ------------------------- FORMS -------------------------- */
