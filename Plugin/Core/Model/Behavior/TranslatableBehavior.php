@@ -58,8 +58,6 @@ class TranslatableBehavior extends ModelBehavior {
 			return $query;
 		}
 
-		$this->_settings[$model->alias]['virtualFields'] = $model->virtualFields;
-
 		/** @var DboSource $db */
 		$db = $model->getDataSource();
 
@@ -102,8 +100,6 @@ class TranslatableBehavior extends ModelBehavior {
 
 		}
 
-		#var_dump($query); ob_flush();
-
 		return $query;
 	}
 
@@ -112,9 +108,6 @@ class TranslatableBehavior extends ModelBehavior {
 			return $results;
 		}
 
-		$model->virtualFields = $this->_settings[$model->alias]['virtualFields'];
-		$this->_settings[$model->alias]['virtualFields'] = array();
-
 		$isCountQuery = isset($this->_settings[$model->alias]['beforeFind']) && $this->_settings[$model->alias]['beforeFind'] === 'COUNT';
 
 		if (empty($results) || $isCountQuery) {
@@ -122,21 +115,22 @@ class TranslatableBehavior extends ModelBehavior {
 		}
 
 		foreach ($results as &$row) {
+			$modelKeys = array();
 			foreach ($row as $key => $translations) {
 				if (!is_numeric($key)) {
+					$modelKeys[] = $key;
 					continue;
 				}
 				foreach ($translations as $identifier => $translation) {
-					if ($translation === null || strpos($identifier, '__i18n__') === false) {
-						unset($row[$key][$identifier]);
-						continue;
+					foreach ($modelKeys as $mKey) {
+						$m = array();
+						if (preg_match("/i18n[_]{1,2}{$mKey}_(\S+)/", $identifier, $m) === 1) {
+							if ($translation !== null) {
+								$row[$mKey][$m[1]] = $translation;
+							}
+							unset($row[$key][$identifier]);
+						}
 					}
-					$m = array();
-					preg_match("/{$model->alias}__i18n__(\S+)__(\S+)/", $identifier, $m);
-					if (!empty($m) && isset($row[$m[1]]) && !empty($row[$m[1]]) && isset($row[$m[1]][$m[2]])) {
-						$row[$m[1]][$m[2]] = $translation;
-					}
-					unset($row[$key][$identifier]);
 				}
 				if (empty($row[$key])) {
 					unset($row[$key]);
@@ -196,12 +190,22 @@ class TranslatableBehavior extends ModelBehavior {
 		$db = $model->getDataSource();
 
 		$alias = "{$model->alias}__{$translationModel->alias}__{$field}";
-		$aliasVirtual = "i18n__{$model->alias}__{$field}";
-
-		if ($sourceModel !== null) {
-			$sourceModel->virtualFields[$aliasVirtual] = "{$alias}.content";
+		if ($db->config['datasource'] === 'Database/Mysql') {
+			$aliasVirtual = "i18n__{$model->alias}_{$field}";
 		} else {
-			$model->virtualFields[$aliasVirtual] = "{$alias}.content";
+			$aliasVirtual = "i18n_{$model->alias}_{$field}";
+		}
+
+		if (!isset($query['fields']) || $query['fields'] === null) {
+			$query['fields'] = $db->fields($model);
+		}
+
+		if (is_string($query['fields']) && strpos($query['fields'], 'COUNT(') === false) {
+			$query['fields'] = (array) $query['fields'];
+		}
+		if (is_array($query['fields'])) {
+			$trField = "({$db->name($alias . '.content')}) AS {$db->name($aliasVirtual)}";
+			$query['fields'][] = $trField;
 		}
 
 		$query['joins'][] = array(
@@ -309,8 +313,10 @@ class TranslatableBehavior extends ModelBehavior {
 			/** @var $db DboSource */
 			$db = $model->getDataSource();
 			foreach ($this->_settings[$model->alias]['fields'] as $field) {
+				$f1 = preg_grep("/^{$db->name($model->alias . '.' . $field)}/", $fields);
 				if (
 					$isAllFields ||
+					!empty($f1) ||
 					in_array("{$model->alias}.{$field}", $fields) ||
 					in_array($field, $fields) ||
 					array_search($db->name("{$model->alias}.{$field}"), $fields)
@@ -322,7 +328,6 @@ class TranslatableBehavior extends ModelBehavior {
 				}
 			}
 		}
-
 		return $addFields;
 	}
 
