@@ -24,7 +24,7 @@ class Plugin extends CoreAppModel {
 	 */
 	public function findAll() {
 		$pluginFolder = new Folder(APP . 'Plugin' . DS, false);
-		$pluginFolders = $pluginFolder->read(true, array('.', 'Core', 'Migrations'));
+		$pluginFolders = $pluginFolder->read(true, array('.', 'Core', 'Lessy', 'Migrations'));
 		$pluginFolders = $pluginFolders[0];
 
 		$plugins = array();
