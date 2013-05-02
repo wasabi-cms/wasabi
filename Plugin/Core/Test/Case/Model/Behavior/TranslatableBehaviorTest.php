@@ -168,7 +168,8 @@ class TranslatableBehaviorTest extends CakeTestCase {
 				'TestPluginCategory' => array(
 					'TestPluginPost'
 				)
-			)
+			),
+			'order' => 'TestPluginArticle.id ASC'
 		));
 		$this->assertEqual(4, count($result));
 		foreach ($result as $r) {
