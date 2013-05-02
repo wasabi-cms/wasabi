@@ -362,6 +362,22 @@ class UsersControllerTest extends CoreControllerTest {
 		$this->assertFalse($this->Users->Session->check('login_referer'));
 	}
 
+	public function testLoginActionPostWithRemember() {
+		$this->testAction('/' . $this->backendPrefix . '/login', array(
+			'method' => 'post',
+			'data' => array(
+				'User' => array(
+					'username' => 'admin',
+					'password' => 'admin',
+					'remember' => '1'
+				)
+			)
+		));
+
+		$this->assertEqual('success', $this->Users->Session->read('Message.flash.params.class'));
+		$this->assertArrayHasKey('me', $this->Users->Authenticator->Cookie->read());
+	}
+
 	public function testLogout() {
 		$this->_loginUser();
 
