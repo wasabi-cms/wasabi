@@ -5,8 +5,8 @@ php:
   - 5.4
 
 env:
-  - DB=mysql CAKE_VERSION=2.3.1
-  #- DB=pgsql CAKE_VERSION=2.3
+  - DB=mysql CAKE_VERSION=2.3.4
+  - DB=pgsql CAKE_VERSION=2.3.4
 
 before_script:
   - cd .. && git clone git://github.com/cakephp/cakephp && cd cakephp && git checkout $CAKE_VERSION
@@ -15,7 +15,6 @@ before_script:
   - chmod -R 777 tmp
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE wasabi_test;'; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'CREATE DATABASE wasabi_test;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'CREATE SCHEMA wasabi_test;' -U postgres -d wasabi_test; fi"
   - set +H
   - echo "<?php
     class DATABASE_CONFIG {
@@ -29,11 +28,7 @@ before_script:
         'datasource' => 'Database/Postgres',
         'host' => '127.0.0.1',
         'login' => 'postgres',
-        'database' => 'wasabi_test',
-        'schema' => array(
-          'default' => 'public',
-          'test' => 'wasabi_test',
-        )
+        'database' => 'wasabi_test'
       ),
       'sqlite' => array(
         'datasource' => 'Database/Sqlite',
