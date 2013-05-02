@@ -78,6 +78,7 @@ class LanguageTest extends CakeTestCase {
 				'name' => 'Test Lang',
 				'locale' => 'tl',
 				'iso' => 'tla',
+				'lang' => 'tl-LA',
 				'available_at_backend' => false,
 				'available_at_frontend' => false
 			)
