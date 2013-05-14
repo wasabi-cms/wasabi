@@ -41,7 +41,7 @@ class LanguageTest extends CakeTestCase {
 	public function testFindAll() {
 		$result = $this->Language->findAll();
 		$this->assertNotEmpty($result);
-		$this->assertEqual(2, count($result));
+		$this->assertEqual(3, count($result));
 
 		$result = $this->Language->findAll(array('conditions' => array('id' => 1)));
 		$this->assertNotEmpty($result);
@@ -72,7 +72,7 @@ class LanguageTest extends CakeTestCase {
 		$this->assertFalse($this->Language->canBeDeleted(2));
 		$this->assertFalse($this->Language->canBeDeleted(99));
 
-		$this->assertFalse($this->Language->canBeDeleted(3));
+		$this->assertFalse($this->Language->canBeDeleted(4));
 		$this->Language->save(array(
 			'Language' => array(
 				'name' => 'Test Lang',

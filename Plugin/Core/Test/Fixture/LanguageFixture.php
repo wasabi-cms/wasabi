@@ -57,6 +57,18 @@ class LanguageFixture extends CakeTestFixture {
 				'position' => 2,
 				'created' => '2013-01-12 14:00:00',
 				'modified' => '2013-01-12 14:00:00'
+			),
+			array(
+				'id' => 3,
+				'name' => 'Asd',
+				'locale' => 'as',
+				'iso' => 'asd',
+				'lang' => 'as-AS',
+				'available_at_frontend' => 0,
+				'available_at_backend' => 0,
+				'position' => 3,
+				'created' => '2013-01-12 14:00:00',
+				'modified' => '2013-01-12 14:00:00'
 			)
 		);
 		parent::init();
