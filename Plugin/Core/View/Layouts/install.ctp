@@ -9,7 +9,10 @@
 <!--[if IE 8]>        <html class="no-js lt-ie9" lang="en-US"><![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="en-US"><!--<![endif]-->
 <head>
-	<?php echo $this->element('Core.head'); ?>
+	<?php
+	echo $this->element('Core.head');
+	echo $this->WasabiAsset->css('/css/install.css', 'Core');
+	?>
 </head>
 <body class="install">
 <div class="install-wrapper">

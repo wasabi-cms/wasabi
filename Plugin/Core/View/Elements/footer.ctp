@@ -3,13 +3,11 @@
  * @var CoreView $this
  */
 ?>
-<footer>
-	<div class="inner">
-		Wasabi CMS
-		<?php if (Configure::read('debug') > 0) {
-			echo $this->Html->link('Go to Tests', '/test.php');
-		} ?>
-	</div>
+<footer class="row full">
+	Wasabi CMS
+	<?php if (Configure::read('debug') > 0) {
+		echo $this->Html->link('Go to Tests', '/test.php');
+	} ?>
 </footer>
 <?php
 echo $this->WasabiAsset->js('/js/jquery-1.9.1.min.js', 'Core');
@@ -26,12 +24,8 @@ $this->start('bottom_js');
 $this->end('bottom_js');
 echo $this->fetch('bottom_js');
 ?>
-<!--[if lt IE 7 ]>
-<script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-<script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
-<![endif]-->
-<?php
-if (!isset($sql_dump) || $sql_dump !== false) {
-	echo $this->element('sql_dump');
-}
-?>
+<?php if (!isset($sql_dump) || $sql_dump !== false): ?>
+<div class="row full">
+	<?php echo $this->element('sql_dump'); ?>
+</div>
+<?php endif; ?>

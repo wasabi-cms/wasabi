@@ -13,16 +13,22 @@
 </head>
 <body>
 	<header>
-		<div class="inner">
+		<div class="row full">
 			<?php echo $this->element('Core.menu_primary'); ?>
 			<?php echo $this->element('Core.menu_user'); ?>
 			<?php echo $this->element('Core.language_switch'); ?>
 		</div>
 	</header>
 	<div id="main">
-		<div class="inner">
+		<div class="row full">
 			<?php echo $this->element('Core.menu_secondary'); ?>
+		</div>
+		<?php if (CakeSession::check('Message.flash')): ?>
+		<div class="row full">
 			<?php echo $this->Session->flash(); ?>
+		</div>
+		<?php endif; ?>
+		<div class="row">
 			<?php echo $this->fetch('content'); ?>
 		</div>
 	</div>
