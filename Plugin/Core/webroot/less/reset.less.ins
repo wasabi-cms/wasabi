@@ -1,4 +1,4 @@
-/*! normalize.css v2.0.1 | MIT License | git.io/normalize */
+/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
 
 /* ==========================================================================
    HTML5 display definitions
@@ -63,8 +63,8 @@ audio:not([controls]) {
 
 html {
   font-family: sans-serif; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
   -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
 }
 
 /**
@@ -101,12 +101,13 @@ a:hover {
    ========================================================================== */
 
 /**
- * Address variable `h1` font size within `section` and `article` contexts in
- * Firefox 4+, Safari 5, and Chrome.
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari 5, and Chrome.
  */
 
 h1 {
   font-size: 2em;
+  margin: 0.67em 0;
 }
 
 /**
@@ -135,6 +136,16 @@ dfn {
 }
 
 /**
+ * Address differences between Firefox and other browsers.
+ */
+
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+/**
  * Address styling not present in IE 8/9.
  */
 
@@ -160,9 +171,7 @@ samp {
  */
 
 pre {
-  white-space: pre;
   white-space: pre-wrap;
-  word-wrap: break-word;
 }
 
 /**
@@ -280,6 +289,18 @@ textarea {
 button,
 input {
   line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+  text-transform: none;
 }
 
 /**
