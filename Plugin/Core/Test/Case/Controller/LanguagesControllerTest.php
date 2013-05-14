@@ -165,7 +165,7 @@ class LanguagesControllerTest extends CoreControllerTest {
 		$this->assertEqual(array('action' => 'index'), $this->Languages->redirectUrl);
 	}
 
-	public function testEditActionPostValidationError() {
+	public function testEditActionPostValidationError1() {
 		$langCount = $this->Languages->Language->find('count');
 
 		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array(
@@ -181,6 +181,23 @@ class LanguagesControllerTest extends CoreControllerTest {
 		$this->assertNotEmpty($this->Languages->Language->validationErrors);
 		$this->assertEqual($langCount, $this->Languages->Language->find('count'));
 		$this->assertTrue($this->Languages->Language->hasAny(array('name' => 'English')));
+		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
+		$this->assertNull($this->Languages->redirectUrl);
+	}
+
+	public function testEditActionPostValidationError2() {
+		$this->testAction('/' . $this->backendPrefix . '/languages/edit/1', array(
+			'method' => 'post',
+			'data' => array(
+				'Language' => array(
+					'id' => 1,
+					'available_at_frontend' => 0
+				)
+			)
+		));
+
+		$this->assertNotEmpty($this->Languages->Language->validationErrors);
+		$this->assertArrayHasKey('available_at_frontend', $this->Languages->Language->validationErrors);
 		$this->assertEqual('error', $this->Languages->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->Languages->redirectUrl);
 	}

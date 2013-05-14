@@ -13,6 +13,9 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Cache', 'Cache');
+App::uses('CakeSession', 'Model/Datasource');
+
 class Language extends CoreAppModel {
 
 	/**
@@ -67,6 +70,13 @@ class Language extends CoreAppModel {
 				'rule' => array('isUnique'),
 				'message' => 'This HTML language code already exists.'
 			)
+		),
+		'available_at_frontend' => array(
+			'at_least_one' => array(
+				'rule' => 'atLeastOneFrontendLanguageIsAvailable',
+				'message' => 'At least one language must be available at frontend.',
+				'allowEmpty' => true
+			)
 		)
 	);
 
@@ -79,6 +89,38 @@ class Language extends CoreAppModel {
 	 * @return void
 	 */
 	public function afterSave($created) {
+		Cache::delete('languages', 'core.infinite');
+	}
+
+	/**
+	 * beforeDelete callback
+	 * 1. Clear the Wasabi.content_language_id session the language with this id has been deleted.
+	 * 2. If no language is available at frontend after deletion, pick the next language by position
+	 * and make it available at frontend.
+	 * 3. Clear the language cache.
+	 *
+	 * @return void
+	 */
+	public function afterDelete() {
+		$sessKey = 'Wasabi.content_language_id';
+		if (CakeSession::check($sessKey)) {
+			$lang = $this->find('first', array(
+				'conditions' => array(
+					$this->alias . '.' . $this->primaryKey => CakeSession::read($sessKey)
+				)
+			));
+			if (!$lang) {
+				CakeSession::delete($sessKey);
+			}
+		}
+		if (!$this->atLeastOneFrontendLanguageIsAvailable(null, false, $this->id)) {
+			$lang = $this->find('first');
+			$data = array(
+				'id' => $lang['Language']['id'],
+				'available_at_frontend' => true
+			);
+			$this->save($data);
+		}
 		Cache::delete('languages', 'core.infinite');
 	}
 
@@ -107,13 +149,13 @@ class Language extends CoreAppModel {
 	}
 
 	/**
-	 * Check if a user account by given $id can be deleted,
+	 * Check if a language by given $id can be deleted,
 	 *
 	 * @param integer $id
 	 * @return bool
 	 */
 	public function canBeDeleted($id) {
-		// available backup languages cannot be deleted
+		// available backend languages cannot be deleted
 		if ($id == 1 || $id == 2) {
 			return false;
 		}
@@ -124,6 +166,38 @@ class Language extends CoreAppModel {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check if at least one other frontend language is available.
+	 *
+	 * @param array $check the validation field and its value
+	 * @param bool $validation determines if this method was called from model validations
+	 * @param null|integer $id either null on validation or the language id to check against
+	 * @throws InvalidArgumentException
+	 * @return bool
+	 */
+	public function atLeastOneFrontendLanguageIsAvailable($check = array(), $validation = true, $id = null) {
+		if ($validation) {
+			$needsCheck = isset($this->data[$this->alias][$this->primaryKey]) && !$check['available_at_frontend'];
+			if (!$needsCheck) {
+				return true;
+			}
+			$id = $this->data[$this->alias][$this->primaryKey];
+		}
+
+		if ($id === null) {
+			throw new InvalidArgumentException(__d('core', 'You have to provide an $id to check against.'));
+		}
+
+		$availableAtFrontendCount = $this->find('count', array(
+			'conditions' => array(
+				$this->alias . '.' . $this->primaryKey . ' <>' => $id,
+				$this->alias . '.available_at_frontend' => true
+			)
+		));
+
+		return $availableAtFrontendCount >= 1;
 	}
 
 }

@@ -13,6 +13,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CakeSession', 'Model/Datasource');
 App::uses('CakeTestCase', 'TestSuite');
 App::uses('ClassRegistry', 'Utility');
 App::uses('Language', 'Core.Model');
@@ -84,6 +85,60 @@ class LanguageTest extends CakeTestCase {
 			)
 		));
 		$this->assertTrue($this->Language->canBeDeleted(3));
+	}
+
+	public function testAfterDelete1() {
+		CakeSession::write('Wasabi.content_language_id', 2);
+		Cache::write('languages', 'blub', 'core.infinite');
+
+		$this->Language->delete(3);
+		$this->assertEquals(2, CakeSession::read('Wasabi.content_language_id'));
+		$this->assertFalse(Cache::read('languages', 'core.infinite'));
+	}
+
+	public function testAfterDelete2() {
+		$this->Language->save(array(
+			'id' => 3,
+			'available_at_frontend' => true
+		));
+		CakeSession::write('Wasabi.content_language_id', 3);
+		$this->Language->delete(3);
+		$this->assertFalse(CakeSession::check('Wasabi.content_language_id'));
+	}
+
+	public function testAfterDelete3() {
+		$this->Language->save(array(
+			'id' => 3,
+			'available_at_frontend' => true
+		));
+		$this->Language->save(array(
+			'id' => 1,
+			'available_at_frontend' => false
+		));
+
+		$this->Language->delete(3);
+		$result = $this->Language->field('available_at_frontend', array('id' => 1));
+		$this->assertTrue($result);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testAtLeastOneFrontendLanguageIsAvailableThrowsException() {
+		$this->Language->atLeastOneFrontendLanguageIsAvailable(null, false);
+	}
+
+	public function testAtLeastOneFrontendLanguageIsAvailable() {
+		$this->assertTrue($this->Language->atLeastOneFrontendLanguageIsAvailable(null, false, 3));
+		$this->assertFalse($this->Language->atLeastOneFrontendLanguageIsAvailable(null, false, 1));
+
+		$this->Language->data = array(
+			'Language' => array(
+				'id' => 1
+			)
+		);
+		$check = array('available_at_frontend' => 0);
+		$this->assertFalse($this->Language->atLeastOneFrontendLanguageIsAvailable($check));
 	}
 
 }
