@@ -18,56 +18,62 @@ App::uses('ClassRegistry', 'Utility');
 App::uses('Folder', 'Utility');
 App::uses('WasabiEventManager', 'Core.Lib');
 
-$cacheFolder = new Folder(CACHE . 'core' . DS . 'infinite', true, 0755);
-Cache::config('core.infinite', array(
-	'engine' => 'File',
-	'duration' => '+999 days',
-	'prefix' => false,
-	'path' => $cacheFolder->path,
-));
+/**
+ * Setup cache configs.
+ */
+	$cacheFolder = new Folder(CACHE . 'core' . DS . 'infinite', true, 0755);
+	Cache::config('core.infinite', array(
+		'engine' => 'File',
+		'duration' => '+999 days',
+		'prefix' => false,
+		'path' => $cacheFolder->path,
+	));
 
-$cacheFolder = new Folder(CACHE . 'core' . DS . 'routes', true, 0755);
-Cache::config('core.routes', array(
-	'engine' => 'File',
-	'duration' => '+999 days',
-	'prefix' => false,
-	'path' => $cacheFolder->path
-));
+	$cacheFolder = new Folder(CACHE . 'core' . DS . 'routes', true, 0755);
+	Cache::config('core.routes', array(
+		'engine' => 'File',
+		'duration' => '+999 days',
+		'prefix' => false,
+		'path' => $cacheFolder->path
+	));
 
-$cacheFolder = new Folder(CACHE . 'frontend' . DS . 'pygmentize', true, 0755);
-Cache::config('frontend.pygmentize', array(
-	'engine' => 'File',
-	'duration' => '+999 days',
-	'prefix' => false,
-	'path' => $cacheFolder->path
-));
+	$cacheFolder = new Folder(CACHE . 'frontend' . DS . 'pygmentize', true, 0755);
+	Cache::config('frontend.pygmentize', array(
+		'engine' => 'File',
+		'duration' => '+999 days',
+		'prefix' => false,
+		'path' => $cacheFolder->path
+	));
 
-unset($cacheFolder);
+	unset($cacheFolder);
 
-$activePlugins = array();
-if (Configure::read('Wasabi.installed') === true) {
-	$activePlugins = Cache::read('active_plugins', 'core.infinite');
-}
-
-if ($activePlugins === false) {
-	/**
-	 * @var Plugin $plugin
-	 */
-	$plugin = ClassRegistry::init('Core.Plugin');
-
+/**
+ * Load active plugins.
+ */
 	$activePlugins = array();
-	foreach ($plugin->findAll() as $p) {
-		if ($p['Plugin']['active'] === true) {
-			$activePlugins[] = $p;
-		}
+	if (Configure::read('Wasabi.installed') === true) {
+		$activePlugins = Cache::read('active_plugins', 'core.infinite');
 	}
-	unset($plugin);
 
-	Cache::write('active_plugins', $activePlugins, 'core.infinite');
-}
+	if ($activePlugins === false) {
+		/**
+		 * @var Plugin $plugin
+		 */
+		$plugin = ClassRegistry::init('Core.Plugin');
 
-foreach ($activePlugins as $p) {
-	CakePlugin::load($p['Plugin']['name'], array('bootstrap' => $p['Plugin']['bootstrap'], 'routes' => $p['Plugin']['routes']));
-}
+		$activePlugins = array();
+		foreach ($plugin->findAll() as $p) {
+			if ($p['Plugin']['active'] === true) {
+				$activePlugins[] = $p;
+			}
+		}
+		unset($plugin);
 
-unset($activePlugins);
+		Cache::write('active_plugins', $activePlugins, 'core.infinite');
+	}
+
+	foreach ($activePlugins as $p) {
+		CakePlugin::load($p['Plugin']['name'], array('bootstrap' => $p['Plugin']['bootstrap'], 'routes' => $p['Plugin']['routes']));
+	}
+
+	unset($activePlugins);
