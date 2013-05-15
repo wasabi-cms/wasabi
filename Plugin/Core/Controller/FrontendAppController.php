@@ -57,7 +57,7 @@ class FrontendAppController extends AppController {
 	 * @param integer|null $langId The id of the current active language
 	 * @return void
 	 */
-	public function loadLanguages($langId = null) {
+	protected function _loadLanguages($langId = null) {
 		// All available languages for frontend / backend
 		if (!$languages = Cache::read('languages', 'core.infinite')) {
 			$language = ClassRegistry::init('Core.Language');

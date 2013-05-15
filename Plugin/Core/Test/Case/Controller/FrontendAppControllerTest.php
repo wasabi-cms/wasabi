@@ -16,8 +16,16 @@
 App::uses('FrontendAppController', 'Core.Controller');
 App::uses('CoreControllerTest', 'Core.Test/TestSuite');
 
+class FrontendAppTestController extends FrontendAppController {
+
+	public function loadLanguages($langId = null) {
+		$this->_loadLanguages($langId);
+	}
+
+}
+
 /**
- * @property FrontendAppController $Frontend
+ * @property FrontendAppTestController $Frontend
  */
 
 class FrontendAppControllerTest extends CoreControllerTest {
@@ -25,7 +33,7 @@ class FrontendAppControllerTest extends CoreControllerTest {
 	public $fixtures = array('plugin.core.language', 'plugin.core.core_setting');
 
 	public function setUp() {
-		$this->Frontend = new FrontendAppController();
+		$this->Frontend = new FrontendAppTestController();
 		$this->Frontend->constructClasses();
 
 		parent::setUp();
