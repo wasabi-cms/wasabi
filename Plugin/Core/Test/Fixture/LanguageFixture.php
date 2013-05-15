@@ -25,6 +25,7 @@ class LanguageFixture extends CakeTestFixture {
 		'lang' => array('type' => 'string', 'length' => 5, 'null' => false),
 		'available_at_frontend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 		'available_at_backend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
+		'in_progress' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 		'position' => array('type' => 'integer', 'null' => true),
 		'created' => 'datetime',
 		'modified' => 'datetime'
@@ -42,6 +43,7 @@ class LanguageFixture extends CakeTestFixture {
 				'lang' => 'en-US',
 				'available_at_frontend' => 1,
 				'available_at_backend' => 1,
+				'in_progress' => 0,
 				'position' => 1,
 				'created' => '2013-01-12 14:00:00',
 				'modified' => '2013-01-12 14:00:00'
@@ -54,6 +56,7 @@ class LanguageFixture extends CakeTestFixture {
 				'lang' => 'de-DE',
 				'available_at_frontend' => 0,
 				'available_at_backend' => 1,
+				'in_progress' => 0,
 				'position' => 2,
 				'created' => '2013-01-12 14:00:00',
 				'modified' => '2013-01-12 14:00:00'
@@ -66,6 +69,7 @@ class LanguageFixture extends CakeTestFixture {
 				'lang' => 'as-AS',
 				'available_at_frontend' => 0,
 				'available_at_backend' => 0,
+				'in_progress' => 1,
 				'position' => 3,
 				'created' => '2013-01-12 14:00:00',
 				'modified' => '2013-01-12 14:00:00'

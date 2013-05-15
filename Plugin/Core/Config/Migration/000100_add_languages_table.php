@@ -33,6 +33,7 @@ class AddLanguagesTable extends Migration {
 			'lang' => array('type' => 'string', 'length' => 5, 'null' => false),
 			'available_at_frontend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 			'available_at_backend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
+			'in_progress' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 			'position' => array('type' => 'integer', 'null' => true, 'default' => null),
 			'created' => array('type' => 'datetime', 'null' => false),
 			'modified' => array('type' => 'datetime', 'null' => false),
@@ -53,6 +54,7 @@ class AddLanguagesTable extends Migration {
 			'lang' => 'en-US',
 			'available_at_frontend' => true,
 			'available_at_backend' => true,
+			'in_progress' => false,
 			'position' => 1
 		));
 		$language->save();
@@ -64,6 +66,7 @@ class AddLanguagesTable extends Migration {
 			'lang' => 'de-DE',
 			'available_at_frontend' => false,
 			'available_at_backend' => true,
+			'in_progress' => false,
 			'position' => 2
 		));
 		$language->save();
