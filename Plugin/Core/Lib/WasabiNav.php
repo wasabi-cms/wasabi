@@ -96,4 +96,8 @@ class WasabiNav {
 		return self::$_orderedItems;
 	}
 
+	public static function clearItems() {
+		self::$_rawItems = array();
+	}
+
 }
