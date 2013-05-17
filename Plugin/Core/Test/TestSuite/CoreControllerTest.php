@@ -68,12 +68,16 @@ class CoreControllerTest extends ControllerTestCase {
 	 * This method should be used for controller tests that require a logged in user.
 	 *
 	 * @param bool|integer $fakeId
+	 * @param bool|integer $fakeGroupId
 	 */
-	protected function _loginUser($fakeId = false) {
+	protected function _loginUser($fakeId = false, $fakeGroupId = false) {
 		CakeSession::write('Auth', array(
 			'User' => array(
 				'id' => ($fakeId !== false) ? (int) $fakeId : 1,
 				'username' => 'admin'
+			),
+			'Group' => array(
+				'id' => ($fakeGroupId !== false) ? (int) $fakeGroupId : 1
 			)
 		));
 	}
