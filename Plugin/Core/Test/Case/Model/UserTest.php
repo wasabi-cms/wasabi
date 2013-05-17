@@ -229,39 +229,13 @@ class UserTest extends CakeTestCase {
 			'username' => 'admin',
 			'password' => 'admin'
 		);
-		$expected = array(
-			'User' => array(
-				'id' => 1,
-				'group_id' => 1,
-				'language_id' => 1,
-				'username' => 'admin',
-				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
-				'active' => true,
-				'created' => '2013-01-12 14:00:00',
-				'modified' => '2013-01-12 14:00:00'
-			),
-			'Group' => array(
-				'id' => 1,
-				'name' => 'Administrator',
-				'user_count' => 2,
-				'created' => '2013-01-12 14:00:00',
-				'modified' => '2013-01-12 14:00:00'
-			),
-			'Language' => array(
-				'id' => 1,
-				'name' => 'English',
-				'locale' => 'en',
-				'iso' => 'eng',
-				'lang' => 'en-US',
-				'available_at_frontend' => true,
-				'available_at_backend' => true,
-				'position' => 1,
-				'created' => '2013-01-12 14:00:00',
-				'modified' => '2013-01-12 14:00:00'
-			)
-		);
 		$result = $this->User->authenticate('credentials', $credentials);
-		$this->assertEqual($expected, $result);
+		$this->assertArrayHasKey('User', $result);
+		$this->assertArrayHasKey('Group', $result);
+		$this->assertArrayHasKey('Language', $result);
+		$this->assertEqual(1, $result['User']['id']);
+		$this->assertEqual(1, $result['Group']['id']);
+		$this->assertEqual(1, $result['Language']['id']);
 
 		// test cookie authentication with LoginToken
 		$token = 'invalid_token';
@@ -288,39 +262,13 @@ class UserTest extends CakeTestCase {
 		));
 
 		$token = 'i_am_a_very_secret_token';
-		$expected = array(
-			'User' => array(
-				'id' => 1,
-				'group_id' => 1,
-				'language_id' => 1,
-				'username' => 'admin',
-				'password' => '$2a$10$XgE0KcjO4WNIXZIPk.6dQ.ZXTCf5pxVxdx9SIh5p5JMe9iSd8ceIO',
-				'active' => true,
-				'created' => '2013-01-12 14:00:00',
-				'modified' => '2013-01-12 14:00:00',
-				'Group' => array(
-					'id' => '1',
-					'name' => 'Administrator',
-					'user_count' => '2',
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				),
-				'Language' => array(
-					'id' => '1',
-					'name' => 'English',
-					'locale' => 'en',
-					'iso' => 'eng',
-					'lang' => 'en-US',
-					'available_at_frontend' => true,
-					'available_at_backend' => true,
-					'position' => '1',
-					'created' => '2013-01-12 14:00:00',
-					'modified' => '2013-01-12 14:00:00'
-				)
-			)
-		);
 		$result = $this->User->authenticate('cookie', $token);
-		$this->assertEqual($expected, $result);
+		$this->assertArrayHasKey('User', $result);
+		$this->assertArrayHasKey('Group', $result['User']);
+		$this->assertArrayHasKey('Language', $result['User']);
+		$this->assertEqual(1, $result['User']['id']);
+		$this->assertEqual(1, $result['User']['Group']['id']);
+		$this->assertEqual(1, $result['User']['Language']['id']);
 
 		$expected = 0;
 		$result = $this->User->LoginToken->find('count');
