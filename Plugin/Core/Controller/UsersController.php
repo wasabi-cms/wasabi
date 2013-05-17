@@ -216,7 +216,7 @@ class UsersController extends BackendAppController {
 	}
 
 	protected function _getRedirect($deleteSession = true) {
-		$redirect = $this->viewVars['backend_menu_for_layout']['primary'][0]['url'];
+		$redirect = array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index');
 		if ($this->Session->check('login_referer')) {
 			$redirect = $this->Session->read('login_referer');
 			if ($deleteSession === true) {
