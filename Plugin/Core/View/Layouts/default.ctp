@@ -12,7 +12,7 @@
 <?php echo $this->element('Core.head'); ?>
 </head>
 <body>
-	<header>
+	<header<?php echo (Configure::read('debug') > 0) ? ' class="debug"' : '' ?>>
 		<div class="row full">
 			<?php echo $this->element('Core.menu_primary'); ?>
 			<?php echo $this->element('Core.menu_user'); ?>
