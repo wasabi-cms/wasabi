@@ -265,7 +265,7 @@ class UsersControllerTest extends CoreControllerTest {
 
 		$this->assertFalse($this->Users->Session->check('login_referer'));
 
-		$expected = $this->Users->viewVars['backend_menu_for_layout']['primary'][0]['url'];
+		$expected = array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index');
 		$result = $this->Users->redirectUrl;
 		$this->assertEqual($expected, $result);
 	}
@@ -339,7 +339,7 @@ class UsersControllerTest extends CoreControllerTest {
 
 		$this->assertEqual('success', $this->Users->Session->read('Message.flash.params.class'));
 
-		$expected = $this->Users->viewVars['backend_menu_for_layout']['primary'][0]['url'];
+		$expected = array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index');
 		$result = $this->Users->redirectUrl;
 		$this->assertEqual($expected, $result);
 	}
