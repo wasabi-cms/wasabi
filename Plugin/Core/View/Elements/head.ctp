@@ -1,11 +1,12 @@
 <?php
 /**
  * @var CoreView $this
+ * @var $title_for_layout
  */
 ?>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title><?php echo $title_for_layout ?></title>
+<title><?php echo $title_for_layout . ' - ' . Configure::read('Settings.core.application_name') ?></title>
 <meta name="viewport" content="width=device-width">
 <?php
 echo $this->fetch('meta');
