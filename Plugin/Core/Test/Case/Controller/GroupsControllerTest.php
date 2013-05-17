@@ -38,7 +38,7 @@ class GroupsTestController extends GroupsController {
 
 class GroupsControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.group', 'plugin.core.user', 'plugin.core.language', 'plugin.core.core_setting');
+	public $fixtures = array('plugin.core.group', 'plugin.core.group_permission', 'plugin.core.user', 'plugin.core.language', 'plugin.core.core_setting');
 
 	public function setUp() {
 		$this->Groups = $this->generate('GroupsTest');
