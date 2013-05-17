@@ -17,6 +17,7 @@ App::uses('CoreAppModel', 'Core.Model');
 App::uses('Hash', 'Utility');
 
 /**
+ * @property GroupPermission $GroupPermission
  * @property User $User
  */
 
@@ -30,6 +31,10 @@ class Group extends CoreAppModel {
 	public $hasMany = array(
 		'User' => array(
 			'className' => 'Core.User'
+		),
+		'GroupPermission' => array(
+			'className' => 'Core.GroupPermission',
+			'dependent' => true
 		)
 	);
 
