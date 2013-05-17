@@ -13,6 +13,12 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Cache', 'Cache');
+App::uses('CoreAppModel', 'Core.Model');
+
+/**
+ * @property Group $Group
+ */
 class GroupPermission extends CoreAppModel {
 
 	public $belongsTo = array(
@@ -20,5 +26,22 @@ class GroupPermission extends CoreAppModel {
 			'className' => 'Core.Group'
 		)
 	);
+
+	public function findAllForGroup($groupId) {
+		if (!$permissions = Cache::read($groupId, 'core.group_permissions')) {
+			$permissions = array();
+			$groupPermissions = $this->find('all', array(
+				'conditions' => array(
+					$this->alias . '.group_id' => $groupId,
+					$this->alias . '.allowed' => true
+				)
+			));
+			foreach ($groupPermissions as $groupPermission) {
+				$permissions[] = $groupPermission['GroupPermission']['path'];
+			}
+			Cache::write($groupId, $permissions, 'core.group_permissions');
+		}
+		return $permissions;
+	}
 
 }
