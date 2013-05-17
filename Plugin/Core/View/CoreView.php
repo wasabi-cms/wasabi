@@ -26,4 +26,12 @@ App::uses('View', 'View');
 
 class CoreView extends View {
 
+	public $backendPrefix;
+
+	public function __construct(Controller $controller = null) {
+		parent::__construct($controller);
+
+		$this->backendPrefix = Configure::read('Wasabi.backend_prefix');
+	}
+
 }
