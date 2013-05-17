@@ -25,7 +25,7 @@ App::uses('WasabiEventManager', 'Core.Lib');
 	Cache::config('core.infinite', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
-		'prefix' => false,
+		'prefix' => '',
 		'path' => $cacheFolder->path,
 	));
 
@@ -33,7 +33,23 @@ App::uses('WasabiEventManager', 'Core.Lib');
 	Cache::config('core.routes', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
-		'prefix' => false,
+		'prefix' => '',
+		'path' => $cacheFolder->path
+	));
+
+	$cacheFolder = new Folder(CACHE . 'core' . DS . 'group_permissions', true, 0755);
+	Cache::config('core.group_permissions', array(
+		'engine' => 'File',
+		'duration' => '+999 days',
+		'prefix' => '',
+		'path' => $cacheFolder->path
+	));
+
+	$cacheFolder = new Folder(CACHE . 'core' . DS . 'guardian_paths', true, 0755);
+	Cache::config('core.guardian_paths', array(
+		'engine' => 'File',
+		'duration' => '+999 days',
+		'prefix' => '',
 		'path' => $cacheFolder->path
 	));
 
@@ -41,7 +57,7 @@ App::uses('WasabiEventManager', 'Core.Lib');
 	Cache::config('frontend.pygmentize', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
-		'prefix' => false,
+		'prefix' => '',
 		'path' => $cacheFolder->path
 	));
 
