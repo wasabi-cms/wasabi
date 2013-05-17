@@ -39,11 +39,18 @@ class CHtmlHelper extends AppHelper {
 	 * @param string $title
 	 * @param array|string $url
 	 * @param array $options
-	 * @param bool|string $confirmMessage
+	 * @param bool $displayLinkTextIfUnauthorized
 	 * @return string
 	 */
-	public function backendLink($title, $url, $options = array(), $confirmMessage = false) {
-		return $this->Html->link($title, $this->_getBackendUrl($url), $options, $confirmMessage);
+	public function backendLink($title, $url, $options = array(), $displayLinkTextIfUnauthorized = false) {
+		$url = $this->_getBackendUrl($url);
+		if (!Guardian::hasAccess($url)) {
+			if ($displayLinkTextIfUnauthorized) {
+				return $title;
+			}
+			return '';
+		}
+		return $this->Html->link($title, $url, $options);
 	}
 
 	/**
@@ -52,10 +59,11 @@ class CHtmlHelper extends AppHelper {
 	 * @param string $title
 	 * @param array|string $url
 	 * @param array $options
+	 * @param bool $displayLinkTextIfUnauthorized
 	 * @return string
 	 * @throws CakeException
 	 */
-	public function backendConfirmationLink($title, $url, $options) {
+	public function backendConfirmationLink($title, $url, $options, $displayLinkTextIfUnauthorized = false) {
 		if (!isset($options['confirm-message'])) {
 			throw new CakeException('\'confirm-message\' option is not set in confirmationLink.');
 		}
@@ -63,9 +71,17 @@ class CHtmlHelper extends AppHelper {
 			throw new CakeException('\'confirm-title\' option is not set in confirmationLink.');
 		}
 
+		$url = $this->_getBackendUrl($url, true);
+		if (!Guardian::hasAccess($url)) {
+			if ($displayLinkTextIfUnauthorized) {
+				return $title;
+			}
+			return '';
+		}
+
 		$confirmOptions = array(
 			'class' => 'confirm',
-			'data-confirm-action' => $this->_getBackendUrl($url, true)
+			'data-confirm-action' => $url
 		);
 
 		if (isset($options['class']) && $options['class'] != '') {

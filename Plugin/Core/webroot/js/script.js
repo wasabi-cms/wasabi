@@ -178,6 +178,55 @@
 
 })(jQuery);
 
+(function(factory) {
+
+  if (typeof exports == 'object') {
+    // CommonJS
+    factory(require('jquery'), require('spin'))
+  }
+  else if (typeof define == 'function' && define.amd) {
+    // AMD, register as anonymous module
+    define(['jquery', 'spin'], factory)
+  }
+  else {
+    // Browser globals
+    if (!window.Spinner) throw new Error('Spin.js not present');
+    factory(window.jQuery, window.Spinner)
+  }
+
+}(function($, Spinner) {
+
+  $.fn.spin = function(opts, color) {
+
+    return this.each(function() {
+      var $this = $(this),
+        data = $this.data();
+
+      if (data.spinner) {
+        data.spinner.stop();
+        delete data.spinner;
+      }
+      if (opts !== false) {
+        opts = $.extend(
+          { color: color || $this.css('color') },
+          $.fn.spin.presets[opts] || opts
+        );
+        data.spinner = new Spinner(opts).spin(this)
+      }
+    })
+  };
+
+  $.fn.spin.presets = {
+//    tiny: { lines: 8, length: 2, width: 2, radius: 3 },
+//    small: { lines: 8, length: 4, width: 3, radius: 5 },
+//    large: { lines: 10, length: 8, width: 4, radius: 8 }
+    "small": { lines: 12, length: 0, width: 3, radius: 6 },
+    "medium": { lines: 9, length: 4, width: 2, radius: 3 },
+    "large": { lines: 11, length: 7, width: 2, radius: 5 }
+  };
+
+}));
+
 $(function() {
 
   $('.user-menu').hover(function() {
@@ -193,7 +242,7 @@ $(function() {
     type: 'confirm'
   });
 
-  $('.list tr').hover(function() {
+  $('.list:not(.permissions) tr').hover(function() {
     $(this).addClass('hover');
   }, function() {
     $(this).removeClass('hover');
@@ -229,6 +278,33 @@ $(function() {
         type: 'post'
       });
     }
+  });
+
+  $('.permissions .single-submit').click(function(event) {
+    event.preventDefault();
+    var that = $(this);
+    that.hide();
+    that.blur();
+    that.parent().spin('small');
+    $.ajax({
+      type: 'POST',
+      url: $('#GroupPermissionIndexForm').attr('action'),
+      data: $(this).parent().parent().find('input').serialize(),
+      cache: false,
+      success: function() {
+        var tr = that.parent().parent();
+        var bgColor = that.parent().css('backgroundColor');
+        that.parent().spin(false);
+        that.show();
+        tr.find('td:not(.controller)').stop().css({
+          backgroundColor: '#fff7d9'
+        }).animate({
+            backgroundColor: bgColor
+          }, 1000, function() {
+            $(this).css({backgroundColor: ''});
+          });
+      }
+    })
   });
 
   /**

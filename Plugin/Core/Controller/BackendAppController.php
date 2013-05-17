@@ -15,9 +15,15 @@
  */
 
 App::uses('AppController', 'Controller');
+App::uses('Cache', 'Cache');
+App::uses('ClassRegistry', 'Utility');
+App::uses('Configure', 'Core');
+App::uses('Inflector', 'Utility');
+App::uses('WasabiNav', 'Core.Lib');
 
 /**
  * @property AuthenticatorComponent  $Authenticator
+ * @property GuardianComponent       $Guardian
  * @property RequestHandlerComponent $RequestHandler
  */
 
@@ -32,6 +38,7 @@ class BackendAppController extends AppController {
 		'Core.Authenticator' => array(
 			'model' => 'Core.User'
 		),
+		'Core.Guardian',
 		'RequestHandler'
 	);
 
@@ -48,6 +55,13 @@ class BackendAppController extends AppController {
 	 * @var string
 	 */
 	public $invalidRequestMessage;
+
+	/**
+	 * Holds all public accessable action paths.
+	 *
+	 * @var array
+	 */
+	public $guestActions;
 
 	/**
 	 * Helpers used by this controller
@@ -88,18 +102,13 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _checkPermissions() {
-		$plugin = $this->request->params['plugin'];
-		$controller = $this->request->params['controller'];
-		$action = $this->request->params['action'];
-		$path = "${plugin}.${controller}.${action}";
-
-		$guestActions = array(
-			'core.users.login',
-			'core.users.logout'
+		$url = array(
+			'plugin' => $this->request->params['plugin'],
+			'controller' => $this->request->params['controller'],
+			'action' => $this->request->params['action']
 		);
 
-		// action requires login
-		if (!in_array($path, $guestActions)) {
+		if (!$this->Guardian->hasAccess($url)) {
 
 			// user is not logged in -> save current request and redirect to login page
 			if (!$this->Authenticator->get()) {
@@ -109,7 +118,11 @@ class BackendAppController extends AppController {
 					'controller' => 'users',
 					'action' => 'login'
 				));
+				return;
 			}
+
+			// user is logged in, but unauthorized to complete the request
+			throw new UnauthorizedException(__d('core', 'You are not authorized to access this location'));
 		}
 	}
 
@@ -140,33 +153,55 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _loadBackendMenu() {
-		$eventName = 'Backend.Menu.load';
-		$menuItems = $this->_triggerEvent($this, $eventName);
+		$this->_triggerEvent(new stdClass(), 'Backend.Menu.load');
+
+		$menuItems = WasabiNav::getItems();
 		if (empty($menuItems)) {
 			return;
 		}
-		$menuItems = $menuItems[$eventName];
 
 		$primaryMenu = array();
 		$secondaryMenu = array();
 
-		foreach ($menuItems as $items) {
+		foreach ($menuItems as &$primaryItem) {
 			$secondaryActiveFound = false;
-			$secondaryItems = $items['primary']['children'];
-			foreach ($secondaryItems as &$secondaryItem) {
-				if ($secondaryItem['url']['plugin'] === $this->request->params['plugin']
-					&& $secondaryItem['url']['controller'] === $this->request->params['controller']) {
+			if (!isset($primaryItem['children']) || empty($primaryItem['children'])) {
+				if (isset($primaryItem['url']) &&
+					$primaryItem['url']['plugin'] === $this->request->params['plugin'] &&
+					$primaryItem['url']['controller'] === $this->request->params['controller']
+				) {
+					$primaryItem['active'] = true;
+				}
+				$primaryMenu[] = $primaryItem;
+				continue;
+			}
+			foreach ($primaryItem['children'] as $key => &$secondaryItem) {
+				$hasAccess = $this->Guardian->hasAccess($secondaryItem['url']);
+				if (!isset($primaryItem['url']) && $hasAccess) {
+					$primaryItem['url'] = $secondaryItem['url'];
+				}
+				if (!$hasAccess) {
+					unset($primaryItem['children'][$key]);
+					continue;
+				}
+				if (!$secondaryActiveFound &&
+					$secondaryItem['url']['plugin'] === $this->request->params['plugin'] &&
+					$secondaryItem['url']['controller'] === $this->request->params['controller']
+				) {
 					$secondaryActiveFound = true;
 					$secondaryItem['active'] = true;
-					$secondaryMenu = $secondaryItems;
-					break;
+					$secondaryMenu = $primaryItem['children'];
 				}
 			}
+
 			if ($secondaryActiveFound) {
-				$items['primary']['active'] = true;
+				$primaryItem['active'] = true;
 			}
-			unset($items['primary']['children']);
-			$primaryMenu[] = $items['primary'];
+
+			if (isset($primaryItem['url'])) {
+				unset($primaryItem['children']);
+				$primaryMenu[] = $primaryItem;
+			}
 		}
 
 		$this->set('backend_menu_for_layout', array(

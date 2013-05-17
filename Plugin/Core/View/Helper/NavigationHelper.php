@@ -15,6 +15,9 @@
 
 App::uses('AppHelper', 'View/Helper');
 
+/**
+ * @property CHtmlHelper $CHtml
+ */
 class NavigationHelper extends AppHelper {
 
 	/**
@@ -23,7 +26,10 @@ class NavigationHelper extends AppHelper {
 	 * @var array
 	 */
 	public $helpers = array(
-		'Html'
+		'Html',
+		'CHtml' => array(
+			'className' => 'Core.CHtml'
+		)
 	);
 
 	/**
@@ -35,19 +41,13 @@ class NavigationHelper extends AppHelper {
 	 */
 	public function render($items, $activeClass = 'active') {
 		$out = '';
-		// TODO: implement AuthorizorComponent and static Authorizor wrapper class
-		//$group_id = Authenticator::get('Group.id');
-		//$group_permissions = Authorizor::getPermissions($group_id);
 		foreach ($items as $item) {
-			#if (($group_id !== 1) && !in_array($item['path'], $group_permissions)) {
-			#	continue;
-			#}
 			$class = '';
 			if (isset($item['active']) && $item['active'] === true) {
 				$class = ' class="' . $activeClass . '"';
 			}
 			$out .= '<li' . $class . '>';
-			$out .= $this->Html->link($item['name'], $item['url']);
+			$out .= $this->CHtml->backendLink($item['name'], $item['url']);
 			$out .= '</li>';
 		}
 		return $out;

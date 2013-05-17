@@ -15,6 +15,7 @@
 
 App::uses('ClassRegistry', 'Utility');
 App::uses('Router', 'Routing');
+App::uses('WasabiNav', 'Core.Lib');
 
 class CoreEvents {
 
@@ -34,6 +35,10 @@ class CoreEvents {
 		'Common.Settings.load' => array(
 			'method' => 'loadSettings',
 			'priority' => 99999
+		),
+		'Guardian.GuestActions.load' => array(
+			'method' => 'loadGuestActions',
+			'priority' => 99999
 		)
 	);
 
@@ -46,6 +51,9 @@ class CoreEvents {
 		// Login & Logout
 		Router::connect("/${prefix}/login", array('plugin' => 'core', 'controller' => 'users', 'action' => 'login'));
 		Router::connect("/${prefix}/logout", array('plugin' => 'core', 'controller' => 'users', 'action' => 'logout'));
+
+		// Dashboard
+		Router::connect("/${prefix}", array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index'));
 
 		// Edit Profile
 		Router::connect("/${prefix}/profile", array('plugin' => 'core', 'controller' => 'users', 'action' => 'profile'));
@@ -68,37 +76,54 @@ class CoreEvents {
 		// Plugins
 		Router::connect("/${prefix}/plugins", array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index'));
 		Router::connect("/${prefix}/plugins/:action/*", array('plugin' => 'core', 'controller' => 'plugins'));
+
+		// Permissions
+		Router::connect("/${prefix}/permissions", array('plugin' => 'core', 'controller' => 'permissions', 'action' => 'index'));
+		Router::connect("/${prefix}/permissions/:action/*", array('plugin' => 'core', 'controller' => 'permissions'));
 	}
 
 	public static function loadBackendMenu(WasabiEvent $event) {
-		return array(
-			'primary' => array(
-				'name' => __d('core', 'Administration'),
-				'url' => array('plugin' => 'core', 'controller' => 'users', 'action' => 'index'),
-				'children' => array(
-					array(
-						'name' => __d('core', 'Users'),
-						'url' => array('plugin' => 'core', 'controller' => 'users', 'action' => 'index')
-					),
-					array(
-						'name' => __d('core', 'Groups'),
-						'url' => array('plugin' => 'core', 'controller' => 'groups', 'action' => 'index')
-					),
-					array(
-						'name' => __d('core', 'Languages'),
-						'url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index')
-					),
-					array(
-						'name' => __d('core', 'Plugins'),
-						'url' => array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index')
-					),
-					array(
-						'name' => __d('core', 'Core Settings'),
-						'url' => array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit')
-					)
-				)
+		WasabiNav::addPrimary('dashboard', array(
+			'name' => __d('core', 'Dashboard'),
+			'priority' => 1,
+			'url' => array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index')
+		));
+		WasabiNav::addPrimary('administration', array(
+			'name' => __d('core', 'Administration'),
+			'priority' => 99999
+		));
+		WasabiNav::addSecondary('administration', array(
+			array(
+				'name' => __d('core', 'Users'),
+				'priority' => 100,
+				'url' => array('plugin' => 'core', 'controller' => 'users', 'action' => 'index')
+			),
+			array(
+				'name' => __d('core', 'Groups'),
+				'priority' => 200,
+				'url' => array('plugin' => 'core', 'controller' => 'groups', 'action' => 'index')
+			),
+			array(
+				'name' => __d('core', 'Languages'),
+				'priority' => 300,
+				'url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index')
+			),
+			array(
+				'name' => __d('core', 'Plugins'),
+				'priority' => 400,
+				'url' => array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index')
+			),
+			array(
+				'name' => __d('core', 'Permissions'),
+				'priority' => 500,
+				'url' => array('plugin' => 'core', 'controller' => 'permissions', 'action' => 'index')
+			),
+			array(
+				'name' => __d('core', 'Core Settings'),
+				'priority' => 600,
+				'url' => array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit')
 			)
-		);
+		));
 	}
 
 	public static function loadJsTranslations(WasabiEvent $event) {
@@ -136,4 +161,17 @@ class CoreEvents {
 
 		return $settings;
 	}
+
+	public static function loadGuestActions(WasabiEvent $event) {
+		return array(
+			'Core.Users.login',
+			'Core.Users.logout',
+			'Core.CoreInstall.check',
+			'Core.CoreInstall.database',
+			'Core.CoreInstall.import',
+			'Core.CoreInstall.config',
+			'Core.CoreInstall.finish'
+		);
+	}
+
 }

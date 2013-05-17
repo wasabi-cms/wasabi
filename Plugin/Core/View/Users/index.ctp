@@ -33,9 +33,9 @@
 					<td>
 						<?php
 						if ($u['User']['id'] == 1 && Authenticator::get('User.id') != 1) {
-							echo '<strong>' . $u['User']['username'] . '</strong>';
+							echo $u['User']['username'];
 						} else {
-							echo $this->CHtml->backendLink($u['User']['username'], '/users/edit/' . $u['User']['id'], array('title' => __d('core', 'Edit this User')));
+							echo $this->CHtml->backendLink($u['User']['username'], '/users/edit/' . $u['User']['id'], array('title' => __d('core', 'Edit this User')), true);
 						}
 						?>
 					</td>

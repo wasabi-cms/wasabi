@@ -120,8 +120,8 @@ a {
   padding: 0.8em;
 
   &.error, &.alert {
-    background-color: #ffddde;
-    border: 1px solid #900000;
+    background-color: #f2dede;
+    border: 1px solid darken(#f2dede, 20%);
     color: #8a1f11;
 
     a {
@@ -207,8 +207,8 @@ a:not(.button) {
 header {
   width: 100%;
   background-color: #222;
-//  position: fixed;
-//  top: 0;
+  position: fixed;
+  top: 0;
   border-bottom: 1px solid #333;
   z-index: 999;
   .box-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
@@ -219,6 +219,12 @@ header {
     &:hover {
       color: #fff;
     }
+  }
+
+  &.debug {
+    position: static;
+    top: auto;
+    margin-bottom: -40px;
   }
 }
 
@@ -317,7 +323,7 @@ header {
   }
 
   ul {
-    list-style: 0;
+    list-style: none;
     margin: 0;
     padding: 0;
     display: none;
@@ -327,7 +333,7 @@ header {
     top: 39px;
     border: 1px solid #000;
     border-top: none;
-  //z-index: -1;
+    z-index: 1000;
     .border-radius(0 0 5px 5px);
     .box-shadow(0 0 5px rgba(0, 0, 0, 0.5));
   }
@@ -512,6 +518,7 @@ header {
 
   td {
     padding: 10px;
+    line-height: 18px;
     border-bottom: 1px solid #efefef;
   }
 
@@ -542,6 +549,42 @@ header {
   .warn { background-color: #fff6bf; }
 }
 
+table.permissions {
+  .plugin td {
+    background-color: #222;
+    color: #fff;
+    font-size: 18px;
+    line-height: 30px;
+    text-shadow: 0 -1px #111;
+  }
+  .controller {
+    background-color: #fcfcfc !important;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+  }
+  .action {
+    line-height: 32px;
+  }
+  .last-action {
+    td {
+      border-bottom: 1px solid #ddd;
+    }
+  }
+  label {
+    cursor: pointer;
+  }
+  & + .form-actions-bar {
+    margin-top: -1px;
+  }
+
+  input[type=checkbox] {
+    margin: 0;
+    position: relative;
+    top: 1px;
+  }
+}
+
 /** ------------------------- FORMS -------------------------- */
 .ntm {
   margin-top: 0 !important;
@@ -555,12 +598,18 @@ textarea {
   border: 1px solid #ccc;
   padding: 7px 8px;
   .border-radius(3px);
+  .box-shadow(0 1px 1px rgba(0, 0, 0, 0.075) inset);
 
   &:focus {
     outline: none;
     background-color: #fff;
     border-color: #5eccff;
-    .box-shadow(e("0 1px 2px rgba(0, 0, 0, 0.075) inset, 0 0 5px rgba(0, 165, 240, 0.5)"));
+    .box-shadow(e("0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 5px rgba(0, 165, 240, 0.5)"));
+
+    &:invalid {
+      border-color: red;
+      .box-shadow(e("0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 5px rgba(255, 0, 0, 0.5)"));
+    }
   }
 }
 
@@ -705,6 +754,10 @@ select.form-error {
       }
     }
   }
+
+  &.error > label {
+    color: #8a1f11;
+  }
 }
 
 .form-row .field .input label {
@@ -817,7 +870,7 @@ div.inner-box{
 /** ---------------------- LABELS AND BADGES ----------------- */
 .label, .badge {
   display: inline-block;
-  padding: 1px 4px;
+  padding: 2px 5px 1px;
   font-size: 84.6%;
   font-weight: bold;
   line-height: 14px; // ensure proper line-height if floated
@@ -1159,6 +1212,11 @@ footer {
 
     &.required label:before {
       display: none;
+    }
+
+    input:focus:invalid {
+      border-color: #5eccff;
+      .box-shadow(e("0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 5px rgba(0, 165, 240, 0.5)"));
     }
   }
 
