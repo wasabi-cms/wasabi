@@ -70,42 +70,13 @@ class BackendAppTestTwoController extends BackendAppTestController {
 
 }
 
-class AuthenticatorTest1Component extends AuthenticatorComponent {
-
-	public function __construct(ComponentCollection $collection) {
-		return parent::__construct($collection, array(
-			'model' => 'Foo',
-			'sessionKey' => 'Auth',
-			'cookieKey' => 'AuthRemember'
-		));
-	}
-
-	public function get($field = null) {
-		return array();
-	}
-
-}
-
-class AuthenticatorTest2Component extends AuthenticatorTest1Component {
-
-	public function get($field = null) {
-		return array(
-			'User' => array(
-				'id' => 1,
-				'username' => 'admin'
-			)
-		);
-	}
-
-}
-
 /**
  * @property BackendAppTestController|BackendAppTestTwoController $BackendAppController
  */
 
 class BackendAppControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.language', 'plugin.core.core_setting');
+	public $fixtures = array('plugin.core.group_permission', 'plugin.core.language', 'plugin.core.core_setting');
 
 	public function setUp() {
 		$this->BackendAppController = new BackendAppTestController();
@@ -124,6 +95,7 @@ class BackendAppControllerTest extends CoreControllerTest {
 	public function testRequiredComponentsAreLoaded() {
 		$this->assertTrue(array_key_exists('RequestHandler', $this->BackendAppController->components));
 		$this->assertTrue(array_key_exists('Core.Authenticator', $this->BackendAppController->components));
+		$this->assertTrue(array_key_exists('Core.Guardian', $this->BackendAppController->components));
 	}
 
 	public function testRequiredHelpersAreLoaded() {
@@ -135,7 +107,6 @@ class BackendAppControllerTest extends CoreControllerTest {
 	public function testBeforeFilter() {
 		$this->BackendAppController->request->params = Router::parse('/backend/users');
 		$this->BackendAppController->request->url = 'backend/users';
-		$this->BackendAppController->Authenticator = new AuthenticatorTest1Component($this->BackendAppController->Components);
 		$this->BackendAppController->beforeFilter();
 
 		$this->assertTrue($this->BackendAppController->checkPermissionsCalled);
@@ -145,7 +116,6 @@ class BackendAppControllerTest extends CoreControllerTest {
 	public function testCheckPermissions() {
 		$this->BackendAppController->request->params = Router::parse('/backend/users');
 		$this->BackendAppController->request->url = 'backend/users';
-		$this->BackendAppController->Authenticator = new AuthenticatorTest1Component($this->BackendAppController->Components);
 
 		$this->BackendAppController->checkPermisions();
 		$this->assertTrue($this->BackendAppController->Session->check('login_referer'));
@@ -163,14 +133,12 @@ class BackendAppControllerTest extends CoreControllerTest {
 		$this->assertEqual($expected, $result);
 
 		$this->BackendAppController->Session->delete('login_referer');
-		$this->BackendAppController->Authenticator = new AuthenticatorTest2Component($this->BackendAppController->Components);
-
+		$this->_loginUser();
 		$this->BackendAppController->checkPermisions();
 		$this->assertFalse($this->BackendAppController->Session->check('login_referer'));
 
 		$this->BackendAppController->request->params = Router::parse('/backend/login');
 		$this->BackendAppController->request->url = 'backend/login';
-		$this->BackendAppController->Authenticator = new AuthenticatorTest1Component($this->BackendAppController->Components);
 
 		$this->BackendAppController->checkPermisions();
 		$this->assertFalse($this->BackendAppController->Session->check('login_referer'));
