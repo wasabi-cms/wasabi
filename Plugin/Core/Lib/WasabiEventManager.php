@@ -70,7 +70,8 @@ class WasabiEventManager {
 
 		foreach ($eventClass->implements as $eventName => $handler) {
 			if (!in_array($handler['method'], get_class_methods($class))) {
-				throw new NotImplementedException('Class ' . $class . ' must implement an ' . $handler['method'] . '() method.');
+				trigger_error('Class ' . $class . ' does not implement ' . $handler['method'] . '() method.', E_USER_WARNING);
+				continue;
 			}
 			$method = $handler['method'];
 			$priority = $handler['priority'];
