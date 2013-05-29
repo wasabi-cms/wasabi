@@ -13,6 +13,8 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Migrations', 'Migrations.Lib');
+
 class Plugin extends CoreAppModel {
 
 	public $useTable = false;
@@ -73,16 +75,37 @@ class Plugin extends CoreAppModel {
 	}
 
 	public function install($plugin) {
-		if (!$this->isInstalled($plugin)) {
+		if ($this->isInstalled($plugin)) {
+			return true;
+		}
+		try {
+			CakePlugin::load($plugin);
+			$migrations = new Migrations();
+			$migrations->migrate(array(
+				'direction' => 'up',
+				'scope' => $plugin
+			));
 			new File($this->getPluginConfigPath($plugin) . '.installed', true, 0755);
+		} catch (Exception $e) {
+			return false;
 		}
 		return $this->isInstalled($plugin);
 	}
 
 	public function uninstall($plugin) {
-		if ($this->isInstalled($plugin)) {
+		if (!$this->isInstalled($plugin)) {
+			return true;
+		}
+		try {
+			$migrations = new Migrations();
+			$migrations->migrate(array(
+				'direction' => 'down',
+				'scope' => $plugin
+			));
 			$installFile = new File($this->getPluginConfigPath($plugin) . '.installed', false);
 			$installFile->delete();
+		} catch (Exception $e) {
+			return false;
 		}
 		return !$this->isInstalled($plugin);
 	}
