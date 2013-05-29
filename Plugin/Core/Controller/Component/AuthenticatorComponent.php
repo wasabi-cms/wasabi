@@ -107,6 +107,9 @@ class AuthenticatorComponent extends Component {
 				return $user[$model][$field];
 			}
 		}
+		if (!$user) {
+			return false;
+		}
 		return Hash::get($user, $field);
 	}
 
