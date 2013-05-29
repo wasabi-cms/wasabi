@@ -71,7 +71,19 @@ class BackendAppController extends AppController {
 	public $helpers = array(
 		'Form',
 		'Html',
-		'Session'
+		'Session',
+		'WasabiAsset' => array(
+			'className' => 'Core.WasabiAsset'
+		),
+		'Navigation' => array(
+			'className' => 'Core.Navigation'
+		),
+		'CForm' => array(
+			'className' => 'Core.CForm'
+		),
+		'CHtml' => array(
+			'className' => 'Core.CHtml'
+		)
 	);
 
 	/**
@@ -139,11 +151,25 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _setupBackend() {
-		$this->_loadBackendMenu();
+		if (!$this->_isLoginAction() && !$this->_isLogoutAction()) {
+			$this->_loadBackendMenu();
+		}
 		$this->_loadLanguages();
 		$this->layout = 'Core.default';
 		$this->formErrorMessage = __d('core', 'Please correct the marked errors.');
 		$this->invalidRequestMessage = __d('core', 'Invalid Request.');
+	}
+
+	protected function _isLoginAction() {
+		return $this->request->params['plugin'] === 'core' &&
+			$this->request->params['controller'] === 'users' &&
+			$this->request->params['action'] === 'login';
+	}
+
+	protected function _isLogoutAction() {
+		return $this->request->params['plugin'] === 'core' &&
+		$this->request->params['controller'] === 'users' &&
+		$this->request->params['action'] === 'logout';
 	}
 
 	/**
