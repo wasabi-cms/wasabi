@@ -13,18 +13,18 @@
 </head>
 <body>
 	<header<?php echo (Configure::read('debug') > 0) ? ' class="debug"' : '' ?>>
-		<div class="row full">
+		<div class="row">
 			<?php echo $this->element('Core.menu_primary'); ?>
 			<?php echo $this->element('Core.menu_user'); ?>
 			<?php echo $this->element('Core.language_switch'); ?>
 		</div>
 	</header>
 	<div id="main">
-		<div class="row full">
+		<div class="row">
 			<?php echo $this->element('Core.menu_secondary'); ?>
 		</div>
 		<?php if (CakeSession::check('Message.flash')): ?>
-		<div class="row full">
+		<div class="row">
 			<?php echo $this->Session->flash(); ?>
 		</div>
 		<?php endif; ?>

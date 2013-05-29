@@ -47,7 +47,7 @@ class CFormHelper extends AppHelper {
 	 */
 	public function input($field, $options) {
 		$class = '';
-		$out = '<div class="form-row{CLASS}">{LABEL}<div class="field">{INPUT}{ERROR}{INFO}</div></div>';
+		$out = '<div class="form-row row{CLASS}">{LABEL}<div class="field">{INPUT}{ERROR}{INFO}</div></div>';
 		if (isset($options['type']) && $options['type'] == 'checkbox') {
 			$class .= ' checkbox';
 			$out = '<div class="form-row{CLASS}">{TITLE}<div class="field">{INPUT}{LABEL}{ERROR}{INFO}</div></div>';

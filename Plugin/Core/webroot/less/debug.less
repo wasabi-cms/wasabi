@@ -86,9 +86,7 @@ pre {
   color: #000;
   background: #f0f0f0;
   padding: 15px;
-  -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid #ccc;
 }
 .cake-debug-output {
   padding: 0;
@@ -122,10 +120,9 @@ pre {
   white-space: normal;
 }
 .cake-stack-trace {
-  background: rgba(255, 255, 255, 0.7);
   color: #333;
   margin: 10px 0 5px 0;
-  padding: 10px 10px 0 10px;
+  padding: 0;
   font-size: 120%;
   line-height: 140%;
   overflow: auto;
@@ -138,19 +135,17 @@ pre {
 .cake-stack-trace a {
   text-shadow: none;
   background: rgba(255, 255, 255, 0.7);
-  padding: 5px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
+  padding: 5px 7px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
   margin: 0px 4px 10px 2px;
   font-family: sans-serif;
   font-size: 14px;
   line-height: 14px;
   display: inline-block;
   text-decoration: none;
-  -moz-box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);
-  box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);
+  border: 1px solid #ccc;
 }
 .cake-code-dump pre {
   position: relative;
@@ -161,7 +156,7 @@ pre {
 }
 .cake-stack-trace pre {
   color: #000;
-  background-color: #F0F0F0;
+  background-color: #fff;
   margin: 0px 0 10px 0;
   padding: 1em;
   overflow: auto;
@@ -175,13 +170,7 @@ pre {
   -moz-border-radius: 4px;
   -wekbkit-border-radius: 4px;
   border-radius: 4px;
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#dcdcdc));
-  background-image: -webkit-linear-gradient(top, #fefefe, #dcdcdc);
-  background-image: -moz-linear-gradient(top, #fefefe, #dcdcdc);
-  background-image: -ms-linear-gradient(top, #fefefe, #dcdcdc);
-  background-image: -o-linear-gradient(top, #fefefe, #dcdcdc);
-  background-image: linear-gradient(top, #fefefe, #dcdcdc);
+  background: #eee;
 }
 /* excerpt */
 .cake-code-dump pre,
@@ -189,8 +178,8 @@ pre {
   clear: both;
   font-size: 12px;
   line-height: 15px;
-  margin: 4px 2px;
-  padding: 4px;
+  margin: 4px 2px 8px;
+  padding: 8px 4px 4px 4px;
   overflow: auto;
 }
 .cake-code-dump .code-highlight {

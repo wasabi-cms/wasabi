@@ -3,7 +3,7 @@
  * @var CoreView $this
  */
 ?>
-<footer class="row full">
+<footer class="row">
 	Wasabi CMS
 	<?php if (Configure::read('debug') > 0) {
 		echo $this->Html->link('Go to Tests', '/test.php');
@@ -25,7 +25,7 @@ $this->end('bottom_js');
 echo $this->fetch('bottom_js');
 ?>
 <?php if (!isset($sql_dump) || $sql_dump !== false): ?>
-<div class="row full">
+<div class="row">
 	<?php echo $this->element('sql_dump'); ?>
 </div>
 <?php endif; ?>
