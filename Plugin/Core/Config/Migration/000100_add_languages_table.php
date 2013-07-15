@@ -34,7 +34,7 @@ class AddLanguagesTable extends Migration {
 			'available_at_frontend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 			'available_at_backend' => array('type' => 'boolean', 'null' => false, 'default' => 0),
 			'in_progress' => array('type' => 'boolean', 'null' => false, 'default' => 0),
-			'position' => array('type' => 'integer', 'null' => true, 'default' => null),
+			'position' => array('type' => 'integer', 'null' => true, 'default' => 9999),
 			'created' => array('type' => 'datetime', 'null' => false),
 			'modified' => array('type' => 'datetime', 'null' => false),
 			'indexes' => array(
