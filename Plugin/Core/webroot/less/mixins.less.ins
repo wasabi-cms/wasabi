@@ -86,6 +86,21 @@
   }
 }
 
+.disable-touch-callout() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ellipsis() {
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
 #gradient {
   .horizontal (@start-color, @end-color, @fallback-color) {
     background-color: @fallback-color;
