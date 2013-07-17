@@ -9,14 +9,14 @@
  * @copyright     Copyright 2013, Frank Förster (http://frankfoerster.com)
  * @link          http://github.com/frankfoerster/wasabi
  * @package       Wasabi
- * @subpackage    Wasabi.Plugin.Core.Controller
+ * @subpackage    Wasabi.Plugin.Core.Model
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('BackendAppController', 'Core.Controller');
+App::uses('CoreAppModel', 'Core.Model');
 
-class BackendErrorController extends BackendAppController {
+class Translation extends CoreAppModel {
 
-	public $uses = array();
+
 
 }

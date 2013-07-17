@@ -24,7 +24,8 @@ class CoreAppModel extends AppModel {
 	 * @var array
 	 */
 	public $actsAs = array(
-		'Containable'
+		'Containable',
+		'Core.Relatable'
 	);
 
 	/**

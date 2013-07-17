@@ -9,7 +9,7 @@
 <!--[if IE 8]>        <html class="no-js lt-ie9" lang="en-US"><![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="en-US"><!--<![endif]-->
 <head>
-	<?php echo $this->element('Core.head'); ?>
+	<?php echo $this->element('Core.layout/head'); ?>
 </head>
 <body class="login">
 	<div class="login-wrapper">
@@ -17,6 +17,6 @@
 			<?php echo $this->fetch('content'); ?>
 		</div>
 	</div>
-	<?php echo $this->element('Core.footer'); ?>
+	<?php echo $this->element('Core.layout/footer'); ?>
 </body>
 </html>

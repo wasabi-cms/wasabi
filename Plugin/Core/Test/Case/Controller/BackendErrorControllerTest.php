@@ -43,7 +43,7 @@ class BackendErrorControllerTest extends CoreControllerTest {
 		$this->BackendError->request->params = Router::parse('/backend/users');
 		$this->BackendError->request->url = 'backend/users';
 		$this->BackendError->beforeFilter();
-		$this->assertEqual('Core.backend_error', $this->BackendError->layout);
+		$this->assertEqual('Core.default', $this->BackendError->layout);
 	}
 
 }

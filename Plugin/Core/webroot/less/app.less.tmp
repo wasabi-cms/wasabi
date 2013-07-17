@@ -36,6 +36,10 @@ a {
   }
 }
 
+.hidden {
+  display: none !important;
+}
+
 /** ------------------------ GRID ---------------------------- */
 .row {
   width: 100%;
@@ -449,14 +453,14 @@ header {
 
 /** ----------------------- SUB MENU ------------------------- */
 .sub-menu {
-  .inline-block();
   list-style: none;
-  margin: 0 0 15px;
+  margin: 0;
   padding: 0;
 
   li {
-    float: left;
+    .inline-block();
     margin-right: 10px;
+    margin-bottom: 15px;
 
     &:last-child {
       margin-right: 0;
@@ -558,6 +562,7 @@ header {
 .list {
   width: 100%;
   background-color: #fff;
+  border: 1px solid #ddd;
 
   thead {
     border-bottom: 1px solid #ddd;
@@ -580,7 +585,8 @@ header {
   td {
     padding: 10px;
     line-height: 18px;
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px solid #ddd;
+//    border-bottom: 1px solid #efefef;
   }
 
   tr {
@@ -608,6 +614,62 @@ header {
   .right  { text-align: right;  }
   .valign-middle { vertical-align: middle; }
   .warn { background-color: #fff6bf; }
+
+  &.ui-sortable {
+    border-bottom: none;
+  }
+}
+
+.list {
+
+  tr.new {
+    display: none;
+  }
+
+  tr:last-child td {
+    //border-bottom: none;
+  }
+
+  input[type="text"], input[type="password"] {
+    padding: 0.2em 0.3em;
+    background-color: #fff;
+    .border-radius(0px);
+  }
+
+  select {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .field & {
+    label {
+      display: block;
+      float: none;
+      padding: 0;
+      width: auto;
+      text-align: left;
+      margin-top: 7px;
+      font-size: 10px;
+    }
+  }
+}
+
+.bottom-links {
+  padding: 10px 10px 0;
+}
+
+#menu-items tbody tr td:first-child {
+  vertical-align: top;
+}
+
+#menu-items {
+  div[data-type="ExternalLink"], div[data-type="Object"], div[data-type="Action"], div[data-type="CustomAction"] {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
 }
 
 table.permissions {
@@ -689,6 +751,16 @@ select {
   margin-top: 6px;
 }
 
+optgroup[label] {
+  font-weight: bold;
+  font-style: normal;
+  color: #404040;
+}
+
+option {
+  color: #000;
+}
+
 input[type=checkbox] {
   margin: 8px 5px 0 0;
 }
@@ -710,7 +782,7 @@ input.big {
 }
 
 .form-error {
-  background-color: #ffddde;
+  background-color: #ffddde !important;
 }
 
 select.form-error {
@@ -771,6 +843,8 @@ select.form-error {
       padding: 0;
       float: none;
       font-size: 10px;
+      width: auto;
+      text-align: left;
     }
 
     & > small {
@@ -821,8 +895,13 @@ select.form-error {
   }
 }
 
-.form-row .field .input label {
-  display: block;
+.input + small, .list + small {
+  color: #666;
+}
+
+select + small {
+  margin-left: 10px;
+  color: #666;
 }
 
 .form-actions-bar {
@@ -868,14 +947,17 @@ div.inner-box{
   background: #fff6bf;
 }
 
-/** ------------------------- TABS --------------------------- */
-.tab-wrapper {
-  margin-top: 20px;
-  border: 1px solid #ddd;
+.ui-sortable-helper {
+  border: none !important;
 }
 
+/** ------------------------- TABS --------------------------- */
 .tab-tabs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
   height: 43px;
   .border-radius(5px 5px 0 0);
   .box-shadow(inset 0 1px #fff, inset 0 -1px #ddd);
@@ -890,14 +972,15 @@ div.inner-box{
       font-size: 12px;
       font-weight: bold;
       line-height: 20px;
-      padding: 11px 22px 12px 20px;
+      padding: 12px 20px 11px 20px;
       border-right: 1px solid #fff;
       .box-shadow(inset -1px 0 #ddd);
       cursor: pointer;
       .transition(color .2s linear);
 
-      :hover {
+      &:hover {
         color: #0082bd;
+        text-decoration: none;
       }
     }
 
@@ -917,12 +1000,7 @@ div.inner-box{
 }
 
 .tab-content {
-  padding:  20px;
-  display: none;
-
-  &.first {
-    display: block;
-  }
+  padding: 20px;
 }
 
 /** ------------------------- BUTTONS ------------------------ */

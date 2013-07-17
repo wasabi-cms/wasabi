@@ -31,6 +31,10 @@ class CHtmlHelper extends AppHelper {
 		'Html'
 	);
 
+	protected $_title = false;
+	protected $_subTitle = false;
+	protected $_actions = array();
+
 	/**
 	 * Create a properly prefixed backend link.
 	 *
@@ -103,6 +107,47 @@ class CHtmlHelper extends AppHelper {
 		$confirmOptions = Hash::merge($confirmOptions, $options);
 
 		return $this->Html->link($title, '#', $confirmOptions);
+	}
+
+	public function setTitle($title) {
+		$this->_title = $title;
+	}
+
+	public function setSubTitle($subTitle) {
+		$this->_subTitle = $subTitle;
+	}
+
+	public function addAction($action) {
+		$this->_actions[] = $action;
+	}
+
+	public function titlePad() {
+		$out = '';
+		if ($this->_title === false) {
+			return;
+		}
+		$out .= '<div class="title-pad row">';
+		$out .= $this->_pageTitle($this->_title, $this->_subTitle);
+		if (!empty($this->_actions)) {
+			$out .= '<ul class="actions">';
+			foreach ($this->_actions as $action) {
+				$out .= '<li>' . $action . '</li>';
+			}
+			$out .= '</ul>';
+		}
+		$out .= '</div>';
+
+		return $out;
+	}
+
+	protected function _pageTitle($title, $subtitle = false) {
+		$out = '<h3 class="page-title">' . $title;
+		if ($subtitle !== false) {
+			$out .= ' <small>' . $subtitle . '</small>';
+		}
+		$out .= '</h3>';
+
+		return $out;
 	}
 
 	/**

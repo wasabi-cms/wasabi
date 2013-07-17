@@ -45,7 +45,7 @@ class CoreControllerTest extends ControllerTestCase {
 	public function tearDown() {
 		unset($this->backendPrefix);
 
-		WasabiNav::clearItems();
+		WasabiNav::clear();
 
 		CakeSession::clear();
 		CakeSession::destroy();

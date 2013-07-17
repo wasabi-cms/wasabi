@@ -158,8 +158,7 @@ class BackendAppControllerTest extends CoreControllerTest {
 		$this->BackendAppController->request->url = 'backend/users';
 		$this->BackendAppController->loadBackendMenu();
 		$this->assertTrue(isset($this->BackendAppController->viewVars['backend_menu_for_layout']));
-		$this->assertTrue(isset($this->BackendAppController->viewVars['backend_menu_for_layout']['primary']));
-		$this->assertTrue(isset($this->BackendAppController->viewVars['backend_menu_for_layout']['secondary']));
+		$this->assertTrue(isset($this->BackendAppController->viewVars['backend_menu_for_layout']['main']));
 	}
 
 	public function testLoadBackendMenuReturnsIfNoMenusAreSetup() {

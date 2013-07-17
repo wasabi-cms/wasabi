@@ -19,18 +19,9 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 
 	/**
 	 * @param Exception $exception
-	 * @throws MissingControllerException
-	 * @return BackendErrorController|CakeErrorController|Controller|FrontendErrorController
+	 * @return Controller
 	 */
 	protected function _getController($exception) {
-		App::uses('BackendErrorController', 'Core.Controller');
-		App::uses('CakeErrorController', 'Controller');
-		App::uses('CakeRequest', 'Network');
-		App::uses('CakeResponse', 'Network');
-		App::uses('Controller', 'Controller');
-		App::uses('FrontendErrorController', 'Core.Controller');
-		App::uses('Router', 'Routing');
-
 		if (!$request = Router::getRequest(true)) {
 			$request = new CakeRequest();
 		}
@@ -40,45 +31,20 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 			$response->header($exception->responseHeader());
 		}
 
-		if (isset($request['plugin']) && $request['plugin'] == 'core' && isset($request['controller']) && $request['controller'] == 'core_install') {
-			$controller = new FrontendErrorController($request, $response);
-			$controller->constructClasses();
-			$controller->startupProcess();
-			return $controller;
-		}
-
 		try {
-			$parentClass = '';
-			if (isset($request->params['controller']) && $request->params['controller'] != '') {
-				$pluginName = '';
-				if (isset($request->params['plugin'])) {
-					$pluginName = Inflector::camelize($request->params['plugin']) . '.';
-				}
-
-				$controllerName = Inflector::camelize($request->params['controller']) . 'Controller';
-				App::uses($controllerName, $pluginName . 'Controller');
-
-				if (!class_exists($controllerName)) {
-					throw new MissingControllerException($controllerName);
-				}
-				$tmpController = new $controllerName(new CakeRequest(), new CakeResponse());
-
-				$parentClass = get_parent_class($tmpController);
-				unset($pluginName, $controllerName, $tmpController);
-			}
-			if ($parentClass == 'BackendAppController') {
-				$controller = new BackendErrorController($request, $response);
-			} else if ($parentClass == 'FrontendAppController') {
-				$controller = new FrontendErrorController($request, $response);
-			} else {
-				$controller = new CakeErrorController($request, $response);
+			$exceptionType = get_class($exception);
+			switch ($exceptionType) {
+				case 'MissingControllerException':
+					App::uses('BackendErrorController', 'Core.Controller');
+					$controller = new BackendErrorController($request, $response);
+					break;
+				default:
+					App::uses('FrontendErrorController', 'Core.Controller');
+					$controller = new FrontendErrorController($request, $response);
 			}
 			$controller->constructClasses();
 			$controller->startupProcess();
 		} catch (Exception $e) {
-			$controller = new FrontendErrorController($request, $response);
-			$controller->constructClasses();
-			$controller->startupProcess();
 			if (!empty($controller) && $controller->Components->enabled('RequestHandler')) {
 				$controller->RequestHandler->startup($controller);
 			}
@@ -88,6 +54,43 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 			$controller->viewPath = 'Errors';
 		}
 		return $controller;
+	}
+
+	protected function _outputMessage($template) {
+		try {
+			$this->controller->plugin = 'Core';
+			$this->controller->render($template, 'Core.default');
+			$this->controller->afterFilter();
+			$this->controller->response->send();
+		} catch (MissingViewException $e) {
+			$attributes = $e->getAttributes();
+			if (isset($attributes['file']) && strpos($attributes['file'], 'error500') !== false) {
+				$this->_outputMessageSafe('error500');
+			} else {
+				$this->_outputMessage('error500');
+			}
+		} catch (Exception $e) {
+			var_dump($e);
+			$this->_outputMessageSafe('error500');
+		}
+	}
+
+	/**
+	 * A safer way to render error messages, replaces all helpers, with basics
+	 * and doesn't call component methods.
+	 *
+	 * @param string $template The template to render
+	 * @return void
+	 */
+	protected function _outputMessageSafe($template) {
+		$this->controller->layoutPath = null;
+		$this->controller->subDir = null;
+		$this->controller->viewPath = 'BackendError/';
+
+		$view = new View($this->controller);
+		$this->controller->response->body($view->render($template, 'Core.default'));
+		$this->controller->response->type('html');
+		$this->controller->response->send();
 	}
 
 }

@@ -10,7 +10,7 @@
 <!--[if gt IE 8]><!--><html class="no-js" lang="en-US"><!--<![endif]-->
 <head>
 	<?php
-	echo $this->element('Core.head');
+	echo $this->element('Core.layout/head');
 	echo $this->WasabiAsset->css('/css/install.css', 'Core');
 	?>
 </head>
@@ -21,6 +21,6 @@
 		<?php echo $this->fetch('content'); ?>
 	</div>
 </div>
-<?php echo $this->element('Core.footer', array('sql_dump' => false)); ?>
+<?php echo $this->element('Core.layout/footer', array('sql_dump' => false)); ?>
 </body>
 </html>

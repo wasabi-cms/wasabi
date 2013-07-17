@@ -46,11 +46,11 @@ class CFormHelper extends AppHelper {
 	 * @return string
 	 */
 	public function input($field, $options) {
-		$class = '';
+		$classes = [];
 		$out = '<div class="form-row row{CLASS}">{LABEL}<div class="field">{INPUT}{ERROR}{INFO}</div></div>';
 		if (isset($options['type']) && $options['type'] == 'checkbox') {
-			$class .= ' checkbox';
-			$out = '<div class="form-row{CLASS}">{TITLE}<div class="field">{INPUT}{LABEL}{ERROR}{INFO}</div></div>';
+			$classes[] = 'checkbox';
+			$out = '<div class="form-row row{CLASS}">{TITLE}<div class="field">{INPUT}{LABEL}{ERROR}{INFO}</div></div>';
 		}
 		$title = (isset($options['title'])) ? '<label>' . $options['title'] . '</label>' : '';
 		if (isset($options['label_info'])) {
@@ -61,9 +61,12 @@ class CFormHelper extends AppHelper {
 		$options['label'] = false;
 		$options['div'] = false;
 		$options['format'] = array('input');
+		if (isset($options['wrapper-class'])) {
+			$classes[] = $options['wrapper-class'];
+		}
 		$error = $this->Form->tagIsInvalid();
 		if ($error) {
-			$class .= ' error';
+			$classes[] = 'error';
 			$error = '<span class="error-message">' . $error[0] . '</span>';
 		}
 		$fieldOptions = $options;
@@ -80,7 +83,7 @@ class CFormHelper extends AppHelper {
 				}
 			}
 			if (!$allowEmpty) {
-				$class .= ' required';
+				$classes[] = 'required';
 			}
 		}
 		$info = '';
@@ -90,7 +93,7 @@ class CFormHelper extends AppHelper {
 		}
 		$out = str_replace(
 			array('{CLASS}', '{TITLE}', '{LABEL}', '{INPUT}', '{ERROR}', '{INFO}'),
-			array($class, $title, $label, $input, $error, $info),
+			array(' '. join(' ', $classes), $title, $label, $input, $error, $info),
 			$out
 		);
 		return $out;

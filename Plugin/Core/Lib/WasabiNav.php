@@ -13,91 +13,49 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('WasabiMenu', 'Core.Lib');
+
 class WasabiNav {
 
-	protected static $_rawItems = array();
-
 	/**
-	 * @var array|bool
+	 * @var WasabiMenu[]
 	 */
-	protected static $_orderedItems = false;
+	protected static $_menus = array();
 
 	/**
-	 * @param string $alias
-	 * @param array $options
+	 * @param $alias
+	 * @return WasabiMenu
 	 * @throws CakeException
 	 */
-	public static function addPrimary($alias, $options) {
-		if (isset(self::$_rawItems[$alias])) {
-			throw new CakeException(__d('core', 'A primary Menu Item with alias "' . $alias . '" already exists.'));
+	public static function createMenu($alias) {
+		if (isset(self::$_menus[$alias])) {
+			throw new CakeException(__d('core', 'A Menu with alias "' . $alias . '" already exists.'));
 		}
+		self::$_menus[$alias] = new WasabiMenu($alias);
 
-		$item = array(
-			'name' => $options['name'],
-			'alias' => $alias,
-			'priority' => $options['priority'],
-			'children' => array()
-		);
-
-		if (isset($options['url']) !== false) {
-			$item['url'] = $options['url'];
-		}
-
-		self::$_rawItems[$alias] = $item;
-		self::$_orderedItems = false;
+		return self::$_menus[$alias];
 	}
 
 	/**
-	 * @param string $parentAlias
-	 * @param array $items
+	 * @param $alias
+	 * @param bool $orderedArray
+	 * @return array|WasabiMenu
 	 * @throws CakeException
 	 */
-	public static function addSecondary($parentAlias, $items) {
-		if (!isset(self::$_rawItems[$parentAlias])) {
-			throw new CakeException(__d('core', 'The parent alias "' . $parentAlias . '" does not exist.'));
+	public static function getMenu($alias, $orderedArray = false) {
+		if (!isset(self::$_menus[$alias])) {
+			throw new CakeException(__d('core', 'No menu with alias "' . $alias . '" does exist.'));
 		}
-		if (!isset($items[0])) {
-			$items = array($items);
+		if (!$orderedArray) {
+			return self::$_menus[$alias];
 		}
 
-		foreach ($items as $options) {
-			$item = array(
-				'name' => $options['name'],
-				'priority' => $options['priority'],
-				'url' => $options['url']
-			);
-			self::$_rawItems[$parentAlias]['children'][] = $item;
-			self::$_orderedItems = false;
-		}
+		return self::$_menus[$alias]->getOrderedArray();
 	}
 
-	protected static function _orderByPriority() {
-		if (self::$_orderedItems !== false) {
-			return;
-		}
-
-		foreach (self::$_rawItems as $item) {
-			self::$_orderedItems[] = $item;
-		}
-
-		self::$_orderedItems = Hash::sort(self::$_orderedItems, '{n}.priority', 'ASC');
-
-		foreach (self::$_orderedItems as &$item) {
-			$item['children'] = Hash::sort($item['children'], '{n}.priority', 'ASC');
-		}
+	public static function clear() {
+		self::$_menus = array();
 	}
 
-	public static function getItems() {
-		if (empty(self::$_rawItems)) {
-			return array();
-		}
-
-		self::_orderByPriority();
-		return self::$_orderedItems;
-	}
-
-	public static function clearItems() {
-		self::$_rawItems = array();
-	}
 
 }

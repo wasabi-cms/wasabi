@@ -112,6 +112,7 @@ class BackendAppController extends AppController {
 	 * Check if the user is authorized to complete the request.
 	 *
 	 * @return void
+	 * @throws UnauthorizedException
 	 */
 	protected function _checkPermissions() {
 		$url = array(
@@ -181,59 +182,49 @@ class BackendAppController extends AppController {
 	protected function _loadBackendMenu() {
 		$this->_triggerEvent(new stdClass(), 'Backend.Menu.load');
 
-		$menuItems = WasabiNav::getItems();
-		if (empty($menuItems)) {
+		try {
+			$mainItems = WasabiNav::getMenu('main', true);
+		} catch (CakeException $e) {
 			return;
 		}
 
-		$primaryMenu = array();
-		$secondaryMenu = array();
-
-		foreach ($menuItems as &$primaryItem) {
-			$secondaryActiveFound = false;
-			if (!isset($primaryItem['children']) || empty($primaryItem['children'])) {
-				if (isset($primaryItem['url']) &&
-					$primaryItem['url']['plugin'] === $this->request->params['plugin'] &&
-					$primaryItem['url']['controller'] === $this->request->params['controller']
-				) {
-					$primaryItem['active'] = true;
-				}
-				$primaryMenu[] = $primaryItem;
-				continue;
-			}
-			foreach ($primaryItem['children'] as $key => &$secondaryItem) {
-				$hasAccess = $this->Guardian->hasAccess($secondaryItem['url']);
-				if (!isset($primaryItem['url']) && $hasAccess) {
-					$primaryItem['url'] = $secondaryItem['url'];
-				}
-				if (!$hasAccess) {
-					unset($primaryItem['children'][$key]);
-					continue;
-				}
-				if (!$secondaryActiveFound &&
-					$secondaryItem['url']['plugin'] === $this->request->params['plugin'] &&
-					$secondaryItem['url']['controller'] === $this->request->params['controller']
-				) {
-					$secondaryActiveFound = true;
-					$secondaryItem['active'] = true;
-					$secondaryMenu = $primaryItem['children'];
-				}
-			}
-
-			if ($secondaryActiveFound) {
-				$primaryItem['active'] = true;
-			}
-
-			if (isset($primaryItem['url'])) {
-				unset($primaryItem['children']);
-				$primaryMenu[] = $primaryItem;
-			}
+		if (empty($mainItems)) {
+			return;
 		}
 
-		$this->set('backend_menu_for_layout', array(
-			'primary' => $primaryMenu,
-			'secondary' => $secondaryMenu
+		$mainItems = $this->_processMenuItems($mainItems);
+
+		$this->set(array(
+			'backend_menu_for_layout' => array(
+				'main' => $mainItems
+			)
 		));
+	}
+
+	protected function _processMenuItems($items, &$subActiveFound = false) {
+		foreach ($items as &$item) {
+			if (isset($item['url']) &&
+				$item['url']['plugin'] === $this->request->params['plugin'] &&
+				$item['url']['controller'] === $this->request->params['controller']
+			) {
+				$item['active'] = true;
+				$subActiveFound = true;
+			}
+			if (isset($item['children']) && !empty($item['children'])) {
+				$sub = false;
+
+				$item['children'] = $this->_processMenuItems($item['children'], $sub);
+
+				if ($sub === true) {
+					$item['active'] = true;
+					$item['open'] = true;
+					$subActiveFound = true;
+				}
+			}
+
+		}
+
+		return $items;
 	}
 
 	/**

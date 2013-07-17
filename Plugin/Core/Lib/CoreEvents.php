@@ -28,6 +28,10 @@ class CoreEvents {
 			'method' => 'loadBackendMenu',
 			'priority' => 0
 		),
+		'Backend.MenuItems.load' => array(
+			'method' => 'loadBackendMenuItems',
+			'priority' => 99999
+		),
 		'Backend.JS.Translations.load' => array(
 			'method' => 'loadJsTranslations',
 			'priority' => 100
@@ -80,50 +84,119 @@ class CoreEvents {
 		// Permissions
 		Router::connect("/${prefix}/permissions", array('plugin' => 'core', 'controller' => 'permissions', 'action' => 'index'));
 		Router::connect("/${prefix}/permissions/:action/*", array('plugin' => 'core', 'controller' => 'permissions'));
+
+		// Menus
+		Router::connect("/${prefix}/menus", array('plugin' => 'core', 'controller' => 'menus', 'action' => 'index'));
+		Router::connect("/${prefix}/menus/:action/*", array('plugin' => 'core', 'controller' => 'menus'));
 	}
 
 	public static function loadBackendMenu(WasabiEvent $event) {
-		WasabiNav::addPrimary('dashboard', array(
-			'name' => __d('core', 'Dashboard'),
-			'priority' => 1,
-			'url' => array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index')
-		));
-		WasabiNav::addPrimary('administration', array(
-			'name' => __d('core', 'Administration'),
-			'priority' => 99999
-		));
-		WasabiNav::addSecondary('administration', array(
-			array(
-				'name' => __d('core', 'Users'),
-				'priority' => 100,
-				'url' => array('plugin' => 'core', 'controller' => 'users', 'action' => 'index')
-			),
-			array(
-				'name' => __d('core', 'Groups'),
-				'priority' => 200,
-				'url' => array('plugin' => 'core', 'controller' => 'groups', 'action' => 'index')
-			),
-			array(
-				'name' => __d('core', 'Languages'),
-				'priority' => 300,
-				'url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index')
-			),
-			array(
-				'name' => __d('core', 'Plugins'),
-				'priority' => 400,
-				'url' => array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index')
-			),
-			array(
-				'name' => __d('core', 'Permissions'),
-				'priority' => 500,
-				'url' => array('plugin' => 'core', 'controller' => 'permissions', 'action' => 'index')
-			),
-			array(
-				'name' => __d('core', 'Core Settings'),
-				'priority' => 600,
-				'url' => array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit')
+		$main = WasabiNav::createMenu('main');
+
+		$main
+			->addMenuItem(array(
+				'alias' => 'dashboard',
+				'name' => __d('core', 'Dashboard'),
+				'priority' => 1,
+				'url' => array(
+					'plugin' => 'core',
+					'controller' => 'dashboard',
+					'action' => 'index'
+				),
+				'icon' => 'icon-home'
+			))
+			->addMenuItem(array(
+				'alias' => 'menus',
+				'name' => __d('core', 'Menus'),
+				'priority' => 1000,
+				'icon' => 'icon-list',
+				'url' => array(
+					'plugin' => 'core',
+					'controller' => 'menus',
+					'action' => 'index'
+				)
+			))
+			->addMenuItem(array(
+				'alias' => 'administration',
+				'name' => __d('core', 'Administration'),
+				'priority' => 99999,
+				'icon' => 'icon-cogs'
+			))
+				->addMenuItem(array(
+					'alias' => 'users',
+					'name' => __d('core', 'Users'),
+					'priority' => 100,
+					'parent' => 'administration',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'users',
+						'action' => 'index'
+					)
+				))
+				->addMenuItem(array(
+					'alias' => 'groups',
+					'name' => __d('core', 'Groups'),
+					'priority' => 200,
+					'parent' => 'administration',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'groups',
+						'action' => 'index'
+					)
+				))
+				->addMenuItem(array(
+					'alias' => 'languages',
+					'name' => __d('core', 'Languages'),
+					'priority' => 300,
+					'parent' => 'administration',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'languages',
+						'action' => 'index'
+					)
+				))
+				->addMenuItem(array(
+					'alias' => 'plugins',
+					'name' => __d('core', 'Plugins'),
+					'priority' => 400,
+					'parent' => 'administration',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'plugins',
+						'action' => 'index'
+					)
+				))
+				->addMenuItem(array(
+					'alias' => 'permissions',
+					'name' => __d('core', 'Permissions'),
+					'priority' => 500,
+					'parent' => 'administration',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'permissions',
+						'action' => 'index'
+					)
+				))
+				->addMenuItem(array(
+					'alias' => 'core_settings',
+					'name' => __d('core', 'Core Settings'),
+					'priority' => 600,
+					'parent' => 'administration',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'core_settings',
+						'action' => 'edit'
+					)
+				));
+	}
+
+	public static function loadBackendMenuItems(WasabiEvent $event) {
+		return array(
+			'General' => array(
+				'ExternalLink' => __d('core', 'External Link'),
+				'CustomAction' => __d('core', 'Custom Controller Action')
 			)
-		));
+		);
 	}
 
 	public static function loadJsTranslations(WasabiEvent $event) {

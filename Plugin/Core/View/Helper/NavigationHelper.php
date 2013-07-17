@@ -53,4 +53,44 @@ class NavigationHelper extends AppHelper {
 		return $out;
 	}
 
+	public function renderNested($items, $activeClass = 'active', $openClass = 'open', $subNavClass = 'sub-nav') {
+		$out = '';
+		foreach ($items as $item) {
+			$cls = array();
+			if (isset($item['active']) && $item['active'] === true) {
+				$cls[] = $activeClass;
+			}
+			if (isset($item['open']) && $item['open'] === true) {
+				$cls[] = $openClass;
+			}
+			$out .= '<li' . ((count($cls) > 0) ? ' class="' . join(' ', $cls) . '"' : '') . '>';
+			if (isset($item['url'])) {
+				$options = array();
+				if (isset($item['icon'])) {
+					$item['name'] = '<i class="' . $item['icon'] . '"></i> ' . $item['name'];
+					$options['escape'] = false;
+				}
+				$out .= $this->CHtml->backendLink($item['name'], $item['url'], $options);
+			} else {
+				$out .= '<a href="javascript:void(0)">';
+				if (isset($item['icon'])) {
+					$out .= '<i class="' . $item['icon'] . '"></i> ';
+				}
+				$out .= $item['name'];
+				if (isset($item['children']) && !empty($item['children'])) {
+					$out .= ' <i class="arrow"></i>';
+				}
+				$out .= '</a>';
+			}
+			if (isset($item['children']) && !empty($item['children'])) {
+				$out .= '<ul class="' . $subNavClass . '">';
+				$out .= $this->renderNested($item['children']);
+				$out .= '</ul>';
+			}
+			$out .= '</li>';
+		}
+
+		return $out;
+	}
+
 }

@@ -2,9 +2,6 @@
 /**
  * @var CoreView $this
  */
+
+$this->CHtml->setTitle(__d('core', 'Dashboard'));
 ?>
-<div class="round-shadow">
-	<div class="title-pad">
-		<h1><?php echo __d('core', 'Dashboard') ?></h1>
-	</div>
-</div>

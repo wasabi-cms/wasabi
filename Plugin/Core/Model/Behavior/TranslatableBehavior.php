@@ -16,6 +16,7 @@
 App::uses('CakeException', 'Error');
 App::uses('Hash', 'Utility');
 App::uses('ModelBehavior', 'Model');
+App::uses('Translation', 'Core.Model');
 
 class TranslatableBehavior extends ModelBehavior {
 
@@ -139,6 +140,102 @@ class TranslatableBehavior extends ModelBehavior {
 		}
 
 		return $results;
+	}
+
+	public function beforeSave(Model $model, $options = array()) {
+		parent::beforeSave($model);
+
+		$languages = $this->_getFrontendLanguages();
+		if ($languages === null) {
+			return true;
+		}
+
+		// on update unset translation data fields if the current language is not the default language
+		// and reinsert those in afterSave()
+		// this way only the default language data will be stored in the original model table
+		if ($this->_getContentLanguage('id') !== $languages[0]['id'] && $model->id !== false) {
+			$this->_settings[$model->alias]['data'] = array();
+
+			foreach ($this->_settings[$model->alias]['fields'] as $field) {
+				if (isset($model->data[$model->alias][$field])) {
+					$this->_settings[$model->alias]['data'][$field] = $model->data[$model->alias][$field];
+					unset($model->data[$model->alias][$field]);
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public function afterSave(Model $model, $created) {
+		parent::afterSave($model, $created);
+
+		$languages = $this->_getFrontendLanguages();
+		if ($languages === null) {
+			return;
+		}
+
+		$translationModel = $this->_getTranslationModel($model);
+
+		if ($created) {
+
+			// create all translation fields for the new model record
+			foreach ($this->_settings[$model->alias]['fields'] as $field) {
+				$data = array(
+					'plugin' => $model->plugin,
+					'model' => $model->alias,
+					'foreign_key' => $model->id,
+					'field' => $field,
+					'content' => $model->data[$model->alias][$field]
+				);
+
+				// for all available and in progress frontend languages
+				foreach ($languages as $language) {
+					$data['language_id'] = $language['id'];
+					$translationModel->create();
+					$translationModel->save($data);
+				}
+			}
+		} else {
+			if (isset($this->_settings[$model->alias]['data']) && !empty($this->_settings[$model->alias]['data'])) {
+				foreach ($this->_settings[$model->alias]['fields'] as $field) {
+					if (isset($this->_settings[$model->alias]['data'][$field])) {
+						$model->data[$model->alias][$field] = $this->_settings[$model->alias]['data'][$field];
+					}
+				}
+				unset($this->_settings[$model->alias]['data']);
+			}
+
+			$existingTranslations = $translationModel->find('list', array(
+				'fields' => array($translationModel->alias . '.field', $translationModel->alias . '.id'),
+				'conditions' => array(
+					'plugin' => $model->plugin,
+					'model' => $model->alias,
+					'foreign_key' => $model->id,
+					'language_id' => $this->_getContentLanguage('id')
+				)
+			));
+
+			foreach ($this->_settings[$model->alias]['fields'] as $field) {
+				if (!isset($existingTranslations[$field])) {
+					$data = array(
+						'plugin' => $model->plugin,
+						'model' => $model->alias,
+						'foreign_key' => $model->id,
+						'field' => $field,
+						'language_id' => $this->_getContentLanguage('id'),
+						'content' => $model->data[$model->alias][$field]
+					);
+				} else {
+					$data = array(
+						'id' => $existingTranslations[$field],
+						'content' => $model->data[$model->alias][$field]
+					);
+				}
+				$translationModel->create();
+				$translationModel->save($data);
+			}
+		}
 	}
 
 	/**
@@ -292,6 +389,21 @@ class TranslatableBehavior extends ModelBehavior {
 		}
 
 		return Configure::read('Wasabi.content_language.' . $field);
+	}
+
+	protected function _getDefaultLanguage($field = null) {
+		$languages = $this->_getFrontendLanguages();
+
+		$language = null;
+		if ($languages) {
+			$language = $languages[0];
+		}
+
+		if ($field !== null && isset($language[$field])) {
+			return $language[$field];
+		}
+
+		return $language;
 	}
 
 	protected function _addFields(Model $model, $fields = null, $addFields = array()) {
