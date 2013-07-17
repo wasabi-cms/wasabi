@@ -638,11 +638,12 @@ table.list {
 }
 
 /** ----------------------------------------------- TABS ----------------------------------------------------------- **/
+@tabcolor: #666;
 .tabs {
   margin: 0;
   padding: 0;
   list-style: none;
-  border-bottom: 2px solid #575757;
+  border-bottom: 2px solid @tabcolor;
 
   & > li {
     float: left;
@@ -666,7 +667,7 @@ table.list {
 
     &.active > a {
       cursor: default;
-      background-color: #575757;
+      background-color: @tabcolor;
       color: #fff;
     }
   }
@@ -674,7 +675,7 @@ table.list {
 
 .tab-content {
   margin-bottom: 40px;
-  border-bottom: 1px solid #575757;
+  border-bottom: 1px solid @tabcolor;
 
 
   .form-row:last-child {
