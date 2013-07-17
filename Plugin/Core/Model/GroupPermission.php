@@ -28,6 +28,9 @@ class GroupPermission extends CoreAppModel {
 	);
 
 	public function findAllForGroup($groupId) {
+		if (!$groupId) {
+			return array();
+		}
 		if (!$permissions = Cache::read($groupId, 'core.group_permissions')) {
 			$permissions = array();
 			$groupPermissions = $this->find('all', array(
