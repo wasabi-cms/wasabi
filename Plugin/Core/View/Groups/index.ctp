@@ -10,7 +10,7 @@ $this->CHtml->addAction(
 	$this->CHtml->backendLink('<i class="icon-plus"></i>', '/groups/add', array('class' => 'add', 'title' => __d('core', 'Add a new Group'), 'escape' => false))
 );
 ?>
-<table class="list">
+<table class="list valign-middle">
 	<thead>
 	<tr>
 		<th class="t1 center">ID</th>
@@ -32,12 +32,12 @@ $this->CHtml->addAction(
 			<td class="actions center">
 				<?php
 				if ($g['Group']['id'] != 1) {
-					echo $this->CHtml->backendConfirmationLink('<i class="icon-remove"></i>', '/groups/delete/' . $g['Group']['id'], array(
+					echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), '/groups/delete/' . $g['Group']['id'], array(
 						'title' => __d('core', 'Delete this Group'),
-						'class' => 'remove',
+						'class' => 'wicon-remove',
 						'confirm-message' => __d('core', 'Delete the group <strong>%s</strong> ?', array($g['Group']['name'])),
 						'confirm-title' => __d('core', 'Deletion Confirmation'),
-						'escape' => false
+						'modal-id' => 'modalDeleteGroup' . $g['Group']['id']
 					));
 				} else {
 					echo '-';

@@ -9,7 +9,7 @@ $this->CHtml->addAction(
 	$this->CHtml->backendLink('<i class="icon-plus"></i>', '/users/add', array('class' => 'add', 'title' => __d('core', 'Add a new User'), 'escape' => false))
 );
 ?>
-<table class="list">
+<table class="list valign-middle">
 	<thead>
 	<tr>
 		<th class="t1 center">ID</th>
@@ -51,12 +51,12 @@ $this->CHtml->addAction(
 			<td class="actions center">
 				<?php
 				if ($u['User']['id'] != Authenticator::get('id') && $u['User']['id'] != 1) {
-					echo $this->CHtml->backendConfirmationLink('<i class="icon-remove"></i>', '/users/delete/' . $u['User']['id'], array(
-						'class' => 'remove',
+					echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), '/users/delete/' . $u['User']['id'], array(
+						'class' => 'wicon-remove',
 						'title' => __d('core', 'Delete this User'),
 						'confirm-message' => __d('core', 'Delete user <strong>%s</strong> ?', array($u['User']['username'])),
 						'confirm-title' => __d('core', 'Deletion Confirmation'),
-						'escape' => false
+						'modal-id' => 'modalDeleteUser' . $u['User']['id']
 					));
 				} else {
 					echo '-';

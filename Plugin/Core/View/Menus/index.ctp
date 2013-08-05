@@ -30,12 +30,12 @@ $this->CHtml->addAction(
 			<td><?php echo $m['Menu']['menu_item_count'] ?></td>
 			<td class="actions center">
 				<?php
-				echo $this->CHtml->backendConfirmationLink('<i class="icon-remove"></i>', 'menus/delete/' . $m['Menu']['id'], array(
+				echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), 'menus/delete/' . $m['Menu']['id'], array(
 					'title' => __d('core', 'Delete this Menu'),
-					'class' => 'remove',
+					'class' => 'wicon-remove',
 					'confirm-message' => __d('core', 'Do you really want to delete menu <strong>%s</strong> ?', array($m['Menu']['name'])),
 					'confirm-title' => __d('core', 'Deletion Confirmation'),
-					'escape' => false
+					'modal-id' => 'modalDeleteMenu' . $m['Menu']['id']
 				));
 				?>
 			</td>

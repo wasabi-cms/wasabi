@@ -26,8 +26,8 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 		<table id="menu-items" class="list is-sortable valign-middle">
 			<thead>
 			<tr>
-				<th class="t13"><?php echo __d('core', 'Menu Item') ?></th>
-				<th class="t3 center"><?php echo __d('core', 'Actions') ?></th>
+				<th class="t14"><?php echo __d('core', 'Menu Item') ?></th>
+				<th class="t2 center"><?php echo __d('core', 'Actions') ?></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -136,8 +136,8 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 						</td>
 						<td class="actions center">
 							<?php
-							echo $this->Html->link('<i class="icon-resize-vertical"></i>', 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Menu Item'), 'class' => 'sort', 'escape' => false));
-							echo $this->Html->link('<i class="icon-remove"></i>', 'javascript:void(0)', array('title' => __d('core', 'Delete this Menu Item'), 'class' => 'remove remove-item', 'escape' => false));
+							echo $this->Html->link(__d('core', 'sort'), 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Menu Item'), 'class' => 'wicon-sort sort'));
+							echo $this->Html->link(__d('core', 'delete'), 'javascript:void(0)', array('title' => __d('core', 'Delete this Menu Item'), 'class' => 'wicon-remove remove-item'));
 							?>
 						</td>
 					</tr>
@@ -147,16 +147,21 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 			?>
 			<tr class="new">
 				<td>
+					<div class="row">
+						<div class="span8">
+							<?php
+							echo $this->Form->input('MenuItem.{UID}.position', array('type' => 'hidden'));
+							echo $this->Form->input('MenuItem.{UID}.name', array('label' => __d('core', 'Name')));
+							?>
+						</div>
+						<div class="span8">
+							<?php
+							echo $this->Form->input('MenuItem.{UID}.item', array('label' => __d('core', 'Type'), 'options' => $menuItems, 'empty' => __d('core', 'Please choose an item...'), 'class' => 'menu-item-select full'));
+							echo $this->Form->input('MenuItem.{UID}.type', array('type' => 'hidden'));
+							?>
+						</div>
+					</div>
 					<?php
-					echo $this->Form->input('MenuItem.{UID}.position', array('type' => 'hidden'));
-					echo $this->Form->input('MenuItem.{UID}.name', array('label' => false));
-					?>
-				</td>
-				<td>
-					<?php
-					echo $this->Form->input('MenuItem.{UID}.item', array('label' => false, 'options' => $menuItems, 'empty' => __d('core', 'Please choose an item...'), 'class' => 'menu-item-select full'));
-					echo $this->Form->input('MenuItem.{UID}.type', array('label' => false, 'type' => 'hidden'));
-
 					echo '<div data-type="' . MenuItem::TYPE_EXTERNAL_LINK . '">';
 					echo $this->Form->label('MenuItem.{UID}.external_link', __d('core', 'Link'));
 					echo $this->Form->input('MenuItem.{UID}.external_link', array('label' => false, 'type' => 'text', 'id' => false, 'disabled' => 'disabled'));
@@ -196,8 +201,8 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 				</td>
 				<td class="actions center">
 					<?php
-					echo $this->Html->link('<i class="icon-resize-vertical"></i>', 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Menu Item'), 'class' => 'sort', 'escape' => false));
-					echo $this->Html->link('<i class="icon-remove"></i>', 'javascript:void(0)', array('title' => __d('core', 'Delete this Menu Item'), 'class' => 'remove remove-item', 'escape' => false));
+					echo $this->Html->link(__d('core', 'sort'), 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Menu Item'), 'class' => 'wicon-sort sort'));
+					echo $this->Html->link(__d('core', 'delete'), 'javascript:void(0)', array('title' => __d('core', 'Delete this Menu Item'), 'class' => 'wicon-remove remove-item'));
 					?>
 				</td>
 			</tr>
@@ -208,10 +213,10 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 		</div>
 	</div>
 </div>
-<div class="form-controls fixed">
+<div class="form-controls">
 	<?php
-	echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button green primary'));
-	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/menus', array('class' => 'button danger'));
+	echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
+	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/menus');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

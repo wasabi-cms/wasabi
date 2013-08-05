@@ -53,17 +53,11 @@ echo $this->Form->create('GroupPermission', array('url' => '/' . $this->backendP
 					<input id="GroupPermission<?php echo $i ?>Allowed_" type="hidden" value="0" name="data[GroupPermission][<?php echo $i ?>][allowed]">
 					<input id="GroupPermission<?php echo $i ?>Allowed" type="checkbox" value="1" name="data[GroupPermission][<?php echo $i ?>][allowed]"<?php echo $group['allowed'] ? 'checked="checked"' : '' ?>>
 					<label for="GroupPermission<?php echo $i ?>Allowed"><?php echo $group['name'] ?></label>
-					<?php
-					#echo $this->Form->hidden('GroupPermission.' . $i . '.id', array('value' => $group['permission_id']));
-					#echo $this->Form->checkbox('GroupPermission.' . $i . '.allowed', array('value' => $group['allowed']));
-					#echo $this->Form->label('GroupPermission.' . $i . '.allowed', $group['name']);
-					$i++;
-					?>
 				</div>
-				<?php endforeach; ?>
+				<?php $i++; endforeach; ?>
 			</td>
 			<td class="center valign-middle">
-				<button class="single-submit button icon loop" type="submit"><?php echo __d('core', 'Update') ?></button>
+				<button class="single-submit button small" type="submit"><span><?php echo __d('core', 'Update') ?></span></button>
 			</td>
 		</tr>
 		<?php
@@ -75,10 +69,10 @@ echo $this->Form->create('GroupPermission', array('url' => '/' . $this->backendP
 	?>
 	</tbody>
 </table>
-<div class="form-controls fixed">
+<div class="form-controls">
 	<?php
-	echo $this->Form->button(__d('core', 'Update all'), array('div' => false, 'class' => 'button green primary'));
-	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/permissions', array('class' => 'button danger'));
+	echo $this->Form->button('<span>' . __d('core', 'Update all') . '</span>', array('div' => false, 'class' => 'button'));
+	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/permissions');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

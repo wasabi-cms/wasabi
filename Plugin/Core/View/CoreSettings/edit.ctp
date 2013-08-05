@@ -28,10 +28,10 @@ echo $this->CForm->input('cache_time', array('label' => __d('core', 'Cache Durat
 	'999 days' => __d('core', '%s days', array(999)),
 )));
 ?>
-<div class="form-controls fixed">
+<div class="form-controls">
 	<?php
-	echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button green primary'));
-	echo $this->CHtml->backendLink(__d('core', 'Reset'), '/settings/edit', array('class' => 'button danger'));
+	echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
+	echo $this->CHtml->backendLink(__d('core', 'Reset'), '/settings/edit');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

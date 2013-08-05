@@ -60,14 +60,14 @@ echo $this->Form->create('Language', array('url' => array('plugin' => 'core', 'c
 			</td>
 			<td class="actions center">
 				<?php
-				echo $this->Html->link('<i class="icon-resize-vertical"></i>', 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Language'), 'class' => 'sort', 'escape' => false));
+				echo $this->Html->link(__d('core', 'sort'), 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Language'), 'class' => 'wicon-sort sort'));
 				if (!in_array($lang['Language']['id'], array(1, 2))) {
-					echo $this->CHtml->backendConfirmationLink('<i class="icon-remove"></i>', '/languages/delete/' . $lang['Language']['id'], array(
+					echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), '/languages/delete/' . $lang['Language']['id'], array(
 						'title' => __d('core', 'Delete this Language'),
-						'class' => 'remove',
+						'class' => 'wicon-remove',
 						'confirm-message' => __d('core', 'Delete language <strong>%s</strong> ?', array($lang['Language']['name'])),
 						'confirm-title' => __d('core', 'Deletion Confirmation'),
-						'escape' => false
+						'modal-id' => 'modalDeleteLanguage' . $lang['Language']['id']
 					));
 				}
 				?>

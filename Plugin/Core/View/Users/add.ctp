@@ -31,10 +31,10 @@ if ($this->params['action'] !== 'add' && isset($this->data['User']['id']) && $th
 	echo $this->CForm->input('active', array('label' => __d('core', 'this user account is active'), 'type' => 'checkbox', 'title' => __d('core', 'Active')));
 }
 ?>
-<div class="form-controls fixed">
+<div class="form-controls">
 	<?php
-	echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button green primary'));
-	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/users', array('class' => 'button danger'));
+	echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
+	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/users');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>
