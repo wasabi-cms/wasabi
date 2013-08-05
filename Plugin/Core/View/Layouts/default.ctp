@@ -29,7 +29,7 @@
 			<?php
 			echo $this->CHtml->titlePad();
 			if (CakeSession::check('Message.flash')) {
-				echo '<div class="row">' . $this->Session->flash() . '</div>';
+				echo $this->Session->flash();
 			}
 			echo $this->fetch('content');
 			echo $this->element('Core.layout/footer');
@@ -37,16 +37,13 @@
 		</div>
 	</div>
 	<?php
+	$this->start('bottom_body');
+	$this->end('bottom_body');
+	echo $this->fetch('bottom_body');
 	echo $this->WasabiAsset->js('/js/jquery-1.10.2.min.js', 'Core');
 	echo $this->element('Core.js_translations');
 	echo $this->WasabiAsset->js('/js/plugins.js', 'Core');
 	echo $this->WasabiAsset->js('/js/script.js', 'Core');
-	if ($this->request->params['plugin'] !== 'core' && file_exists(CakePlugin::path(Inflector::camelize($this->request->params['plugin'])) . 'webroot' . DS . 'js' . DS . 'plugins.js')) {
-		echo $this->WasabiAsset->js('/js/plugins.js', Inflector::camelize($this->request->params['plugin']));
-	}
-	if ($this->request->params['plugin'] !== 'core' && file_exists(CakePlugin::path(Inflector::camelize($this->request->params['plugin'])) . 'webroot' . DS . 'js' . DS . 'script.js')) {
-		echo $this->WasabiAsset->js('/js/script.js', Inflector::camelize($this->request->params['plugin']));
-	}
 	$this->start('bottom_js');
 	$this->end('bottom_js');
 	echo $this->fetch('bottom_js');
