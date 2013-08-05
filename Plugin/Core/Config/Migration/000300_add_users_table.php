@@ -38,6 +38,12 @@ class AddUsersTable extends Migration {
 				'PRIMARY' => array(
 					'column' => 'id',
 					'unique' => 1
+				),
+				'group_id' => array(
+					'column' => 'group_id'
+				),
+				'language_id' => array(
+					'column' => 'language_id'
 				)
 			)
 		));

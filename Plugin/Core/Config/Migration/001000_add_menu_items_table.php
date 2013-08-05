@@ -44,6 +44,9 @@ class AddMenuItemsTable extends Migration {
 				'PRIMARY' => array(
 					'column' => 'id',
 					'unique' => 1
+				),
+				'menu_id' => array(
+					'column' => 'menu_id'
 				)
 			)
 		));

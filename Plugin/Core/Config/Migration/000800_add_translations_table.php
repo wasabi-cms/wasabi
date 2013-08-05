@@ -37,6 +37,9 @@ class AddTranslationsTable extends Migration {
 				'PRIMARY' => array(
 					'column' => 'id',
 					'unique' => 1
+				),
+				'lookup' => array(
+					'column' => array('plugin', 'model', 'foreign_key', 'language_id', 'field')
 				)
 			)
 		));

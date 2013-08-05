@@ -33,6 +33,9 @@ class AddLoginTokensTable extends Migration {
 				'PRIMARY' => array(
 					'column' => 'id',
 					'unique' => 1
+				),
+				'user_id' => array(
+					'column' => 'user_id'
 				)
 			)
 		));
