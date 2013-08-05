@@ -69,10 +69,13 @@ class CHtmlHelper extends AppHelper {
 	 */
 	public function backendConfirmationLink($title, $url, $options, $displayLinkTextIfUnauthorized = false) {
 		if (!isset($options['confirm-message'])) {
-			throw new CakeException('\'confirm-message\' option is not set in confirmationLink.');
+			throw new CakeException('\'confirm-message\' option is not set on backendConfirmationLink.');
 		}
 		if (!isset($options['confirm-title'])) {
-			throw new CakeException('\'confirm-title\' option is not set in confirmationLink.');
+			throw new CakeException('\'confirm-title\' option is not set on backendConfirmationLink.');
+		}
+		if (!isset($options['modal-id'])) {
+			throw new CakeException('\'modal-id\' options is not set on backendConfirmationLink.');
 		}
 
 		$url = $this->_getBackendUrl($url, true);
@@ -83,30 +86,48 @@ class CHtmlHelper extends AppHelper {
 			return '';
 		}
 
-		$confirmOptions = array(
-			'class' => 'confirm',
-			'data-confirm-action' => $url
+		$modalData = array(
+			'id' => $options['modal-id'],
+			'title' => $options['confirm-title'],
+			'body' => '<p>' . $options['confirm-message'] . '</p>',
+			'action' => $url,
+			'ajax' => false,
+			'notify' => false,
+			'method' => 'post'
 		);
-
-		if (isset($options['class']) && $options['class'] != '') {
-			$confirmOptions['class'] .= ' ' . trim($options['class']);
-			unset($options['class']);
-		}
-
-		$confirmOptions['data-confirm-message'] = $options['confirm-message'];
 		unset($options['confirm-message']);
-
-		$confirmOptions['data-confirm-title'] = $options['confirm-title'];
 		unset($options['confirm-title']);
 
-		if (isset($options['confirm-subtitle'])) {
-			$confirmOptions['data-confirm-subtitle'] = $options['confirm-subtitle'];
-			unset($options['confirm-subtitle']);
+		$linkOptions = array(
+			'data-toggle' => 'modal',
+			'data-target' => '#' . $options['modal-id']
+		);
+		unset($options['modal-id']);
+
+		if (isset($options['ajax']) && $options['ajax'] === true) {
+			$modalData['ajax'] = true;
+			unset($options['ajax']);
 		}
 
-		$confirmOptions = Hash::merge($confirmOptions, $options);
+		if (isset($options['notify'])) {
+			$modalData['notify'] = $options['notify'];
+			unset($options['notify']);
+		}
 
-		return $this->Html->link($title, '#', $confirmOptions);
+		$this->_View->append('bottom_body');
+		echo $this->_View->element('Core.modals/confirm', $modalData);
+		$this->_View->end();
+
+		$linkOptions = Hash::merge($linkOptions, $options);
+		return $this->Html->link($title, 'javascript:void(0)', $linkOptions);
+	}
+
+	public function getBackendUrl($url, $rel = false) {
+		$checkUrl = $this->_getBackendUrl($url);
+		if (!Guardian::hasAccess($checkUrl)) {
+			return false;
+		}
+		return $this->_getBackendUrl($url, $rel);
 	}
 
 	public function setTitle($title) {
