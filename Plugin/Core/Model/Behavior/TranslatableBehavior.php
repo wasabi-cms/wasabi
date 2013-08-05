@@ -181,6 +181,10 @@ class TranslatableBehavior extends ModelBehavior {
 
 			// create all translation fields for the new model record
 			foreach ($this->_settings[$model->alias]['fields'] as $field) {
+				if (!isset($model->data[$model->alias][$field])) {
+					continue;
+				}
+
 				$data = array(
 					'plugin' => $model->plugin,
 					'model' => $model->alias,
@@ -217,6 +221,10 @@ class TranslatableBehavior extends ModelBehavior {
 			));
 
 			foreach ($this->_settings[$model->alias]['fields'] as $field) {
+				if (!isset($model->data[$model->alias][$field])) {
+					continue;
+				}
+
 				if (!isset($existingTranslations[$field])) {
 					$data = array(
 						'plugin' => $model->plugin,
