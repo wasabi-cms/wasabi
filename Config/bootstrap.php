@@ -175,6 +175,7 @@ CakePlugin::load('Migrations');
  */
 Configure::write('Dispatcher.filters', array(
 	'Lessy.LessMinFilter',
+	'Lessy.JsConcatFilter',
 	'AssetDispatcher',
 	'CacheDispatcher'
 ));
