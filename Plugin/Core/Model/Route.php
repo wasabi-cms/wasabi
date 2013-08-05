@@ -17,6 +17,36 @@ App::uses('CoreAppModel', 'Core.Model');
 
 class Route extends CoreAppModel {
 
+	const TYPE_DEFAULT_ROUTE  = 'Default Route';
+	const TYPE_REDIRECT_ROUTE = 'Redirect';
 
+	public $validate = array(
+		'url' => array(
+			'unique' => array(
+				'rule' => 'isUnique',
+				'message' => 'This url is not available.'
+			)
+		)
+	);
+
+	public function afterSave($created = null) {
+		// clear cache
+	}
+
+	public function afterDelete() {
+		// clear cache
+	}
+
+	public function getRouteTypes() {
+		$reflector = new ReflectionClass(__CLASS__);
+		$constants = $reflector->getConstants();
+
+		$types = array();
+		foreach ($constants as $type) {
+			$types[$type] = $type;
+		}
+
+		return $types;
+	}
 
 }
