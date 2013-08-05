@@ -33,6 +33,7 @@
  * In development mode, you need to click the flash message to continue.
  */
 	Configure::write('debug', 2);
+	Configure::write('Lessy.SKIP_ON_PRODUCTION', true);
 
 /**
  * Configure the Error handler used to handle errors for your application.  By default
