@@ -133,13 +133,15 @@ class GroupsController extends BackendAppController {
 		if ($groupCanBeDeleted === true) {
 			if ($this->Group->delete($id)) {
 				if ($userCount > 0) {
-					$this->Session->setFlash(__d('core', 'The group has been deleted. Prior %s group members have been moved to the alternative group.', array($userCount)), 'default', array('class' => 'success'));
+					$alternativeGroup = $this->Group->findById($this->data['Group']['alternative_group_id']);
+					$this->Session->setFlash(__d('core', 'The group has been deleted. Prior <strong>%s</strong> group members have been moved to the <strong>%s</strong> group.', array($userCount, $alternativeGroup['Group']['name'])), 'default', array('class' => 'success'));
 				} else {
 					$this->Session->setFlash(__d('core', 'The group has been deleted.'), 'default', array('class' => 'success'));
 				}
 				$this->redirect(array('action' => 'index'));
 			}
 		} else {
+			$this->Session->setFlash(__d('core', 'The group <strong>%s</strong> has <strong>%s</strong> member(s) who need to be moved to another group.', array($group['Group']['name'], $group['Group']['user_count'])), 'default', array('class' => 'warning'));
 			$this->set(array(
 				'group' => $group,
 				'groups' => $this->Group->find('list', array(
