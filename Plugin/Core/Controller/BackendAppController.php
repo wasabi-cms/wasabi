@@ -123,15 +123,21 @@ class BackendAppController extends AppController {
 
 		if (!$this->Guardian->hasAccess($url)) {
 
-			// user is not logged in -> save current request and redirect to login page
+			// user is not logged in
 			if (!$this->Authenticator->get()) {
-				$this->Session->write('login_referer', '/' . $this->request->url);
-				$this->redirect(array(
-					'plugin' => 'core',
-					'controller' => 'users',
-					'action' => 'login'
-				));
-				return;
+				// ajax request
+				if ($this->request->is('ajax')) {
+					throw new UnauthorizedException(__d('core', 'Your Session has expired. Please login again.'), 401);
+				// normal request -> save current request and redirect to login page
+				} else {
+					$this->Session->write('login_referer', '/' . $this->request->url);
+					$this->redirect(array(
+						'plugin' => 'core',
+						'controller' => 'users',
+						'action' => 'login'
+					));
+					return;
+				}
 			}
 
 			// user is logged in, but unauthorized to complete the request
