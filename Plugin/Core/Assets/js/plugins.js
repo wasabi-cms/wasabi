@@ -1,0 +1,12 @@
+//= require modernizr/modernizr.custom.min.js
+//= require jquery-scrollParent/build/jquery.scrollParent.min.js
+//= require jquery-eventMagic/build/jquery.eventMagic.min.js
+//= require jquery-livequery/build/jquery.livequery.min.js
+//= require jquery-tSortable/build/jquery.tSortable.min.js
+//= require jquery-nSortable/build/jquery.nSortable.min.js
+//= require jquery-modal/build/jquery.modal.min.js
+//= require jquery-color/jquery.color.min.js
+//= require jquery-cookie/jquery.cookie.min.js
+//= require jquery-tabify/build/jquery.tabify.min.js
+//= require spin/spin.min.js
+//= require spin/jquery.spin.min.js
