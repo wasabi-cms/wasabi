@@ -4,3 +4,6 @@
 [submodule "Plugin/Lessy"]
 	path = Plugin/Lessy
 	url = git://github.com/frankfoerster/cakephp-lessy.git
+[submodule "Plugin/Core/Assets/js/jquery-eventMagic"]
+	path = Plugin/Core/Assets/js/jquery-eventMagic
+	url = git://github.com/frankfoerster/eventmagic.git
