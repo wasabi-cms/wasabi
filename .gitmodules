@@ -7,3 +7,6 @@
 [submodule "Plugin/Core/Assets/js/jquery-eventMagic"]
 	path = Plugin/Core/Assets/js/jquery-eventMagic
 	url = git://github.com/frankfoerster/eventmagic.git
+[submodule "Plugin/Core/Assets/js/jquery-livequery"]
+	path = Plugin/Core/Assets/js/jquery-livequery
+	url = git://github.com/frankfoerster/livequery.git
