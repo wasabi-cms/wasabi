@@ -10,3 +10,6 @@
 [submodule "Plugin/Core/Assets/js/jquery-livequery"]
 	path = Plugin/Core/Assets/js/jquery-livequery
 	url = git://github.com/frankfoerster/livequery.git
+[submodule "Plugin/Core/Assets/js/jquery-scrollparent"]
+	path = Plugin/Core/Assets/js/jquery-scrollparent
+	url = git://github.com/frankfoerster/scrollparent.git
