@@ -13,9 +13,7 @@
 </head>
 <body class="login">
 	<div class="login-wrapper">
-		<div class="round-shadow">
-			<?php echo $this->fetch('content'); ?>
-		</div>
+		<?php echo $this->fetch('content'); ?>
 	</div>
 	<?php echo $this->element('Core.layout/footer'); ?>
 </body>

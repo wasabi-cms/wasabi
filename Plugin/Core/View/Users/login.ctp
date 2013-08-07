@@ -15,8 +15,8 @@ echo $this->Form->input('User.remember', array(
 	'type' => "checkbox"
 ));
 echo '</div>';
-echo '<div class="form-actions-bar">';
-echo $this->Form->button(__d('core', 'Login'), array('class' => 'button primary'));
+echo '<div class="form-controls">';
+echo $this->Form->button('<span>' . __d('core', 'Login') . '</span>', array('class' => 'button'));
 echo '</div>';
 echo $this->Form->end();
 ?>

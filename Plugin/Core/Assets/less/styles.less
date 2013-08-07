@@ -16,10 +16,6 @@
   .box-sizing(border-box);
 }
 
-//html, body {
-//  height: 100%;
-//}
-
 body {
   font: 14px/1.5 'Open Sans', Helvetica, Arial, sans-serif;
   color: #333;
@@ -913,5 +909,58 @@ table.permissions {
     margin: 0;
     position: relative;
     top: 1px;
+  }
+}
+
+/** ----------------------------------------------- LOGIN ---------------------------------------------------------- **/
+.login {
+  background-color: #efefef;
+
+  .login-wrapper {
+    margin: 100px auto 0;
+    max-width: 400px;
+    background-color: #fff;
+    .box-shadow(3px 3px 4px #bbb);
+  }
+
+  h1 {
+    padding: 0 20px;
+    margin: 0;
+    color: #fff;
+    font-size: 1.7em;
+    font-weight: normal;
+    line-height: 2.2em;
+    background-color: #222;
+    border-bottom: 1px solid #000;
+  }
+
+  .form-content {
+    padding: 20px 20px 0;
+  }
+
+  .form-controls {
+    border-top: 1px solid #ddd;
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+  .input {
+    margin-bottom: 10px;
+
+    &.checkbox {
+      margin: 20px 0;
+    }
+  }
+
+  #flashMessage {
+    border: none;
+    margin-bottom: 0;
+    padding: 10px 20px;
+  }
+
+  #flashMessage + form {
+    border-top: none;
   }
 }
