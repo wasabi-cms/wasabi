@@ -183,7 +183,7 @@ class Textile {
 
 					$pygmentize = Configure::read('Wasabi.pygmentize_path');
 
-					if ($pygmentize != 'full_path_to_pygmentize' && $pygmentize != '' && $pygmentize != false && $pygmentize != null) {
+					if (is_executable($pygmentize)) {
 						// check the cache
 						$cacheKey = md5($codeContent);
 
@@ -194,9 +194,7 @@ class Textile {
 							fwrite($fileHandle, $codeContent);
 							fclose($fileHandle);
 
-							$pygments = Configure::read('Wasabi.pygmentize_path');
-
-							$command = '"' . $pygments . '" -l ' . $lang . ' -f html -O linenos=1,nowrap,encoding=utf-8,startinline "' . $tmpName . '"';
+							$command = '"' . $pygmentize . '" -l ' . $lang . ' -f html -O linenos=1,nowrap,encoding=utf-8,startinline "' . $tmpName . '"';
 							$output = array();
 							$retval = -1;
 
@@ -347,7 +345,9 @@ class Textile {
 	}
 
 	protected function _cleanUpLineEndings($text) {
-		return str_replace("\r\n", "\n", $text);
+		$text = str_replace("\r\n", "\n", $text);
+		$text = str_replace("\r", "\n", $text);
+		return $text;
 	}
 
 	/**

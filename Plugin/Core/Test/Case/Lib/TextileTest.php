@@ -342,14 +342,16 @@ class TextileTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-	public function testBlockCode() {
+	public function testBlockCodeWithoutPygments() {
+		$pygmentize = Configure::read('Wasabi.pygmentize_path');
+		Configure::write('Wasabi.pygmentize_path', false);
 		// code(lexer|optional title for code block).
 		/**
 		 * code(js|An examplar code block title).
 		 *   $('html').trigger('test_event');
 		 */
 		$str = "code(js|An exemplar code block title).\n  $('html').trigger('test_event');";
-		$expected = "<div class=\"code-title\">An exemplar code block title</div><div class=\"code\"><table><tbody><tr><td class=\"code js\"><pre>$(&#39;html&#39;).trigger(&#39;test_event&#39;);</pre></td></tr></tbody></table></div>";
+		$expected = '<div class="code-title">An exemplar code block title</div><div class="code"><table><tbody><tr><td class="code js"><pre>$(&#39;html&#39;).trigger(&#39;test_event&#39;);</pre></td></tr></tbody></table></div>';
 		$result = $this->Textile->convert($str);
 		$this->assertEqual($expected, $result);
 
@@ -358,7 +360,7 @@ class TextileTest extends CakeTestCase {
 		 *   $('html').trigger('test_event');
 		 */
 		$str = "code(js).\n  $('html').trigger('test_event');";
-		$expected = "<div class=\"code-title\">JS</div><div class=\"code\"><table><tbody><tr><td class=\"code js\"><pre>$(&#39;html&#39;).trigger(&#39;test_event&#39;);</pre></td></tr></tbody></table></div>";
+		$expected = '<div class="code-title">JS</div><div class="code"><table><tbody><tr><td class="code js"><pre>$(&#39;html&#39;).trigger(&#39;test_event&#39;);</pre></td></tr></tbody></table></div>';
 		$result = $this->Textile->convert($str);
 		$this->assertEqual($expected, $result);
 
@@ -372,6 +374,11 @@ class TextileTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 		$this->Textile->ignoreCodeBlocks(false);
 
+		Configure::write('Wasabi.pygmentize_path', $pygmentize);
+	}
+
+	public function testBlockCodeWithPygments() {
+		$this->skipIf(!is_executable(Configure::read('Wasabi.pygmentize_path')), 'Pygmentize is not available.');
 		/**
 		 * test working pygments / pygmentize
 		 * For testing on Windows systems make sure that pygmentize.exe is available in Path.
@@ -380,22 +387,18 @@ class TextileTest extends CakeTestCase {
 		 * code(js).
 		 *   $('html').trigger('test_event');
 		 */
-		Configure::write('Wasabi.pygmentize_path', 'pygmentize');
-		if ($this->_isPygmentizeAvailable()) {
-			$str = "code(js).\n  $('html').trigger('test_event');";
-			$expected = "<div class=\"code-title\">JS</div><div class=\"code\"><table><tbody><tr><td class=\"linenos\"><pre>1</pre></td><td class=\"highlight js\"><pre><span class=\"nx\">$</span><span class=\"p\">(</span><span class=\"s1\">&#39;html&#39;</span><span class=\"p\">).</span><span class=\"nx\">trigger</span><span class=\"p\">(</span><span class=\"s1\">&#39;test_event&#39;</span><span class=\"p\">);</span></pre></td></tr></tbody></table></div>";
-			$result = $this->Textile->convert($str);
-			$this->assertEqual($expected, $result);
+		$str = "code(js).\n  $('html').trigger('test_event');";
+		$expected = '<div class="code-title">JS</div><div class="code"><table><tbody><tr><td class="linenos"><pre>1</pre></td><td class="highlight js"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;html&#39;</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;test_event&#39;</span><span class="p">);</span></pre></td></tr></tbody></table></div>';
+		$result = $this->Textile->convert($str);
+		$this->assertEqual($expected, $result);
 
-			// test pygmentize block caching
-			$cacheKey = md5("$('html').trigger('test_event');");
-			$isCached = (boolean) Cache::read($cacheKey, 'frontend.pygmentize');
-			$this->assertTrue($isCached);
+		// test pygmentize block caching
+		$cacheKey = md5("$('html').trigger('test_event');");
+		$isCached = (boolean) Cache::read($cacheKey, 'frontend.pygmentize');
+		$this->assertTrue($isCached);
 
-			// reset pygmentize config & delete cache
-			Configure::write('Wasabi.pygmentize_path', 'full_path_to_pygmentize');
-			Cache::delete($cacheKey, 'frontend.pygmentize');
-		}
+		// delete cache
+		Cache::delete($cacheKey, 'frontend.pygmentize');
 	}
 
 	public function testTables() {
@@ -579,19 +582,4 @@ class TextileTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-	protected function _isPygmentizeAvailable() {
-		$pygmentizePath = Configure::read('Wasabi.pygmentize_path');
-		if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
-			$fp = popen("where $pygmentizePath", "r");
-			$result = fgets($fp, 255);
-			$exists = !preg_match('#Could not find files#', $result);
-			pclose($fp);
-		} else { // non-Windows
-			$fp = popen("which $pygmentizePath", "r");
-			$result = fgets($fp, 255);
-			$exists = !empty($result);
-			pclose($fp);
-		}
-		return $exists;
-	}
 }

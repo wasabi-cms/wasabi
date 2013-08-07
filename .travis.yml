@@ -74,8 +74,8 @@ before_script:
   - echo "<?php
     Configure::write('Wasabi.backend_prefix', 'backend');
     Configure::write('Session.cookie', 'Wasabi');
-    Configure::write('Wasabi.pygmentize_path', 'full_path_to_pygmentize');
-    Configure::write('Wasabi.pngcrush_path', 'full_path_to_pngcrush');
+    Configure::write('Wasabi.pygmentize_path', '/usr/local/bin/pygmentize');
+    Configure::write('Wasabi.pngcrush_path', false);
     " > Config/wasabi.php
   - echo "<?php
     Configure::write('Security.level', 'medium');

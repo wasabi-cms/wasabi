@@ -254,10 +254,10 @@ class CoreInstallController extends AppController {
 			if ($this->CoreInstall->validates()) {
 				try {
 					if (!isset($config['pygmentize_path']) || $config['pygmentize_path'] == '') {
-						$config['pygmentize_path'] = 'full_path_to_pygmentize';
+						$config['pygmentize_path'] = 'false';
 					}
 					if (!isset($config['pngcrush_path']) || $config['pngcrush_path'] == '') {
-						$config['pngcrush_path'] = 'full_path_to_pngcrush';
+						$config['pngcrush_path'] = 'false';
 					}
 					$this->_writeConfig('wasabi', $config);
 				} catch (Exception $e) {
@@ -322,6 +322,7 @@ class CoreInstallController extends AppController {
 		$install->close();
 
 		$finalContent = strtr($installContent, $replacements);
+		$finalContent = preg_replace("/'false'/", 'false', $finalContent);
 		$final = new File(APP . 'Config' . DS . $name . '.php', true);
 		if (!$final->write($finalContent)) {
 			throw new Exception();
