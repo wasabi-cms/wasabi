@@ -3,13 +3,13 @@
  * @var CoreView $this
  */
 ?>
+<ul class="progress">
+	<li class="active">1</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
 <?php echo $this->Form->create('CoreInstall', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'database'), 'novalidate')); ?>
 <div class="install-content">
-	<ul class="progress">
-		<li class="active">1</li>
-		<li>2</li>
-		<li>3</li>
-	</ul>
 	<h2><?php echo __d('core', 'Step 1: Database Setup') ?></h2>
 	<?php echo $this->Session->flash(); ?>
 	<div class="form-content">
@@ -23,7 +23,7 @@
 		?>
 	</div>
 </div>
-<div class="form-actions-bar">
-	<?php echo $this->Form->button(__d('core', 'Continue'), array('class' => 'button green primary')); ?>
+<div class="form-controls">
+	<?php echo $this->Form->button('<span>' . __d('core', 'Continue') . '</span>', array('class' => 'button')); ?>
 </div>
 <?php echo $this->Form->end(); ?>

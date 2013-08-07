@@ -5,13 +5,13 @@
  * @var array $checks
  */
 ?>
+<ul class="progress">
+	<li class="done">1</li>
+	<li class="active">2</li>
+	<li>3</li>
+</ul>
 <div class="install-content">
 	<?php echo $this->Session->flash(); ?>
-	<ul class="progress">
-		<li class="done">1</li>
-		<li class="active">2</li>
-		<li>3</li>
-	</ul>
 	<h2><?php echo __d('core', 'Step 2: Data Import') ?></h2>
 	<p><?php echo __d('core', 'Now it’s time to setup all required database tables and import some default data.') ?></p>
 	<div class="infobox">
@@ -20,7 +20,7 @@
 	</div>
 </div>
 <?php echo $this->Form->create('CoreInstall', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'import'))); ?>
-<div class="form-actions-bar">
-	<?php echo $this->Form->button(__d('core', 'Start Import'), array('div' => false, 'class' => 'button green primary')); ?>
+<div class="form-controls">
+	<?php echo $this->Form->button('<span>' . __d('core', 'Start Import') . '</span>', array('div' => false, 'class' => 'button green primary')); ?>
 </div>
 <?php echo $this->Form->end(); ?>

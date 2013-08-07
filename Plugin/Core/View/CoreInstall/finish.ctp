@@ -5,13 +5,13 @@
  * @var array $checks
  */
 ?>
+<ul class="progress">
+	<li class="done">1</li>
+	<li class="done">2</li>
+	<li class="done">3</li>
+</ul>
 <div class="install-content">
 	<?php echo $this->Session->flash(); ?>
-	<ul class="progress">
-		<li class="done">1</li>
-		<li class="done">2</li>
-		<li class="done">3</li>
-	</ul>
 	<h2><?php echo __d('core', 'Congratulations!') ?></h2>
 	<div class="checks">
 		<p class="check success"><?php echo __d('core', 'You have completed the basic setup of Wasabi.') ?></p>

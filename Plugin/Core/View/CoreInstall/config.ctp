@@ -3,14 +3,14 @@
  * @var CoreView $this
  */
 ?>
+<ul class="progress">
+	<li class="done">1</li>
+	<li class="done">2</li>
+	<li class="active">3</li>
+</ul>
 <?php echo $this->Form->create('CoreInstall', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'config'), 'novalidate')); ?>
 	<div class="install-content">
 		<?php echo $this->Session->flash(); ?>
-		<ul class="progress">
-			<li class="done">1</li>
-			<li class="done">2</li>
-			<li class="active">3</li>
-		</ul>
 		<h2><?php echo __d('core', 'Step 3: Additional Configuration Options') ?></h2>
 		<div class="form-content">
 			<?php
@@ -20,7 +20,7 @@
 			?>
 		</div>
 	</div>
-	<div class="form-actions-bar">
-		<?php echo $this->Form->button(__d('core', 'Finalize'), array('class' => 'button green primary')); ?>
+	<div class="form-controls">
+		<?php echo $this->Form->button('<span>' . __d('core', 'Finalize') . '</span>', array('class' => 'button')); ?>
 	</div>
 <?php echo $this->Form->end(); ?>

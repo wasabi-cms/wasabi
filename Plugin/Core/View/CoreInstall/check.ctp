@@ -5,12 +5,12 @@
  * @var array $checks
  */
 ?>
-<div class="install-content">
-	<ul class="progress">
-		<li>1</li>
-		<li>2</li>
-		<li>3</li>
-	</ul>
+<ul class="progress">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
+<div class="install-content row">
 	<h2><?php echo __d('core', 'Welcome to the Wasabi Install Tool') ?></h2>
 	<p><?php echo __d('core', 'Wasabi is a powerful framework that sits ontop of CakePHP and comes with several enterprise ready Plugins for Content Management and Blogging in multiple languages.') ?></p>
 	<p><?php echo __d('core', 'Be ready in 3 simple steps!') ?></p>
@@ -23,6 +23,6 @@
 		<?php endforeach; ?>
 	</div>
 </div>
-<div class="form-actions-bar">
-	<?php echo $this->Html->link(__d('core', 'Start Installation'), '/backend/install/database', array('class' => 'button green primary')) ?>
+<div class="form-controls">
+	<?php echo $this->Html->link('<span>' . __d('core', 'Start Installation') . '</span>', '/backend/install/database', array('class' => 'button', 'escape' => false)) ?>
 </div>

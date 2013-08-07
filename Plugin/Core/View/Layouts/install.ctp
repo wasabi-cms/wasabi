@@ -16,10 +16,8 @@
 </head>
 <body class="install">
 <div class="install-wrapper">
-	<div class="round-shadow">
-		<h1><?php echo __d('core', 'Installing Wasabi') ?></h1>
-		<?php echo $this->fetch('content'); ?>
-	</div>
+	<h1><?php echo __d('core', 'Installing Wasabi') ?></h1>
+	<?php echo $this->fetch('content'); ?>
 </div>
 <?php echo $this->element('Core.layout/footer', array('sql_dump' => false)); ?>
 </body>
