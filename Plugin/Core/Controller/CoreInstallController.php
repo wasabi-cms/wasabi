@@ -36,6 +36,15 @@ class CoreInstallController extends AppController {
 	);
 
 	/**
+	 * Components used by this controller.
+	 *
+	 * @var array
+	 */
+	public $components = array(
+		'Core.Guardian'
+	);
+
+	/**
 	 * Default viewClass
 	 *
 	 * @var string
@@ -166,6 +175,9 @@ class CoreInstallController extends AppController {
 				}
 				$config = Hash::merge($defaults, $config);
 				try {
+					if (ConnectionManager::$config === null) {
+						ConnectionManager::$config = new stdClass();
+					}
 					ConnectionManager::create('default', $config);
 					/** @var DboSource $db */
 					$db = ConnectionManager::getDataSource('default');
