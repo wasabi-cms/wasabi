@@ -11,9 +11,11 @@
 <?php
 echo $this->fetch('meta');
 echo $this->WasabiAsset->css('/css/styles.css', 'Core');
-if ($this->request->params['plugin'] !== 'core' && file_exists(CakePlugin::path(Inflector::camelize($this->request->params['plugin'])) . 'webroot' . DS . 'css' . DS . 'app.css')) {
-	echo $this->WasabiAsset->css('/css/app.css', Inflector::camelize($this->request->params['plugin']));
-}
+
+$this->start('head_css');
+$this->end('head_css');
+echo $this->fetch('head_css');
+
 if (Configure::read('debug') > 0) {
 	echo $this->WasabiAsset->css('/css/debug.css', 'Core');
 }
