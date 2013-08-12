@@ -67,16 +67,16 @@ class NavigationHelper extends AppHelper {
 			if (isset($item['url'])) {
 				$options = array();
 				if (isset($item['icon'])) {
-					$item['name'] = '<i class="' . $item['icon'] . '"></i> ' . $item['name'];
+					$item['name'] = '<i class="' . $item['icon'] . '"></i><span class="item-name">' . $item['name'] . '</span>';
 					$options['escape'] = false;
 				}
 				$out .= $this->CHtml->backendLink($item['name'], $item['url'], $options);
 			} else {
 				$out .= '<a href="javascript:void(0)">';
 				if (isset($item['icon'])) {
-					$out .= '<i class="' . $item['icon'] . '"></i> ';
+					$out .= '<i class="' . $item['icon'] . '"></i>';
 				}
-				$out .= $item['name'];
+				$out .= '<span class="item-name">' . $item['name'] . '</span>';
 				if (isset($item['children']) && !empty($item['children'])) {
 					$out .= ' <i class="arrow"></i>';
 				}
