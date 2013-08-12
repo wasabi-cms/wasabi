@@ -93,6 +93,7 @@ class CHtmlHelper extends AppHelper {
 			'action' => $url,
 			'ajax' => false,
 			'notify' => false,
+			'event' => null,
 			'method' => 'post'
 		);
 		unset($options['confirm-message']);
@@ -114,12 +115,15 @@ class CHtmlHelper extends AppHelper {
 			unset($options['notify']);
 		}
 
-		$this->_View->append('bottom_body');
-		echo $this->_View->element('Core.modals/confirm', $modalData);
-		$this->_View->end();
+		if (isset($options['event'])) {
+			$modalData['event'] = $options['event'];
+			unset($options['event']);
+		}
 
+		$out = $this->_View->element('Core.modals/confirm', $modalData);
 		$linkOptions = Hash::merge($linkOptions, $options);
-		return $this->Html->link($title, 'javascript:void(0)', $linkOptions);
+		$out .= $this->Html->link($title, 'javascript:void(0)', $linkOptions);
+		return $out;
 	}
 
 	public function getBackendUrl($url, $rel = false) {
