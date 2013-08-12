@@ -3,8 +3,4 @@
  * @var CoreView $this
  */
 ?>
-<?php if (!isset($sql_dump) || $sql_dump !== false): ?>
-<div class="row">
-	<?php echo $this->element('sql_dump'); ?>
-</div>
-<?php endif; ?>
+<div id="footer"><small><?php echo __d('core', 'Thank you for using Wasabi.' ) ?></small></div>
