@@ -19,6 +19,20 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
 
 	/**
+	 * Constructor
+	 *
+	 * @param CakeRequest $request
+	 * @param CakeResponse $response
+	 */
+	public function __construct($request = null, $response = null) {
+		if ((Configure::read('debug') > 0) && CakePlugin::loaded('DebugKit')) {
+			$this->components[] = 'DebugKit.Toolbar';
+		}
+
+		parent::__construct($request, $response);
+	}
+
+	/**
 	 * beforeFilter callback
 	 *
 	 * initialize all cache configs
