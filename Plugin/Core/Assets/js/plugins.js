@@ -10,3 +10,4 @@
 //= require jquery-tabify/build/jquery.tabify.min.js
 //= require spin/spin.min.js
 //= require spin/jquery.spin.min.js
+//= require jquery-blockThis/build/jquery.blockThis.min.js
