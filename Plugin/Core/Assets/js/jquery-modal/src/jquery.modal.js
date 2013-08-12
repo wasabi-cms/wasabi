@@ -9,7 +9,6 @@
     this.$target = $(this.$el.attr('data-target'));
     this.$targetContents = null;
 
-    this.$modal = null;
     this.$modalBackdrop = null;
     this.$modalWrapper = null;
     this.$modalContainer = null;
@@ -19,7 +18,6 @@
     this._primaryEvents = [];
     this._secondaryEvents = [];
 
-    console.log(this.$target);
     if (this.$target.length > 0) {
       this._buildEvents();
       $.attachEvents(this._primaryEvents);
@@ -46,6 +44,9 @@
           }],
           [this.$modalContainer, '[data-dismiss="modal"]', [
             ['click', $.proxy(this._closeModal, this)]
+          ]],
+          [this.$modalContainer, '[type="submit"]', [
+            ['click', $.proxy(this._submit, this)]
           ]],
           [$(window), {
             resize: $.proxy(this._onResize, this)
@@ -88,8 +89,9 @@
       $.attachEvents(this._secondaryEvents);
 
       this.$body
-        .toggleClass('page-overflow', $(window).height() < this.$body.height())
+        .toggleClass('page-overflow', $(window).height() < $(document).height())
         .addClass('modal-open');
+
 
       this.$targetContents = this.$target.children();
 
@@ -110,7 +112,7 @@
     },
 
     _closeModal: function(event) {
-      event.preventDefault();
+      event && event.preventDefault();
       $.detachEvents(this._secondaryEvents);
 
       // fadeout and remove modal from DOM and reset body classes
@@ -160,6 +162,40 @@
         return;
       }
       this._updatePosition();
+    },
+
+    _submit: function(event) {
+      event.preventDefault();
+
+      var $target = $(event.target);
+      if ($target.attr('disabled') !== undefined) {
+        return;
+      }
+      var that = this;
+
+      if ($target.attr('data-is-ajax') === 'true') {
+        $target.attr('disabled', true);
+        var $notify = $($target.attr('data-notify')) || $(document);
+        var evt = 'beforeAjax.modal';
+        $notify.trigger(evt);
+        $.ajax({
+          type: $target.attr('data-method'),
+          url: $target.attr('data-action'),
+          cache: false,
+          success: function(data) {
+            evt = $target.attr('data-event') || 'success.modal';
+            $notify.trigger(evt, data);
+          }
+        });
+      } else {
+        $('<form></form>')
+          .attr('action', $target.attr('data-action'))
+          .attr('method', $target.attr('data-method'))
+          .appendTo('body')
+          .submit();
+      }
+
+      that._closeModal();
     }
 
   };
