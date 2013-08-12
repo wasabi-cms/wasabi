@@ -3,22 +3,33 @@
 @import url('grid.less.ins');
 @import url('fontawesome.less.ins');
 @import url('wasabi-icons.less.ins');
+@import url('twbs-dropdown.less.ins');
 
 /** ------------------------------------------------ COLORS -------------------------------------------------------- **/
 @base: #222;
 @blue: #00a5f0;
 
 /** ------------------------------------------------ SIZE ---------------------------------------------------------- **/
+@minWidth: 700px;
 @asideWidth: 200px;
+@asideCollapsedWidth: 37px;
+
+/** ---------------------------------------------- BREAK POINTS ---------------------------------------------------- **/
+@menuBreakPoint: 900px;
 
 /** ------------------------------------------------- CORE --------------------------------------------------------- **/
 *, *:before, *:after {
   .box-sizing(border-box);
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   font: 14px/1.5 'Open Sans', Helvetica, Arial, sans-serif;
   color: #333;
+  min-width: @minWidth;
 }
 
 .main-nav, .user-nav, .aside-nav, .sub-nav, .breadcrumbs {
@@ -35,7 +46,6 @@ a {
     color: #005580;
   }
 }
-
 
 .center {
   text-align: center !important;
@@ -54,10 +64,11 @@ header {
   position: fixed;
   top: 0;
   left: 0;
-  padding: 0 20px;
+  padding: 0 20px 0 0;
   color: #fff;
   background-color: @base;
-  z-index: 995;
+  z-index: 9999;
+  min-width: @minWidth;
 
   ul {
     margin: 0;
@@ -73,7 +84,7 @@ header {
   }
 
   .brand {
-    width: (@asideWidth - 20 - 36);
+    margin-left: 10px;
     display: inline-block;
     line-height: 40px;
     font-size: 20px;
@@ -82,13 +93,19 @@ header {
 
   .toggle-nav {
     display: inline-block;
-    padding: 0 12px;
+    padding: 0 13px 0 12px;
     line-height: 39px;
     color: #fff;
     text-decoration: none;
+    background-color: #3d3d3d;
+    outline: none;
+
+    body.nav-closed & {
+      background-color: transparent;
+    }
 
     &:hover {
-      background-color: @blue;
+      background-color: #3d3d3d !important;
     }
   }
 
@@ -119,7 +136,7 @@ header {
 .user-menu {
   float: right;
 
-  a {
+  & > a {
     padding: 0 10px 0 14px;
     display: inline-block;
     line-height: 39px;
@@ -129,8 +146,23 @@ header {
       margin-left: 7px;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
       background-color: #333;
+    }
+  }
+
+  .dropdown-menu {
+    background-color: #333;
+
+    a {
+      display: block;
+      padding: 5px 15px;
+      color: #bdbdbd;
+
+      &:hover {
+        background-color: #575757;
+      }
     }
   }
 }
@@ -163,21 +195,45 @@ header {
 /** ---------------------------------------------- WRAPPER --------------------------------------------------------- **/
 #wrapper {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  position: relative;
 }
 
 /** ---------------------------------------------- SIDEBAR --------------------------------------------------------- **/
-aside {
+#asidebg {
   position: fixed;
+  top: 0;
+  bottom: 0;
   width: @asideWidth;
-  min-height: 100%;
-  padding-top: 40px;
   background-color: #3d3d3d;
+  z-index: -1;
+
+  body.nav-closed & {
+    display: none;
+  }
+
+  @media only screen and (max-width: @menuBreakPoint) {
+    width: @asideCollapsedWidth;
+  }
+}
+
+aside {
+  top: 0;
+  position: absolute;
+  width: @asideWidth;
+  padding-top: 40px;
+
+  body.nav-closed & {
+    display: none;
+  }
+
+  @media only screen and (max-width: @menuBreakPoint) {
+    width: @asideCollapsedWidth;
+  }
 }
 
 .main-nav {
   margin-top: 20px;
-  font-size: 14px;
 
   a {
     outline: none;
@@ -187,26 +243,45 @@ aside {
 
     & > a {
       display: block;
-      padding: 10px 15px;
+      padding: 10px 10px 9px;
       text-decoration: none;
       color: #fff;
       border-top: 1px solid #5c5c5c;
+      position: relative;
 
       & > i {
         margin-right: 7px;
         font-size: 16px;
+        line-height: 16px;
         color: #969696;
+
+        @media only screen and (max-width: @menuBreakPoint) {
+          margin-right: 0;
+        }
       }
 
-      & > .arrow:before {
-        float: right;
-        margin-top: 1px;
-        margin-right: 1px;
-        content: "\f104";
-        font-family: "FontAwesome";
-        font-size: 16px;
-        font-style: normal;
-        font-weight: normal;
+      & > .arrow {
+
+        &:before {
+          position: absolute;
+          top: 12px;
+          right: 10px;
+          content: "\f104";
+          font-family: "FontAwesome";
+          font-style: normal;
+          font-weight: normal;
+        }
+
+        @media only screen and (max-width: @menuBreakPoint) {
+          display: none;
+        }
+      }
+
+      & > .item-name {
+
+        @media only screen and (max-width: @menuBreakPoint) {
+          display: none;
+        }
       }
 
       &:hover {
@@ -220,24 +295,26 @@ aside {
 
     & > .sub-nav {
       display: none;
+      background-color: #3d3d3d;
 
       & > li {
 
         & > a {
           display: block;
           border-top: 1px solid transparent;
-          padding: 5px 0 5px 44px;
+          padding: 5px 0 5px 39px;
           color: #bdbdbd;
           text-decoration: none;
 
           &:hover {
-            border-top: 1px solid #3d3d3d;
             background-color: #575757;
           }
         }
 
         &.active > a {
-          background-color: #575757;
+          background-color: #4c4c4c;
+          color: #ddd;
+          font-weight: 600;
         }
       }
     }
@@ -253,6 +330,10 @@ aside {
 
       & > .sub-nav {
         display: block;
+
+        @media only screen and (max-width: @menuBreakPoint) {
+          display: none;
+        }
       }
     }
 
@@ -270,14 +351,75 @@ aside {
         }
       }
     }
+
+    &.popout {
+      position: relative;
+      z-index: 9998;
+      background-color: #303030;
+
+      & > a {
+        & > .item-name {
+          position: absolute;
+          top: 0px;
+          left: @asideCollapsedWidth;
+          display: block;
+          width: (@asideWidth - @asideCollapsedWidth);
+          padding-left: 10px;
+          background-color: #303030;
+          line-height: 40px;
+        }
+      }
+
+      &.active {
+        background-color: @blue;
+
+        & > a > .item-name {
+          background-color: @blue;
+        }
+      }
+
+      & > .sub-nav {
+        position: absolute;
+        top: 41px;
+        left: (@asideCollapsedWidth + 2);
+        display: block;
+        width: (@asideWidth - @asideCollapsedWidth - 2);
+
+        & > li > a {
+          padding-left: 20px;
+        }
+      }
+    }
+  }
+
+  &.collapsed {
+
+    & > li {
+      &.open {
+        & > a {
+          background: none;
+        }
+
+        &.active {
+          background-color: @blue;
+        }
+      }
+    }
   }
 }
 
 /** ---------------------------------------------- CONTENT --------------------------------------------------------- **/
 #content {
   margin-left: @asideWidth;
-  padding: 40px 20px 20px;
-  background-color: #fff;
+  padding: 40px 20px 100px;
+
+  body.nav-closed & {
+    margin-left: 0;
+  }
+
+  @media only screen and (max-width: @menuBreakPoint) {
+    margin-left: @asideCollapsedWidth;
+  }
 }
 
 .page-title {
@@ -351,6 +493,26 @@ strong {
 
 .mtop {
   margin-top: 40px !important;
+}
+
+/** ------------------------------------------------ FOOTER -------------------------------------------------------- **/
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 0;
+  margin-left: (@asideWidth + 20);
+  margin-right: 20px;
+  border-top: 1px dotted #ddd;
+
+  body.nav-closed & {
+    margin-left: 20px;
+  }
+
+  @media only screen and (max-width: @menuBreakPoint) {
+    margin-left: (@asideCollapsedWidth + 20);
+  }
 }
 
 /** --------------------------------------------- FLASH MESSAGES --------------------------------------------------- **/
@@ -704,12 +866,6 @@ table.list {
       }
     }
   }
-}
-
-
-/** ---------------------------------------------- FOOTER ---------------------------------------------------------- **/
-footer {
-  padding: 20px 20px 20px 260px;
 }
 
 /** ---------------------------------------------- BUTTONS --------------------------------------------------------- **/
