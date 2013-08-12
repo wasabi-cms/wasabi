@@ -1,0 +1,48 @@
+/** ------------------------------------------- DROPDOWN MENU ------------------------------------------------------ **/
+.dropdown {
+
+  & > a {
+    outline: none;
+  }
+
+  &.open {
+    .dropdown-menu {
+      display: block;
+    }
+  }
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9998;
+  display: none; // none by default, but block on "open" of the menu
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 0; // override default ul
+  list-style: none;
+  background-color: #fff;
+
+  &.pull-right {
+    right: 0;
+    left: auto;
+  }
+
+  .divider {
+    background-color: #e5e5e5;
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+  }
+}
+
+.dropdown-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 9997;
+}

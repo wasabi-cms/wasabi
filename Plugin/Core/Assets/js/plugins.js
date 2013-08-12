@@ -11,3 +11,4 @@
 //= require spin/spin.min.js
 //= require spin/jquery.spin.min.js
 //= require jquery-blockThis/build/jquery.blockThis.min.js
+//= require twbs-dropdown/build/twbs.dropdown.min.js
