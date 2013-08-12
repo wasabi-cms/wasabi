@@ -12,16 +12,9 @@
 	<?php echo $this->element('Core.layout/head'); ?>
 </head>
 <body>
-	<header class="row<?php echo (Configure::read('debug') > 0) ? ' debug' : '' ?>">
-		<ul class="row">
-			<li><a class="brand">wasabi</a></li>
-			<li><a class="toggle-nav" href="javascript:void(0)"><i class="icon-reorder"></i></a></li>
-			<?php echo $this->element('Core.menus/top_nav'); ?>
-			<?php echo $this->element('Core.menus/user'); ?>
-			<?php echo $this->element('Core.menus/language'); ?>
-		</ul>
-	</header>
+	<?php echo $this->element('Core.layout/header'); ?>
 	<div id="wrapper">
+		<div id="asidebg"></div>
 		<aside>
 			<?php echo $this->element('Core.menus/main_nav'); ?>
 		</aside>
@@ -32,9 +25,9 @@
 				echo $this->Session->flash();
 			}
 			echo $this->fetch('content');
-			echo $this->element('Core.layout/footer');
 			?>
 		</div>
+		<?php echo $this->element('Core.layout/footer'); ?>
 	</div>
 	<?php
 	$this->start('bottom_body');
