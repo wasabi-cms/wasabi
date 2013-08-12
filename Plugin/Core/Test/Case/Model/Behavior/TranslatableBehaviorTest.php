@@ -19,6 +19,7 @@ App::uses('TestPluginArticle', 'TestPlugin.Model');
 
 /**
  * @property TestPluginArticle $Article
+ * @property Translation $Translation
  */
 class TranslatableBehaviorTest extends CakeTestCase {
 
@@ -39,12 +40,14 @@ class TranslatableBehaviorTest extends CakeTestCase {
 		CakePlugin::load('TestPlugin');
 
 		$this->Article = ClassRegistry::init('TestPlugin.TestPluginArticle');
+		$this->Translation = ClassRegistry::init('Translation');
 
 		parent::setUp();
 	}
 
 	public function tearDown() {
 		unset($this->Article);
+		unset($this->Translation);
 
 		CakePlugin::unload('TestPlugin');
 
@@ -181,6 +184,16 @@ class TranslatableBehaviorTest extends CakeTestCase {
 		$this->assertEqual('Inhalt 1', $result[0]['TestPluginArticle']['content']);
 		$this->assertEqual('Kategorie 1', $result[0]['TestPluginCategory']['name']);
 		$this->assertEqual('Beitrag 1 von Jim', $result[0]['TestPluginCategory']['TestPluginPosts'][0]['TestPluginPost']['title']);
+	}
+
+	public function testAfterDelete() {
+		$this->Article->delete(1);
+		$result = $this->Translation->find('count', array(
+			'conditions' => array(
+				'id' => 1
+			)
+		));
+		$this->assertEqual(0, $result);
 	}
 
 }

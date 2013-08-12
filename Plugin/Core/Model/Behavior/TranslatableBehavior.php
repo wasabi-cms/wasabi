@@ -246,6 +246,17 @@ class TranslatableBehavior extends ModelBehavior {
 		}
 	}
 
+	public function afterDelete(Model $model) {
+		parent::beforeDelete($model);
+
+		$translationModel = $this->_getTranslationModel($model);
+		$translationModel->deleteAll(array(
+			'plugin' => $model->plugin,
+			'model' => $model->alias,
+			'foreign_key' => $model->id
+		));
+	}
+
 	/**
 	 * @param Model $model
 	 * @param array $query
