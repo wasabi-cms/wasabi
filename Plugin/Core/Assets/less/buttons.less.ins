@@ -27,7 +27,11 @@
     }
   }
 
-  &:active {
+  &:focus {
+    .box-shadow(0 1px 3px @blue);
+  }
+
+  &:active, &:focus:active {
     background: linear-gradient(to bottom, #193a7b 0%, #286ab8 100%);
     .box-shadow(0 1px 1px #fff);
 
