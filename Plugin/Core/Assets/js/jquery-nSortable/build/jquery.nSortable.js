@@ -25,6 +25,8 @@
       y: 0
     };
 
+    this.childLevels = 0;
+
     this.placeholderHeight = null;
     this.placeholderDepth = null;
 
@@ -87,6 +89,7 @@
         that.$li.show();
         that.$li = null;
         that.$scrollParent = null;
+        that.childLevels = 0;
         that.isDragging = false;
         that._trigger('nSortable-change', event);
       }
@@ -223,6 +226,7 @@
 
     _initStart: function(event) {
       this.$li = $(event.target).closest('li');
+      this.childLevels = this._getChildLevels(this.$li);
 
       this.startPosition = {
         x: event.pageX,
@@ -279,8 +283,20 @@
       var targetDepth = this.startDepth + diff;
       targetDepth = Math.max(targetDepth, 0);
       targetDepth = Math.min(targetDepth, this.settings.maxDepth);
+      targetDepth = Math.min(targetDepth, this.settings.maxDepth - this.childLevels);
 
       this.targetDepth = targetDepth;
+    },
+
+    _getChildLevels: function($parent, depth) {
+      var result = 0;
+      depth = depth || 0;
+
+      $parent.children('ul').children('li').each($.proxy(function (index, child) {
+        result = Math.max(this._getChildLevels($(child), depth + 1), result);
+      }, this));
+
+      return depth ? result + 1 : result;
     },
 
     _scroll: function(event) {
