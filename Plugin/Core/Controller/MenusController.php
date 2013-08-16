@@ -43,24 +43,12 @@ class MenusController extends BackendAppController {
 	}
 
 	/**
-	 * Edit action
+	 * Add action
 	 * GET | POST
 	 */
 	public function add() {
 		if ($this->request->is('post') && !empty($this->request->data)) {
-			if (isset($this->request->data['MenuItem']['{UID}'])) {
-				unset($this->request->data['MenuItem']['{UID}']);
-			}
-			foreach ($this->request->data['MenuItem'] as $key => $values) {
-				if ($values['item'] === '' || !in_array($values['type'], array(MenuItem::TYPE_EXTERNAL_LINK, MenuItem::TYPE_OBJECT, MenuItem::TYPE_ACTION, MenuItem::TYPE_CUSTOM_ACTION))) {
-					unset($this->request->data['MenuItem'][$key]);
-				}
-				if (isset($values['delete']) && $values['delete'] === '1') {
-					$this->Menu->MenuItem->delete($values['id']);
-					unset($this->request->data['MenuItem'][$key]);
-				}
-			}
-			if ($this->Menu->saveAll($this->request->data, array('validate' => 'first'))) {
+			if ($this->Menu->save($this->request->data)) {
 				$this->Session->setFlash(__d('core', 'The menu <strong>%s</strong> has been added successfully.', array($this->data['Menu']['name'])), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'index'));
 				return;
@@ -69,11 +57,8 @@ class MenusController extends BackendAppController {
 			}
 		}
 
-		$menuItems = $this->_getMenuItems();
-
 		$this->set(array(
-			'title_for_layout' => __d('core', 'Add a new Menu'),
-			'menuItems' => $menuItems
+			'title_for_layout' => __d('core', 'Add a new Menu')
 		));
 	}
 
@@ -88,21 +73,9 @@ class MenusController extends BackendAppController {
 			return;
 		}
 		if (!$this->request->is('post') && empty($this->request->data)) {
-			$this->request->data = $this->Menu->findWithMenuItemsById($id);
+			$this->request->data = $this->Menu->findById($id);
 		} else {
-			if (isset($this->request->data['MenuItem']['{UID}'])) {
-				unset($this->request->data['MenuItem']['{UID}']);
-			}
-			foreach ($this->request->data['MenuItem'] as $key => $values) {
-				if ($values['item'] === '' || !in_array($values['type'], array(MenuItem::TYPE_EXTERNAL_LINK, MenuItem::TYPE_OBJECT, MenuItem::TYPE_ACTION, MenuItem::TYPE_CUSTOM_ACTION))) {
-					unset($this->request->data['MenuItem'][$key]);
-				}
-				if (isset($values['delete']) && $values['delete'] === '1') {
-					$this->Menu->MenuItem->delete($values['id']);
-					unset($this->request->data['MenuItem'][$key]);
-				}
-			}
-			if ($this->Menu->saveAll($this->request->data, array('validate' => 'first'))) {
+			if ($this->Menu->save($this->request->data)) {
 				$this->Session->setFlash(__d('core', 'The menu <strong>%s</strong> has been updated successfully.', array($this->data['Menu']['name'])), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'index'));
 				return;
@@ -111,11 +84,13 @@ class MenusController extends BackendAppController {
 			}
 		}
 
-		$menuItems = $this->_getMenuItems();
-
 		$this->set(array(
 			'title_for_layout' => __d('core', 'Edit Menu'),
-			'menuItems' => $menuItems
+			'menuItems' => $this->Menu->MenuItem->find('threaded', array(
+				'conditions' => array(
+					'MenuItem.menu_id' => $id
+				)
+			))
 		));
 		$this->render('add');
 	}
@@ -145,9 +120,127 @@ class MenusController extends BackendAppController {
 		}
 	}
 
-	protected function _getMenuItems() {
-		$rawItems = WasabiEventManager::trigger($this, 'Backend.MenuItems.load');
-		$rawItems = $rawItems['Backend.MenuItems.load'];
+	/**
+	 * Add action
+	 * GET | POST
+	 */
+	public function add_item($menuId = null, $parentId = null) {
+		if ($menuId === null || !$this->Menu->exists($menuId)) {
+			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+			$this->redirect(array('plugin' => 'core', 'controller' => 'menus', 'action' => 'index'));
+			return;
+		}
+		if ($this->request->is('post') && !empty($this->request->data)) {
+			if ($this->request->data['MenuItem']['parent_id'] === '') {
+				$this->request->data['MenuItem']['parent_id'] = 0;
+			}
+			$this->Menu->MenuItem->Behaviors->load('Core.EnhancedTree', array(
+				'scope' => array(
+					'MenuItem.menu_id' => $this->request->data['MenuItem']['menu_id']
+				)
+			));
+			if ($this->Menu->MenuItem->save($this->request->data)) {
+				$this->Session->setFlash(__d('core', 'Menu Item <strong>%s</strong> has been updated.', array($this->request->data['MenuItem']['name'])), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'edit', $this->request->data['MenuItem']['menu_id']));
+				return;
+			} else {
+				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
+			}
+		} else {
+			$this->request->data['MenuItem']['menu_id'] = $menuId;
+			if ($parentId !== null && $this->Menu->MenuItem->exists($parentId)) {
+				$this->request->data['MenuItem']['parent_id'] = $parentId;
+			}
+		}
+
+		$this->set(array(
+			'menu' => $this->Menu->findById($menuId),
+			'menus' => $this->Menu->find('list', array('order' => 'Menu.name ASC')),
+			'parentItems' => $this->Menu->MenuItem->generateTreeList(array(
+				'MenuItem.menu_id' => $menuId
+			), null, null, '_', null, 2),
+			'types' => $this->_getAvailableLinks()
+		));
+		$this->render('add_item');
+	}
+
+	/**
+	 * Edit action
+	 * GET | POST
+	 */
+	public function edit_item($id = null) {
+		if ($id === null || !$this->Menu->MenuItem->exists($id)) {
+			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+			$this->redirect(array('plugin' => 'core', 'controller' => 'menus', 'action' => 'index'));
+			return;
+		}
+		if (!$this->request->is('post') && empty($this->request->data)) {
+			$this->request->data = $this->Menu->MenuItem->findById($id);
+		} else {
+			if ($this->request->data['MenuItem']['parent_id'] === '') {
+				$this->request->data['MenuItem']['parent_id'] = 0;
+			}
+			$this->Menu->MenuItem->Behaviors->load('Core.EnhancedTree', array(
+				'scope' => array(
+					'MenuItem.menu_id' => $this->request->data['MenuItem']['menu_id']
+				)
+			));
+			if ($this->Menu->MenuItem->save($this->request->data)) {
+				$this->Session->setFlash(__d('core', 'Menu Item <strong>%s</strong> has been updated.', array($this->request->data['MenuItem']['name'])), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'edit', $this->request->data['MenuItem']['menu_id']));
+				return;
+			} else {
+				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
+			}
+		}
+
+		$this->set(array(
+			'menu' => $this->Menu->findById($this->request->data['MenuItem']['menu_id']),
+			'menus' => $this->Menu->find('list', array('order' => 'Menu.name ASC')),
+			'parentItems' => $this->Menu->MenuItem->generateTreeList(array(
+				'MenuItem.menu_id' => $this->request->data['MenuItem']['menu_id'],
+				'MenuItem.id <>' => $id,
+				'or' => array(
+					'MenuItem.lft <' => $this->request->data['MenuItem']['lft'],
+					'MenuItem.lft >' => $this->request->data['MenuItem']['rght']
+				)
+			), null, null, '_', null, 2),
+			'types' => $this->_getAvailableLinks()
+		));
+		$this->render('add_item');
+	}
+
+	/**
+	 * Reorder items action
+	 * AJAX POST
+	 */
+	public function reorder_items() {
+		if ($this->request->is('ajax') && $this->request->is('post')) {
+			if (empty($this->data) || !isset($this->data['MenuItem']) || empty($this->data['MenuItem'])) {
+				$this->set('success', true);
+			} else {
+				$this->Menu->MenuItem->Behaviors->unload('Core.EnhancedTree');
+				if ($this->Menu->MenuItem->saveAll($this->data['MenuItem'])) {
+					$this->set('success', true);
+				} else {
+					$this->set('succes', false);
+				}
+			}
+			$this->set('_serialize', array('success'));
+		} else {
+			throw new CakeException($this->invalidRequestMessage, 400);
+		}
+	}
+
+	/**
+	 * Get available Links via an Event trigger
+	 * This fetches avilable Links from all activated Plugins.
+	 *
+	 * @return array
+	 */
+	protected function _getAvailableLinks() {
+		$rawItems = WasabiEventManager::trigger($this, 'Backend.MenuItems.getAvailableLinks');
+		$rawItems = $rawItems['Backend.MenuItems.getAvailableLinks'];
 
 		$menuItems = array();
 		foreach ($rawItems as $itemGroup) {

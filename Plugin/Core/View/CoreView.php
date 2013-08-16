@@ -19,6 +19,7 @@ App::uses('View', 'View');
  * @property CHtmlHelper $CHtml
  * @property CFormHelper $CForm
  * @property NavigationHelper $Navigation
+ * @property MenuHelper $Menu
  * @property WasabiAssetHelper $WasabiAsset
  * @property array $data shorthand for $this->request->data
  * @property array $params shorthand for $this->request->params
