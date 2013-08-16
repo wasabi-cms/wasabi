@@ -149,7 +149,7 @@ class CHtmlHelper extends AppHelper {
 	public function titlePad() {
 		$out = '';
 		if ($this->_title === false) {
-			return;
+			return $out;
 		}
 		$out .= '<div class="title-pad row">';
 		$out .= $this->_pageTitle($this->_title, $this->_subTitle);
