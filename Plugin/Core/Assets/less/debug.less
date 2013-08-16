@@ -87,7 +87,16 @@ pre {
   background: #f0f0f0;
   padding: 15px;
   border: 1px solid #ccc;
+
+  small {
+    display: inline !important;
+  }
 }
+
+body > pre.xdebug-var-dump:first-child {
+  margin-top: 40px;
+}
+
 .cake-debug-output {
   padding: 0;
   position: relative;
