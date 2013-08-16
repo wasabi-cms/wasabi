@@ -11,7 +11,7 @@
 <head>
 	<?php echo $this->element('Core.layout/head'); ?>
 </head>
-<body>
+<body<?php echo (isset($bodyCss) && $bodyCss !== '') ? ' class="' . $bodyCss . '"' : ''; ?>>
 	<?php echo $this->element('Core.layout/header'); ?>
 	<div id="wrapper">
 		<div id="asidebg"></div>
@@ -27,7 +27,13 @@
 			echo $this->fetch('content');
 			?>
 		</div>
-		<?php echo $this->element('Core.layout/footer'); ?>
+		<?php
+
+		$this->start('afterContent');
+		$this->end('afterContent');
+		echo $this->fetch('afterContent');
+
+		echo $this->element('Core.layout/footer');?>
 	</div>
 	<?php
 	$this->start('bottom_body');
@@ -36,7 +42,7 @@
 	echo $this->WasabiAsset->js('/js/jquery-1.10.2.min.js', 'Core');
 	echo $this->element('Core.js_translations');
 	echo $this->WasabiAsset->js('/js/plugins.js', 'Core');
-	echo $this->WasabiAsset->js('/js/script.js', 'Core');
+	echo $this->WasabiAsset->js('/js/core.js', 'Core');
 	$this->start('bottom_js');
 	$this->end('bottom_js');
 	echo $this->fetch('bottom_js');
