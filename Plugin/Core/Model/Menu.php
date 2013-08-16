@@ -28,7 +28,8 @@ class Menu extends CoreAppModel {
 	 */
 	public $hasMany = array(
 		'MenuItem' => array(
-			'className' => 'Core.MenuItem'
+			'className' => 'Core.MenuItem',
+			'dependent' => true
 		)
 	);
 
