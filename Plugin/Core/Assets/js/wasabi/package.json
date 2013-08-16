@@ -1,0 +1,14 @@
+{
+  "name": "wasabi",
+  "title": "Wasabi",
+  "version": "0.0.1",
+  "author": {
+    "name": "Frank Förster",
+    "url": "http://frankfoerster.com"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "mantri": "~0.1.5",
+    "grunt-contrib-watch": "~0.4.4"
+  }
+}

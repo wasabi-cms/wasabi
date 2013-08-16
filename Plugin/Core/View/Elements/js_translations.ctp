@@ -6,18 +6,21 @@ foreach ($available_translations['Backend.JS.Translations.load'] as $key => $tgr
 	$translations = array_merge($translations, $tgroup);
 }
 
-$out =  '<script type="text/javascript">var wasabiTranslations = {';
-
 $i = 1;
-foreach ($translations as $key => $val) {
-	$out .= '"'. $key .'": "'. $val .'"';
-	if ($i < count($translations)) {
-		$out .= ',';
-	}
-	$i++;
-}
-
-$out .= '};</script>';
-
-echo $out;
+$len = count($translations);
 ?>
+<script type="text/javascript">
+	window.wasabi = window.wasabi || {};
+	window.wasabi.translations = window.wasabi.translations || {};
+	window.wasabi.translations = {
+		<?php
+		foreach ($translations as $key => $val) {
+			echo '"' . $key . '": "' . $val . '"';
+			if ($i < $len) {
+				echo ',';
+			}
+			$i++;
+		}
+		?>
+	};
+</script>

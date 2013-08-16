@@ -1,0 +1,10 @@
+{
+  "baseUrl": "./src/",
+  "libs": {
+    "jquery": "../../../../webroot/js/jquery-1.10.2.min"
+  },
+  "build": {
+    "input": "src/wasabi.js",
+    "exclude": ["jquery"]
+  }
+}
