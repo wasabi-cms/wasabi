@@ -24,6 +24,7 @@ class MenuItem extends CoreAppModel {
 	const TYPE_CUSTOM_ACTION = 'CustomAction';
 
 	public $actsAs = array(
+		'Core.EnhancedTree',
 		'Core.Translatable' => array(
 			'fields' => array(
 				'name'
@@ -31,7 +32,7 @@ class MenuItem extends CoreAppModel {
 		)
 	);
 
-	public $order = 'MenuItem.position ASC';
+	public $order = 'MenuItem.lft ASC';
 
 	/**
 	 * belongsTo associations
@@ -67,7 +68,7 @@ class MenuItem extends CoreAppModel {
 		'action' => array(
 			'isValid' => array(
 				'rule' => 'notEmpty',
-				'message' => 'Please enter a valid controller name.'
+				'message' => 'Please enter a valid action name.'
 			)
 		)
 	);

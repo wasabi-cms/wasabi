@@ -25,11 +25,11 @@ class AddMenuItemsTable extends Migration {
 	public function up() {
 		$this->createTable('menu_items', array(
 			'id' => array('type' => 'integer', 'key' => 'primary'),
+			'parent_id' => array('type' => 'integer', 'null' => false, 'default' => 0),
 			'menu_id' => array('type' => 'integer', 'null' => false),
 			'name' => array('type' => 'string', 'null' => false),
 			'item' => array('type' => 'text', 'null' => false),
 			'type' => array('type' => 'string', 'null' => false),
-			'position' => array('type' => 'integer', 'null' => false, 'default' => 9999),
 			'external_link' => array('type' => 'text', 'null' => true),
 			'foreign_model' => array('type' => 'string', 'null' => true),
 			'foreign_id' => array('type' => 'integer', 'null' => true),
@@ -38,6 +38,8 @@ class AddMenuItemsTable extends Migration {
 			'action' => array('type' => 'string', 'null' => true),
 			'params' => array('type' => 'text', 'null' => true),
 			'query' => array('type' => 'text', 'null' => true),
+			'lft' => array('type' => 'integer', 'null' => false),
+			'rght' => array('type' => 'integer', 'null' => false),
 			'created' => array('type' => 'datetime', 'null' => false),
 			'modified' => array('type' => 'datetime', 'null' => false),
 			'indexes' => array(
