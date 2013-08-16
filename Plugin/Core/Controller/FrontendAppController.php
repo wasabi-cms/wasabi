@@ -28,7 +28,8 @@ class FrontendAppController extends AppController {
 	 * @var array
 	 */
 	public $components = array(
-		'RequestHandler'
+		'RequestHandler',
+		'Core.Menus'
 	);
 
 	/**
