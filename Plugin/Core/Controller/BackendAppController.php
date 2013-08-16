@@ -39,7 +39,8 @@ class BackendAppController extends AppController {
 			'model' => 'Core.User'
 		),
 		'Core.Guardian',
-		'RequestHandler'
+		'RequestHandler',
+		'Core.Menus'
 	);
 
 	/**
@@ -83,6 +84,9 @@ class BackendAppController extends AppController {
 		),
 		'CHtml' => array(
 			'className' => 'Core.CHtml'
+		),
+		'Meta' => array(
+			'className' => 'Core.Meta'
 		)
 	);
 
@@ -158,10 +162,11 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _setupBackend() {
+		$this->_loadLanguages();
+
 		if (!$this->_isLoginAction() && !$this->_isLogoutAction()) {
 			$this->_loadBackendMenu();
 		}
-		$this->_loadLanguages();
 		$this->layout = 'Core.default';
 		$this->formErrorMessage = __d('core', 'Please correct the marked errors.');
 		$this->invalidRequestMessage = __d('core', 'Invalid Request.');
