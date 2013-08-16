@@ -28,8 +28,8 @@ class CoreEvents {
 			'method' => 'loadBackendMenu',
 			'priority' => 0
 		),
-		'Backend.MenuItems.load' => array(
-			'method' => 'loadBackendMenuItems',
+		'Backend.MenuItems.getAvailableLinks' => array(
+			'method' => 'getAvailableLinksForMenuItem',
 			'priority' => 99999
 		),
 		'Backend.JS.Translations.load' => array(
@@ -190,7 +190,7 @@ class CoreEvents {
 				));
 	}
 
-	public static function loadBackendMenuItems(WasabiEvent $event) {
+	public static function getAvailableLinksForMenuItem(WasabiEvent $event) {
 		return array(
 			'General' => array(
 				'ExternalLink' => __d('core', 'External Link'),
