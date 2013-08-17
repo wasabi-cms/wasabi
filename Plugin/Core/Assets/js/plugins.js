@@ -1,4 +1,5 @@
 //= require modernizr/modernizr.custom.min.js
+//= require jquery-ui-widget/build/jquery.ui.widget.min.js
 //= require jquery-scrollParent/build/jquery.scrollParent.min.js
 //= require jquery-eventMagic/build/jquery.eventMagic.min.js
 //= require jquery-livequery/build/jquery.livequery.min.js
