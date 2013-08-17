@@ -25,6 +25,7 @@ module.exports = function(grunt) {
       build: {
         src: [
           'src/load-image.js',
+          'src/canvas-to-blob.js',
           'src/jquery.iframe-transport.js',
           'src/jquery.fileupload.js',
           'src/jquery.fileupload-process.js',
