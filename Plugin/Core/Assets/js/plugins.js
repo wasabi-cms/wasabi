@@ -13,3 +13,4 @@
 //= require spin/jquery.spin.min.js
 //= require jquery-blockThis/build/jquery.blockThis.min.js
 //= require twbs-dropdown/build/twbs.dropdown.min.js
+//= require jquery-fileupload/build/jquery.fileupload.min.js
