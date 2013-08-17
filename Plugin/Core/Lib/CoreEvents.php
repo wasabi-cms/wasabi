@@ -88,6 +88,10 @@ class CoreEvents {
 		// Menus
 		Router::connect("/${prefix}/menus", array('plugin' => 'core', 'controller' => 'menus', 'action' => 'index'));
 		Router::connect("/${prefix}/menus/:action/*", array('plugin' => 'core', 'controller' => 'menus'));
+
+		// Media
+		Router::connect("/${prefix}/media", array('plugin' => 'core', 'controller' => 'media', 'action' => 'index'));
+		Router::connect("/${prefix}/media/:action/*", array('plugin' => 'core', 'controller' => 'media'));
 	}
 
 	public static function loadBackendMenu(WasabiEvent $event) {
@@ -113,6 +117,17 @@ class CoreEvents {
 				'url' => array(
 					'plugin' => 'core',
 					'controller' => 'menus',
+					'action' => 'index'
+				)
+			))
+			->addMenuItem(array(
+				'alias' => 'media',
+				'name' => __d('core', 'Media'),
+				'priority' => 2000,
+				'icon' => 'icon-picture',
+				'url' => array(
+					'plugin' => 'core',
+					'controller' => 'media',
 					'action' => 'index'
 				)
 			))
