@@ -9,7 +9,7 @@ goog.require('wasabi.core');
  * @returns {string}
  */
 wasabi.translateEntity = function(entity) {
-  return wasabi.core.Core.translateEntity(entity);
+  return wasabi.run.core.translateEntity(entity);
 };
 
 /**
@@ -20,5 +20,5 @@ wasabi.translateEntity = function(entity) {
  * @param {string}        message The content of the flash message.
  */
 wasabi.flash = function(elAfter, cls, message) {
-  wasabi.core.Core.flash(elAfter, cls, message);
+  wasabi.run.core.flash(elAfter, cls, message);
 };
