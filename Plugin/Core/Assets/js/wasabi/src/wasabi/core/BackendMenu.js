@@ -15,7 +15,7 @@ goog.provide('wasabi.core.BackendMenu');
 
     this.events = [];
     this.navCollapsedEvents = [];
-    this.closed = false;
+    this.closed = this.$body.hasClass('nav-closed');
     this.collapsed = false;
     this.resizeTimer = null;
 
