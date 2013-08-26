@@ -159,8 +159,9 @@ window.wasabi.translations = window.wasabi.translations || {};
      * @private
      */
     function _onAjaxError(event, xhr) {
-      var data = $.parseJSON(xhr.responseText) || {};
+      var data;
       if (xhr.status == 401) {
+        data = $.parseJSON(xhr.responseText) || {};
         if (typeof data.name !== 'undefined') {
           if (confirm(data.name)) {
             win.location.reload();
@@ -170,6 +171,7 @@ window.wasabi.translations = window.wasabi.translations || {};
         }
       }
       if (xhr.status == 500) {
+        data = $.parseJSON(xhr.responseText) || {};
         if (typeof data.name !== 'undefined') {
           _flashMessage('div.title-pad', 'error', data.name);
         }
