@@ -47,5 +47,6 @@
 	$this->end('bottom_js');
 	echo $this->fetch('bottom_js');
 	?>
+	<!--[if lt IE 9]><?php echo $this->WasabiAsset->js('/js/ie8-iconfix.js', 'Core') ?><![endif]-->
 </body>
 </html>

@@ -1,0 +1,1 @@
+!function(a,b,c){a(function(){var a=c.getElementsByTagName("head")[0],b=c.createElement("style");b.type="text/css",b.styleSheet.cssText=":before,:after{content:none !important",a.appendChild(b),setTimeout(function(){a.removeChild(b)},0)})}(jQuery,window,document);
