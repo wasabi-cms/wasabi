@@ -92,6 +92,9 @@ class CoreEvents {
 		// Media
 		Router::connect("/${prefix}/media", array('plugin' => 'core', 'controller' => 'media', 'action' => 'index'));
 		Router::connect("/${prefix}/media/:action/*", array('plugin' => 'core', 'controller' => 'media'));
+
+		// Browser
+		Router::connect("/${prefix}/browser/not-supported", array('plugin' => 'core', 'controller' => 'browser', 'action' => 'notSupported'));
 	}
 
 	public static function loadBackendMenu(WasabiEvent $event) {
@@ -252,6 +255,7 @@ class CoreEvents {
 
 	public static function loadGuestActions(WasabiEvent $event) {
 		return array(
+			'Core.Browser.notSupported',
 			'Core.Users.login',
 			'Core.Users.logout',
 			'Core.CoreInstall.check',
