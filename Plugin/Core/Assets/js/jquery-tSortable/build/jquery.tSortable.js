@@ -4,7 +4,7 @@
  * Copyright (c) 2013 Frank Förster (http://frankfoerster.com)
  * Licensed under the MIT License
  */
-(function($) {
+(function($, doc, win) {
   "use strict";
 
   var TableSortable = function(el, options) {
@@ -44,7 +44,7 @@
       ];
 
       this._secondaryEvents = [
-        [$(window), {
+        [$(doc), {
           mousemove: $.proxy(this._onMouseMove, this),
           mouseup: $.proxy(this._onMouseUp, this)
         }]
@@ -104,52 +104,52 @@
       (function(that) {
         if (that._yIntersectsPlaceholder(event)) {
           return;
-        } else {
-          var $items = that.$el.find(that.settings.items).filter(function() {
-            return (
-              ($(this)[0] !== that.$tr[0]) &&
-                ($(this).css('display') !== 'none') &&
-                ($(this).css('position') !== 'absolute') &&
-                !$(this).hasClass(that.settings.placeholder)
-              );
-          });
+        }
 
-          var $intersectedItem = null;
-          var direction = null;
+        var $items = that.$el.find(that.settings.items).filter(function() {
+          return (
+            ($(this)[0] !== that.$tr[0]) &&
+              ($(this).css('display') !== 'none') &&
+              ($(this).css('position') !== 'absolute') &&
+              !$(this).hasClass(that.settings.placeholder)
+            );
+        });
 
-          $items.each(function() {
-            var min = $(this).position().top;
-            var max = min + $(this).outerHeight();
-            var middle = parseInt((min + max) / 2);
-            if (event.pageY >= min && event.pageY < middle) {
-              $intersectedItem = $(this);
-              direction = 'up';
-              return;
-            }
-            if (event.pageY > middle && event.pageY <= max ) {
-              $intersectedItem = $(this);
-              direction = 'down';
-              return;
-            }
-          });
+        var $intersectedItem = null;
+        var direction = null;
 
-          if ($intersectedItem === null) {
+        $items.each(function() {
+          var min = $(this).position().top;
+          var max = min + $(this).outerHeight();
+          var middle = parseInt((min + max) / 2);
+          if (event.pageY >= min && event.pageY < middle) {
+            $intersectedItem = $(this);
+            direction = 'up';
             return;
           }
-
-          if (direction === 'up') {
-            if ($intersectedItem.prev().hasClass(that.settings.placeholder)) {
-              return;
-            }
-            that.$placeholder.insertBefore($intersectedItem);
+          if (event.pageY > middle && event.pageY <= max ) {
+            $intersectedItem = $(this);
+            direction = 'down';
             return;
           }
-          if (direction === 'down') {
-            if ($intersectedItem.next().css('display') === 'none' && $intersectedItem.next().next().hasClass(that.settings.placeholder)) {
-              return;
-            }
-            that.$placeholder.insertAfter($intersectedItem);
+        });
+
+        if ($intersectedItem === null) {
+          return;
+        }
+
+        if (direction === 'up') {
+          if ($intersectedItem.prev().hasClass(that.settings.placeholder)) {
+            return;
           }
+          that.$placeholder.insertBefore($intersectedItem);
+          return;
+        }
+        if (direction === 'down') {
+          if ($intersectedItem.next().css('display') === 'none' && $intersectedItem.next().next().hasClass(that.settings.placeholder)) {
+            return;
+          }
+          that.$placeholder.insertAfter($intersectedItem);
         }
       })(this);
     },
@@ -207,7 +207,7 @@
 
     _scroll: function(event) {
       var sParent = this.$scrollParent[0], overflowOffset = this.$scrollParent.offset();
-      if (sParent != document && sParent.tagName != 'HTML') {
+      if (sParent != doc && sParent.tagName != 'HTML') {
         if ((overflowOffset.top + sParent.offsetHeight - event.pageY) < this.settings.scrollSensitivity) {
           sParent.scrollTop = sParent.scrollTop + this.settings.scrollSpeed;
         } else if (event.pageY - overflowOffset.top < this.settings.scrollSensitivity) {
@@ -219,7 +219,7 @@
           sParent.scrollLeft = sParent.scrollLeft - this.settings.scrollSpeed;
         }
       } else {
-        var $doc = $(document), $win = $(window);
+        var $doc = $(doc), $win = $(win);
         if (event.pageY - $doc.scrollTop() < this.settings.scrollSensitivity) {
           $doc.scrollTop($doc.scrollTop() - this.settings.scrollSpeed);
         } else if ($win.height() - (event.pageY - $doc.scrollTop()) < this.settings.scrollSensitivity) {
@@ -277,4 +277,4 @@
     scrollSpeed: 20
   };
 
-})(jQuery);
+})(jQuery, document, window);

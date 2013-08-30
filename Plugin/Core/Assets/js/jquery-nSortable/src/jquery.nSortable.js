@@ -1,4 +1,4 @@
-(function($) {
+(function($, doc, win) {
   "use strict";
 
   var NestedSortable = function(el, options) {
@@ -46,7 +46,7 @@
       ];
 
       this._secondaryEvents = [
-        [$(window), {
+        [$(doc), {
           mousemove: $.proxy(this._onMouseMove, this)
         }]
       ];
@@ -295,7 +295,7 @@
 
     _scroll: function(event) {
       var sParent = this.$scrollParent[0], overflowOffset = this.$scrollParent.offset();
-      if (sParent != document && sParent.tagName != 'HTML') {
+      if (sParent != doc && sParent.tagName != 'HTML') {
         if ((overflowOffset.top + sParent.offsetHeight - event.pageY) < this.settings.scrollSensitivity) {
           sParent.scrollTop = sParent.scrollTop + this.settings.scrollSpeed;
         } else if (event.pageY - overflowOffset.top < this.settings.scrollSensitivity) {
@@ -307,7 +307,7 @@
           sParent.scrollLeft = sParent.scrollLeft - this.settings.scrollSpeed;
         }
       } else {
-        var $doc = $(document), $win = $(window);
+        var $doc = $(doc), $win = $(win);
         if (event.pageY - $doc.scrollTop() < this.settings.scrollSensitivity) {
           $doc.scrollTop($doc.scrollTop() - this.settings.scrollSpeed);
         } else if ($win.height() - (event.pageY - $doc.scrollTop()) < this.settings.scrollSensitivity) {
@@ -381,7 +381,9 @@
         var item = results[_i];
         var baseStr = this.settings.serializeKey + '[' + _i + ']';
         for (var attr in item) {
-          str.push(baseStr + '[' + attr + ']=' + item[attr]);
+          if (item.hasOwnProperty(attr)) {
+            str.push(baseStr + '[' + attr + ']=' + item[attr]);
+          }
         }
       }
 
@@ -441,4 +443,4 @@
     rightKey: 'right'
   };
 
-})(jQuery);
+})(jQuery, document, window);
