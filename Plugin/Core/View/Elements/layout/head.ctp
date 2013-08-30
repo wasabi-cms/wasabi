@@ -21,3 +21,4 @@ if (Configure::read('debug') > 0) {
 }
 echo $this->Html->meta('icon');
 ?>
+<!--[if lt IE 9]><?php echo $this->WasabiAsset->js('/js/html5shiv.js', 'Core') ?><![endif]-->
