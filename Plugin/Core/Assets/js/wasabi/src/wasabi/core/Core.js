@@ -60,18 +60,21 @@ window.wasabi.translations = window.wasabi.translations || {};
   Core.prototype = (function() {
 
     /**
-     * Translate a static string entity.
+     * Translate a message with its context.
      *
-     * @param {string} entity
+     * @param {string} message
+     * @param {Array=} context
      * @returns {string}
      * @private
      */
-    function _translateEntity(entity) {
-      if (translations[entity] !== undefined) {
-        return translations[entity];
-      } else {
-        return entity;
+    function _translate(message, context) {
+      message = translations[message] || message.toString();
+      if (context) {
+        $.each(context, function (key, value) {
+          message = message.replace('{' + key + '}', value);
+        });
       }
+      return message;
     }
 
     /**
@@ -252,14 +255,15 @@ window.wasabi.translations = window.wasabi.translations || {};
       constructor: Core,
 
       /**
-       * Public wrapper for _translateEntity.
+       * Public wrapper for _translate.
        *
-       * @param {string} entity
+       * @param {string} message
+       * @param {Array=} context
        * @returns {string}
-       * @see _translateEntity
+       * @see _translate
        */
-      translateEntity: function(entity) {
-        return _translateEntity(entity);
+      translate: function(message, context) {
+        return _translate(message, context);
       },
 
       /**

@@ -3,13 +3,14 @@ goog.provide('wasabi');
 goog.require('wasabi.core');
 
 /**
- * Public wrapper for Core _translateEntity.
+ * Public wrapper for Core _translate.
  *
- * @param {string} entity
+ * @param {string} message
+ * @param {Array=} context
  * @returns {string}
  */
-wasabi.translateEntity = function(entity) {
-  return wasabi.run.core.translateEntity(entity);
+wasabi.i18n = function(message, context) {
+  return wasabi.run.core.translate(message, context);
 };
 
 /**
