@@ -18,23 +18,25 @@ App::uses('AppHelper', 'View/Helper');
 class WasabiAssetHelper extends AppHelper {
 
 	public function css($path, $plugin = false, $appendTime = true) {
-		$time = $appendTime ? $this->_getModifiedTime($path, $plugin) : '';
+		$href = $this->_getUrl($path, $plugin, $appendTime);
 
-		if ($plugin !== false) {
-			$path = '/' . strtolower($plugin) . $path;
-		}
-
-		return '<link rel="stylesheet" type="text/css" href="' . Router::url($path) . $time . '">';
+		return '<link rel="stylesheet" type="text/css" href="' . $href . '">';
 	}
 
 	public function js($path, $plugin = false, $appendTime = true) {
+		$src = $this->_getUrl($path, $plugin, $appendTime);
+
+		return '<script type="text/javascript" src="' . $src . '"></script>';
+	}
+
+	protected function _getUrl($path, $plugin, $appendTime = true) {
 		$time = $appendTime ? $this->_getModifiedTime($path, $plugin) : '';
 
 		if ($plugin !== false) {
 			$path = '/' . strtolower($plugin) . $path;
 		}
 
-		return '<script type="text/javascript" src="' . Router::url($path) . $time . '"></script>';
+		return Router::url($path) . $time;
 	}
 
 	protected function _getBasePath($path, $plugin = false) {
