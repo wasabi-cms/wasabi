@@ -155,8 +155,11 @@ class UsersController extends BackendAppController {
 	 * @return void
 	 */
 	public function login() {
-		$this->layout = 'Core.login';
-		$this->set('title_for_layout', __d('core', 'Login'));
+		$this->layout = 'Core.support';
+		$this->set(array(
+			'bodyCss' => 'support login',
+			'title_for_layout' => __d('core', 'Login')
+		));
 
 		$user = $this->Authenticator->get();
 		if ($user) {
