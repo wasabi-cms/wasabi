@@ -11,8 +11,8 @@
 <head>
 	<?php echo $this->element('Core.layout/head'); ?>
 </head>
-<body class="login">
-	<div class="login-wrapper">
+<body<?php echo (isset($bodyCss) && $bodyCss !== '') ? ' class="' . $bodyCss . '"' : ''; ?>>
+	<div class="support-wrapper">
 		<?php echo $this->fetch('content'); ?>
 	</div>
 	<?php echo $this->element('Core.layout/footer'); ?>
