@@ -107,8 +107,29 @@ class BackendAppController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 
+		$this->_checkBelowIE8();
 		$this->_checkPermissions();
 		$this->_setupBackend();
+	}
+
+	protected function _checkBelowIE8() {
+		$notSupported = array(
+			'plugin' => 'core',
+			'controller' => 'browser',
+			'action' => 'notSupported'
+		);
+
+		if ($this->request->params['plugin'] === $notSupported['plugin'] &&
+			$this->request->params['controller'] === $notSupported['controller'] &&
+			$this->request->params['action'] === $notSupported['action']
+		) {
+			return;
+		}
+
+		preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+		if (count($matches) > 1 && (int) $matches[1] <= 7) {
+			$this->redirect($notSupported);
+		}
 	}
 
 	/**
