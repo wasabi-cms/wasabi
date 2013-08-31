@@ -36,10 +36,6 @@ class CoreEvents {
 			'method' => 'loadJsTranslations',
 			'priority' => 100
 		),
-		'Common.Settings.load' => array(
-			'method' => 'loadSettings',
-			'priority' => 99999
-		),
 		'Guardian.GuestActions.load' => array(
 			'method' => 'loadGuestActions',
 			'priority' => 99999
@@ -222,35 +218,6 @@ class CoreEvents {
 			'Yes' => __d('core', 'Yes'),
 			'No' => __d('core', 'No')
 		);
-	}
-
-	/**
-	 * Load and cache all core settings
-	 *
-	 * @param WasabiEvent $event
-	 * @return array
-	 */
-	public static function loadSettings(WasabiEvent $event) {
-		if (!$settings = Cache::read('core_settings', 'core.infinite')) {
-			/**
-			 * @var $coreSetting CoreSetting
-			 */
-			$coreSetting = ClassRegistry::init('Core.CoreSetting');
-			$coreSettings = $coreSetting->findById(1);
-
-			$settings = array();
-			if ($coreSettings) {
-				$coreSettings = $coreSettings['CoreSetting'];
-				unset($coreSettings['id'], $coreSettings['created'], $coreSettings['modified']);
-				$settings = array(
-					'core' => $coreSettings
-				);
-			}
-
-			Cache::write('core_settings', $settings, 'core.infinite');
-		}
-
-		return $settings;
 	}
 
 	public static function loadGuestActions(WasabiEvent $event) {
