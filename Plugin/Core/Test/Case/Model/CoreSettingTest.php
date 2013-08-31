@@ -23,7 +23,7 @@ App::uses('CoreSetting', 'Core.Model');
 
 class CoreSettingTest extends CakeTestCase {
 
-	public $fixtures = array('plugin.core.core_setting');
+	public $fixtures = array('plugin.core.setting');
 
 	public function setUp() {
 		$this->CoreSetting = ClassRegistry::init('Core.CoreSetting');
@@ -37,17 +37,6 @@ class CoreSettingTest extends CakeTestCase {
 		parent::tearDown();
 	}
 
-	public function testFindById() {
-		$this->assertNotEmpty($this->CoreSetting->findById(1));
-		$this->assertEmpty($this->CoreSetting->findById(99));
-	}
-
-	public function testAfterSave() {
-		Cache::write('core_settings', 'test', 'core.infinite');
-
-		$this->CoreSetting->afterSave(false);
-
-		$this->assertFalse(Cache::read('core_settings', 'core.infinite'));
-	}
+	public function testNoTestCasesYet() {}
 
 }

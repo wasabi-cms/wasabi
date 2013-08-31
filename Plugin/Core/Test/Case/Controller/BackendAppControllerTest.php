@@ -76,7 +76,7 @@ class BackendAppTestTwoController extends BackendAppTestController {
 
 class BackendAppControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.group_permission', 'plugin.core.language', 'plugin.core.core_setting');
+	public $fixtures = array('plugin.core.group_permission', 'plugin.core.language', 'plugin.core.setting');
 
 	public function setUp() {
 		$this->BackendAppController = new BackendAppTestController();
@@ -102,6 +102,10 @@ class BackendAppControllerTest extends CoreControllerTest {
 		$this->assertTrue(in_array('Form', $this->BackendAppController->helpers));
 		$this->assertTrue(in_array('Html', $this->BackendAppController->helpers));
 		$this->assertTrue(in_array('Session', $this->BackendAppController->helpers));
+		$this->assertTrue(array_key_exists('WasabiAsset', $this->BackendAppController->helpers));
+		$this->assertTrue(array_key_exists('Navigation', $this->BackendAppController->helpers));
+		$this->assertTrue(array_key_exists('CForm', $this->BackendAppController->helpers));
+		$this->assertTrue(array_key_exists('CHtml', $this->BackendAppController->helpers));
 	}
 
 	public function testBeforeFilter() {

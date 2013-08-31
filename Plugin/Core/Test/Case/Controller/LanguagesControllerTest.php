@@ -38,7 +38,7 @@ class LanguagesTestController extends LanguagesController {
 
 class LanguagesControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.core_setting', 'plugin.core.route', 'plugin.core.language');
+	public $fixtures = array('plugin.core.setting', 'plugin.core.route', 'plugin.core.language');
 
 	public function setUp() {
 		$this->Languages = $this->generate('LanguagesTest');

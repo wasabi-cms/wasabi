@@ -22,7 +22,7 @@ App::uses('CoreControllerTest', 'Core.Test/TestSuite');
 
 class BackendErrorControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.language', 'plugin.core.core_setting');
+	public $fixtures = array('plugin.core.language', 'plugin.core.setting');
 
 	public function setUp() {
 		$this->BackendError = new BackendErrorController();

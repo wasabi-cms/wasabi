@@ -38,7 +38,7 @@ class CoreSettingsTestController extends CoreSettingsController {
 
 class CoreSettingsControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.core_setting', 'plugin.core.route', 'plugin.core.language');
+	public $fixtures = array('plugin.core.setting', 'plugin.core.route', 'plugin.core.language');
 
 	public function setUp() {
 		$this->CoreSettings = $this->generate('CoreSettingsTest');
@@ -63,7 +63,7 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 		$this->assertInternalType('string', $this->CoreSettings->viewVars['title_for_layout']);
 		$this->assertNull($this->CoreSettings->redirectUrl);
 
-		$expected = $this->CoreSettings->CoreSetting->findById(1);
+		$expected = $this->CoreSettings->CoreSetting->find('keyValues');
 		$result = $this->CoreSettings->request->data;
 		$this->assertEqual($expected, $result);
 	}
@@ -75,7 +75,6 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 			'method' => 'post',
 			'data' => array(
 				'CoreSetting' => array(
-					'id' => 1,
 					'application_name' => 'TestApp modified'
 				)
 			)
@@ -83,7 +82,10 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 
 		$this->assertEmpty($this->CoreSettings->CoreSetting->validationErrors);
 		$this->assertEqual($csCount, $this->CoreSettings->CoreSetting->find('count'));
-		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array('application_name' => 'TestApp modified')));
+		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array(
+			'key' => 'application_name',
+			'value' => 'TestApp modified'
+		)));
 		$this->assertEqual('success', $this->CoreSettings->Session->read('Message.flash.params.class'));
 		$this->assertEqual(array('action' => 'edit'), $this->CoreSettings->redirectUrl);
 	}
@@ -95,7 +97,6 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 			'method' => 'post',
 			'data' => array(
 				'CoreSetting' => array(
-					'id' => 1,
 					'application_name' => ''
 				)
 			)
@@ -103,7 +104,10 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 
 		$this->assertNotEmpty($this->CoreSettings->CoreSetting->validationErrors);
 		$this->assertEqual($csCount, $this->CoreSettings->CoreSetting->find('count'));
-		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array('application_name' => 'TestApp')));
+		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array(
+			'key' => 'application_name',
+			'value' => 'TestApp'
+		)));
 		$this->assertEqual('error', $this->CoreSettings->Session->read('Message.flash.params.class'));
 		$this->assertNull($this->CoreSettings->redirectUrl);
 	}

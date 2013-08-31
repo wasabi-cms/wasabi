@@ -15,15 +15,15 @@
 
 App::uses('CakeTestFixture', 'TestSuite/Fixture');
 
-class CoreSettingFixture extends CakeTestFixture {
+class SettingFixture extends CakeTestFixture {
 
 	public $fields = array(
 		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'application_name' => array('type' => 'string', 'length' => 255, 'null' => false),
-		'enable_caching' => array('type' => 'boolean', 'null' => false, 'default' => 0),
-		'cache_time' => array('type' => 'string', 'length' => 255, 'null' => false),
-		'created' => 'datetime',
-		'modified' => 'datetime'
+		'scope' => array('type' => 'string', 'null' => false),
+		'key' => array('type' => 'string', 'null' => false),
+		'value' => array('type' => 'string', 'null' => true),
+		'created' => array('type' => 'datetime', 'null' => false),
+		'modified' => array('type' => 'datetime', 'null' => false),
 	);
 
 	public $records;
@@ -32,9 +32,9 @@ class CoreSettingFixture extends CakeTestFixture {
 		$this->records = array(
 			array(
 				'id' => 1,
-				'application_name' => 'TestApp',
-				'enable_caching' => 1,
-				'cache_time' => '14 days',
+				'scope' => 'Core',
+				'key' => 'application_name',
+				'value' => 'TestApp',
 				'created' => '2013-03-05 09:00:00',
 				'modified' => '2013-03-05 09:00:00'
 			)

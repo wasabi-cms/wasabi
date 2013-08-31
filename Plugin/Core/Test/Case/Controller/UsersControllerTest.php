@@ -43,7 +43,7 @@ class UsersTestController extends UsersController {
 
 class UsersControllerTest extends CoreControllerTest {
 
-	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language', 'plugin.core.login_token', 'plugin.core.core_setting');
+	public $fixtures = array('plugin.core.user', 'plugin.core.group', 'plugin.core.language', 'plugin.core.login_token', 'plugin.core.setting');
 
 	public function setUp() {
 		$this->Users = $this->generate('UsersTest');
@@ -245,7 +245,7 @@ class UsersControllerTest extends CoreControllerTest {
 	public function testLoginActionGet() {
 		$this->testAction('/' . $this->backendPrefix . '/login', array('method' => 'get'));
 
-		$this->assertEqual('Core.login', $this->Users->layout);
+		$this->assertEqual('Core.support', $this->Users->layout);
 		$this->assertTrue(isset($this->Users->viewVars['title_for_layout']));
 		$this->assertFalse($this->Users->Session->check('login_referer'));
 	}
