@@ -51,7 +51,7 @@ class AddSettingsTable extends Migration {
 			'CoreSetting' => array(
 				'application_name' => 'Wasabi',
 				'enable_caching' => '0',
-				'cache_time' => '30 days'
+				'cache_duration' => '30 days'
 			)
 		));
 	}

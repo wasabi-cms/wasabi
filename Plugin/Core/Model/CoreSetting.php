@@ -57,7 +57,7 @@ class CoreSetting extends CoreAppModel {
 				'message' => 'Invalid cache status selected.'
 			)
 		),
-		'cache_time' => array(
+		'cache_duration' => array(
 			'matches' => array(
 				'rule' => array('inList', array(
 					'1 hour', '2 hours', '4 hours',	'8 hours', '16 hours',
