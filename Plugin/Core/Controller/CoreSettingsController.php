@@ -49,6 +49,8 @@ class CoreSettingsController extends BackendAppController {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
 		}
+
+		$this->set('cacheDurations', $this->CoreSetting->cacheDurations);
 	}
 
 }

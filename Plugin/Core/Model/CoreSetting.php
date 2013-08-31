@@ -40,6 +40,13 @@ class CoreSetting extends CoreAppModel {
 	);
 
 	/**
+	 * Holds all select options for cache_duration.
+	 *
+	 * @var array
+	 */
+	public $cacheDurations = array();
+
+	/**
 	 * Validation rules
 	 *
 	 * @var array
@@ -59,15 +66,43 @@ class CoreSetting extends CoreAppModel {
 		),
 		'cache_duration' => array(
 			'matches' => array(
-				'rule' => array('inList', array(
-					'1 hour', '2 hours', '4 hours',	'8 hours', '16 hours',
-					'1 day', '2 days', '5 days', '7 days', '14 days', '30 days',
-					'60 days', '90 days', '180 days', '365 days', '999 days'
-				)),
+				'rule' => array('isValidCacheDuration'),
 				'message' => 'Invalid cache time selected.'
 			)
 		)
 	);
+
+	/**
+	 * Constructor
+	 *
+	 * Set up available cache durations.
+	 *
+	 * @param array|boolean|integer|string $id
+	 * @param string $table
+	 * @param string $ds
+	 */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+
+		$this->cacheDurations = array(
+			'1 hour' => __d('core', '1 hour'),
+			'2 hours' => __d('core', '%s hours', array(2)),
+			'4 hours' => __d('core', '%s hours', array(4)),
+			'8 hours' => __d('core', '%s hours', array(8)),
+			'16 hours' => __d('core', '%s hours', array(16)),
+			'1 day' => __d('core', '1 day'),
+			'2 days' => __d('core', '%s days', array(2)),
+			'5 days' => __d('core', '%s days', array(5)),
+			'7 days' => __d('core', '%s days', array(7)),
+			'14 days' => __d('core', '%s days', array(14)),
+			'30 days' => __d('core', '%s days', array(30)),
+			'60 days' => __d('core', '%s days', array(60)),
+			'90 days' => __d('core', '%s days', array(90)),
+			'180 days' => __d('core', '%s days', array(180)),
+			'365 days' => __d('core', '%s days', array(365)),
+			'999 days' => __d('core', '%s days', array(999))
+		);
+	}
 
 	/**
 	 * afterSave callback
@@ -96,6 +131,17 @@ class CoreSetting extends CoreAppModel {
 			$this->alias . '.id' => (int) $id
 		);
 		return $this->find('first', Hash::merge($options, $opts));
+	}
+
+	/**
+	 * Make sure the cache duration is available.
+	 *
+	 * @param array $check
+	 * @return boolean
+	 */
+	public function isValidCacheDuration($check) {
+		$keys = array_keys($this->cacheDurations);
+		return in_array($check['cache_duration'], $keys);
 	}
 
 }
