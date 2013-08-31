@@ -110,6 +110,10 @@ class BackendAppController extends AppController {
 	}
 
 	protected function _checkBelowIE8() {
+		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+			return;
+		}
+
 		$notSupported = array(
 			'plugin' => 'core',
 			'controller' => 'browser',
