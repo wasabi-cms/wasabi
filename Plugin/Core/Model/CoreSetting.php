@@ -13,13 +13,9 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('CoreAppModel', 'Core.Model');
-App::uses('Hash', 'Utility');
+App::uses('Setting', 'Core.Model');
 
-/**
- * @method boolean|array saveKeyValues(array $data) inherited from KeyValueBehavior
- */
-class CoreSetting extends CoreAppModel {
+class CoreSetting extends Setting {
 
 	/**
 	 * This model uses the 'settings' db table.
@@ -27,17 +23,6 @@ class CoreSetting extends CoreAppModel {
 	 * @var string
 	 */
 	public $useTable = 'settings';
-
-	/**
-	 * Behaviors attached to this model.
-	 *
-	 * @var array
-	 */
-	public $actsAs = array(
-		'Core.KeyValue' => array(
-			'scope' => 'Core'
-		)
-	);
 
 	/**
 	 * Holds all select options for cache_duration.
@@ -102,35 +87,6 @@ class CoreSetting extends CoreAppModel {
 			'365 days' => __d('core', '%s days', array(365)),
 			'999 days' => __d('core', '%s days', array(999))
 		);
-	}
-
-	/**
-	 * afterSave callback
-	 * Clear the core_settings cache whenever the settings are updated
-	 * and notify all plugins via an event 'Backend.Core.CoreSettings.changed'
-	 *
-	 * @param bool $created
-	 * @return void
-	 */
-	public function afterSave($created) {
-		if (!$created) {
-			Cache::delete('core_settings', 'core.infinite');
-			WasabiEventManager::trigger(new stdClass(), 'Backend.Core.CoreSettings.changed');
-		}
-	}
-
-	/**
-	 * Retrieve the settings row by id
-	 *
-	 * @param $id
-	 * @param array $options
-	 * @return array
-	 */
-	public function findById($id, $options = array()) {
-		$opts['conditions'] = array(
-			$this->alias . '.id' => (int) $id
-		);
-		return $this->find('first', Hash::merge($options, $opts));
 	}
 
 	/**

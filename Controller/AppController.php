@@ -57,8 +57,8 @@ class AppController extends Controller {
 	 * Structure:
 	 * ----------
 	 * Array(
-	 *     'plugin_key' => Array(
-	 *         'setting_name_1' => 'setting_value_1',
+	 *     'PluginName|ScopeName' => Array(
+	 *         'key1' => 'value1',
 	 *         ...
 	 *     ),
 	 *     ...
@@ -66,28 +66,23 @@ class AppController extends Controller {
 	 *
 	 * Access via:
 	 * -----------
-	 * Configure::read('Settings.plugin_key.setting_name_1');
+	 * Configure::read('Settings.ScopeName.key1');
 	 *
 	 * @return void
 	 */
 	private function _loadSettings() {
-		$stored_settings = WasabiEventManager::trigger(new stdClass(), 'Common.Settings.load');
-		$stored_settings = $stored_settings['Common.Settings.load'];
+		if (!$settings = Cache::read('settings', 'core.infinite')) {
+			/**
+			 * @var Setting
+			 */
+			$Setting = ClassRegistry::init('Core.Setting');
+			$settings = $Setting->find('allKeyValues');
 
-		$settings = array();
-		foreach ($stored_settings as $plugin_settings) {
-			foreach ($plugin_settings as $key => $s) {
-				if (!isset($settings[$key])) {
-					$settings[$key] = $s;
-				} else {
-					$settings = Hash::merge($settings, array(
-						"${$key}" => $s
-					));
-				}
-			}
+			Cache::write('settings', $settings, 'core.infinite');
 		}
 
 		Configure::write('Settings', $settings);
+		WasabiEventManager::trigger(new stdClass(), 'Common.Settings.afterLoad');
 	}
 
 }

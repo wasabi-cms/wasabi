@@ -5,7 +5,7 @@
  */
 ?>
 <meta charset="utf-8">
-<title><?php echo $title_for_layout . ' - ' . Configure::read('Settings.core.application_name') ?></title>
+<title><?php echo $title_for_layout . ' - ' . Configure::read('Settings.Core.application_name') ?></title>
 <meta name="viewport" content="width=device-width">
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700">
 <?php
