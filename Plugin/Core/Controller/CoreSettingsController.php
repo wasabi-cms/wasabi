@@ -40,9 +40,9 @@ class CoreSettingsController extends BackendAppController {
 	public function edit() {
 		$this->set('title_for_layout', __d('core', 'Edit Core Settings'));
 		if (!$this->request->is('post') && empty($this->data)) {
-			$this->request->data = $this->CoreSetting->findById(1);
+			$this->request->data = $this->CoreSetting->find('keyValues');
 		} else {
-			if ($this->CoreSetting->save($this->data)) {
+			if ($this->CoreSetting->saveKeyValues($this->data)) {
 				$this->Session->setFlash(__d('core', 'The core settings have been updated.'), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'edit'));
 			} else {

@@ -16,7 +16,28 @@
 App::uses('CoreAppModel', 'Core.Model');
 App::uses('Hash', 'Utility');
 
+/**
+ * @method boolean|array saveKeyValues(array $data) inherited from KeyValueBehavior
+ */
 class CoreSetting extends CoreAppModel {
+
+	/**
+	 * This model uses the 'settings' db table.
+	 *
+	 * @var string
+	 */
+	public $useTable = 'settings';
+
+	/**
+	 * Behaviors attached to this model.
+	 *
+	 * @var array
+	 */
+	public $actsAs = array(
+		'Core.KeyValue' => array(
+			'scope' => 'Core'
+		)
+	);
 
 	/**
 	 * Validation rules

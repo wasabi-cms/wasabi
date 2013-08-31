@@ -17,7 +17,7 @@ App::uses('ClassRegistry', 'Utility');
 App::uses('CoreSetting', 'Core.Model');
 App::uses('Migration', 'Migrations.Model');
 
-class AddCoreSettingsTable extends Migration {
+class AddSettingsTable extends Migration {
 
 	/**
 	 * Migrate up
@@ -25,28 +25,35 @@ class AddCoreSettingsTable extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		$this->createTable('core_settings', array(
+		$this->createTable('settings', array(
 			'id' => array('type' => 'integer', 'key' => 'primary'),
-			'application_name' => array('type' => 'string', 'length' => 255, 'null' => false),
-			'enable_caching' => array('type' => 'boolean', 'null' => false, 'default' => 0),
-			'cache_time' => array('type' => 'string', 'length' => 255, 'null' => false),
+			'scope' => array('type' => 'string', 'null' => false),
+			'key' => array('type' => 'string', 'null' => false),
+			'value' => array('type' => 'string', 'null' => true),
 			'created' => array('type' => 'datetime', 'null' => false),
 			'modified' => array('type' => 'datetime', 'null' => false),
 			'indexes' => array(
 				'PRIMARY' => array(
 					'column' => 'id',
 					'unique' => 1
+				),
+				'scope' => array(
+					'column' => 'scope'
 				)
 			)
 		));
 
+		/**
+		 * @var CoreSetting
+		 */
 		$setting = ClassRegistry::init('Core.CoreSetting');
-		$setting->create(array(
-			'application_name' => 'Wasabi',
-			'enable_caching' => '0',
-			'cache_time' => '30 days'
+		$setting->saveKeyValues(array(
+			'CoreSetting' => array(
+				'application_name' => 'Wasabi',
+				'enable_caching' => '0',
+				'cache_time' => '30 days'
+			)
 		));
-		$setting->save();
 	}
 
 	/**
@@ -55,7 +62,7 @@ class AddCoreSettingsTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		$this->dropTable('core_settings');
+		$this->dropTable('settings');
 	}
 
 }
