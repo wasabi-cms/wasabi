@@ -84,9 +84,6 @@ class BackendAppController extends AppController {
 		),
 		'CHtml' => array(
 			'className' => 'Core.CHtml'
-		),
-		'Meta' => array(
-			'className' => 'Core.Meta'
 		)
 	);
 
