@@ -24,7 +24,10 @@ class KeyValueBehavior extends ModelBehavior {
 	 *
 	 * @var array
 	 */
-	public $mapMethods = array('/\b_findKeyValues\b/' => 'findKeyValues');
+	public $mapMethods = array(
+		'/\b_findKeyValues\b/' => 'findKeyValues',
+		'/\b_findAllKeyValues\b/' => 'findAllKeyValues'
+	);
 
 	/**
 	 * Holds the default behavior settings for each model.
@@ -60,6 +63,7 @@ class KeyValueBehavior extends ModelBehavior {
 	public function setup(Model $model, $options = array()) {
 		$this->_settings[$model->alias] = Hash::merge($this->_defaults, $options);
 		$model->findMethods['keyValues'] = true;
+		$model->findMethods['allKeyValues'] = true;
 	}
 
 	/**
@@ -120,6 +124,8 @@ class KeyValueBehavior extends ModelBehavior {
 	/**
 	 * Custom find type 'keyValues'.
 	 *
+	 * Returns a scoped array that can be used by FormHelper.
+	 *
 	 * @param Model $model
 	 * @param $functionCall
 	 * @param string $state
@@ -150,6 +156,67 @@ class KeyValueBehavior extends ModelBehavior {
 			$key = $result[$model->alias][$fields['key']];
 			$value = $result[$model->alias][$fields['value']];
 			$results[$model->alias][$key] = $value;
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Custom find type 'allKeyValues'.
+	 *
+	 * Returns all keys and their values for all scopes.
+	 *
+	 * result:
+	 * -------
+	 * Array(
+	 *   'scope1' => Array(
+	 *     'key1' => 'value1',
+	 *     'key2' => 'value2',
+	 * 	   ...
+	 *   ),
+	 *   'scope2' => Array(
+	 * 	   'key' => 'value',
+	 *     ...
+	 *   ),
+	 *   ...
+	 * )
+	 *
+	 * @param Model $model
+	 * @param $functionCall
+	 * @param string $state
+	 * @param array $query
+	 * @param array $results
+	 * @return array
+	 */
+	public function findAllKeyValues(Model $model, $functionCall, $state, $query, $results = array()) {
+		if ($state === 'before') {
+			return $query;
+		}
+
+		/**
+		 * @var array $fields
+		 */
+		extract($this->_settings[$model->alias]);
+
+		$rawResults = $results;
+		$results = array();
+
+		foreach ($rawResults as $result) {
+			if (!isset($result[$model->alias][$fields['key']]) ||
+				!isset($result[$model->alias][$fields['value']]) ||
+				!isset($result[$model->alias]['scope'])
+			) {
+				continue;
+			}
+			$scope = $result[$model->alias]['scope'];
+			$key = $result[$model->alias][$fields['key']];
+			$value = $result[$model->alias][$fields['value']];
+
+			if (!isset($results[$scope])) {
+				$results[$scope] = array();
+			}
+
+			$results[$scope][$key] = $value;
 		}
 
 		return $results;
