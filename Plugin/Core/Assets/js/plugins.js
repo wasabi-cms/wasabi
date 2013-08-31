@@ -1,5 +1,4 @@
 //= require modernizr/modernizr.custom.min.js
-//= require jquery-ui-widget/build/jquery.ui.widget.min.js
 //= require jquery-scrollParent/build/jquery.scrollParent.min.js
 //= require jquery-eventMagic/build/jquery.eventMagic.min.js
 //= require jquery-livequery/build/jquery.livequery.min.js
@@ -13,4 +12,4 @@
 //= require spin/jquery.spin.min.js
 //= require jquery-blockThis/build/jquery.blockThis.min.js
 //= require twbs-dropdown/build/twbs.dropdown.min.js
-//= require jquery-fileupload/build/jquery.fileupload.min.js
+//= require jquery-multifileupload/build/jquery.multifileupload.min.js

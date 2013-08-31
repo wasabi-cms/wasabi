@@ -12,9 +12,8 @@ module.exports = function(grunt) {
     banner: '/*!\n' +
             ' * <%= pkg.title %> v<%= pkg.version %>\n' +
             ' *\n' +
-            ' * Copyright (c) 2013 jQuery Foundation and other contributors\n' +
-            ' * Released under the MIT license.\n' +
-            ' * http://jquery.org/license\n' +
+            ' * Copyright (c) 2013 Frank Förster (http://frankfoerster.com)\n' +
+            ' * Licensed under the MIT License\n' +
             ' */\n',
 
     concat: {
