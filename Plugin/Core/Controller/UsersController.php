@@ -184,6 +184,7 @@ class UsersController extends BackendAppController {
 			} else {
 				$this->Session->write('login_referer', $this->_getRedirect(false));
 				$this->Session->setFlash(__d('core', 'Wrong username or password.'), 'default', array('class' => 'error'));
+				$this->redirect(array('action' => 'login'));
 			}
 		}
 	}

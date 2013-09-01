@@ -308,7 +308,10 @@ class UsersControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEqual('error', $this->Users->Session->read('Message.flash.params.class'));
-		$this->assertNull($this->Users->redirectUrl);
+		$expected = array(
+			'action' => 'login'
+		);
+		$this->assertEqual($expected, $this->Users->redirectUrl);
 	}
 
 	public function testLoginActionPostWithValidFormAndInvalidData() {
@@ -323,7 +326,10 @@ class UsersControllerTest extends CoreControllerTest {
 		));
 
 		$this->assertEqual('error', $this->Users->Session->read('Message.flash.params.class'));
-		$this->assertNull($this->Users->redirectUrl);
+		$expected = array(
+			'action' => 'login'
+		);
+		$this->assertEqual($expected, $this->Users->redirectUrl);
 	}
 
 	public function testLoginActionPost() {
