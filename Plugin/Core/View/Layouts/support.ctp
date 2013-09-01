@@ -15,6 +15,5 @@
 	<div class="support-wrapper">
 		<?php echo $this->fetch('content'); ?>
 	</div>
-	<?php echo $this->element('Core.layout/footer'); ?>
 </body>
 </html>
