@@ -7,16 +7,17 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       app.Config
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 /**
@@ -57,9 +58,9 @@
 	));
 
 /**
- * Configure the Exception handler used for uncaught exceptions.  By default,
+ * Configure the Exception handler used for uncaught exceptions. By default,
  * ErrorHandler::handleException() is used. It will display a HTML page for the exception, and
- * while debug > 0, framework errors like Missing Controller will be displayed.  When debug = 0,
+ * while debug > 0, framework errors like Missing Controller will be displayed. When debug = 0,
  * framework errors will be coerced into generic HTTP errors.
  *
  * Options:
@@ -67,9 +68,12 @@
  * - `handler` - callback - The callback to handle exceptions. You can set this to any callback type,
  *   including anonymous functions.
  *   Make sure you add App::uses('MyHandler', 'Error'); when using a custom handler class
- * - `renderer` - string - The class responsible for rendering uncaught exceptions.  If you choose a custom class you
+ * - `renderer` - string - The class responsible for rendering uncaught exceptions. If you choose a custom class you
  *   should place the file for that class in app/Lib/Error. This class needs to implement a render method.
  * - `log` - boolean - Should Exceptions be logged?
+ * - `skipLog` - array - list of exceptions to skip for logging. Exceptions that
+ *   extend one of the listed exceptions will also be skipped for logging.
+ *   Example: `'skipLog' => array('NotFoundException', 'UnauthorizedException')`
  *
  * @see ErrorHandler for more information on exception handling and configuration.
  */
@@ -99,9 +103,44 @@
  * /app/.htaccess
  * /app/webroot/.htaccess
  *
- * And uncomment the App.baseUrl below:
+ * And uncomment the App.baseUrl below. But keep in mind
+ * that plugin assets such as images, CSS and Javascript files
+ * will not work without url rewriting!
+ * To work around this issue you should either symlink or copy
+ * the plugin assets into you app's webroot directory. This is
+ * recommended even when you are using mod_rewrite. Handling static
+ * assets through the Dispatcher is incredibly inefficient and
+ * included primarily as a development convenience - and
+ * thus not recommended for production applications.
  */
 	//Configure::write('App.baseUrl', env('SCRIPT_NAME'));
+
+/**
+ * To configure CakePHP to use a particular domain URL
+ * for any URL generation inside the application, set the following
+ * configuration variable to the http(s) address to your domain. This
+ * will override the automatic detection of full base URL and can be
+ * useful when generating links from the CLI (e.g. sending emails)
+ */
+	//Configure::write('App.fullBaseUrl', 'http://example.com');
+
+/**
+ * Web path to the public images directory under webroot.
+ * If not set defaults to 'img/'
+ */
+	//Configure::write('App.imageBaseUrl', 'img/');
+
+/**
+ * Web path to the CSS files directory under webroot.
+ * If not set defaults to 'css/'
+ */
+	//Configure::write('App.cssBaseUrl', 'css/');
+
+/**
+ * Web path to the js files directory under webroot.
+ * If not set defaults to 'js/'
+ */
+	//Configure::write('App.jsBaseUrl', 'js/');
 
 /**
  * Uncomment the define below to use CakePHP prefix routes.
@@ -137,6 +176,16 @@
  *
  */
 	//Configure::write('Cache.check', true);
+
+/**
+ * Enable cache view prefixes.
+ *
+ * If set it will be prepended to the cache name for view file caching. This is
+ * helpful if you deploy the same application via multiple subdomains and languages,
+ * for instance. Each version can then have its own view cache namespace.
+ * Note: The final cache file name will then be `prefix_cachefilename`.
+ */
+	//Configure::write('Cache.viewPrefix', 'prefix');
 
 /**
  * Defines the default error type when using the log() function. Used for
@@ -201,7 +250,7 @@
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).
- * Will append a querystring parameter containing the time the file was modified. This is
+ * Will append a query string parameter containing the time the file was modified. This is
  * useful for invalidating browser caches.
  *
  * Set to `true` to apply timestamps when debug > 0. Set to 'force' to always enable
@@ -254,7 +303,7 @@ if (extension_loaded('apc') && function_exists('apc_dec') && (php_sapi_name() !=
 
 // In development mode, caches should expire quickly.
 $duration = '+999 days';
-if (Configure::read('debug') >= 1) {
+if (Configure::read('debug') >= 0) {
 	$duration = '+10 seconds';
 }
 
