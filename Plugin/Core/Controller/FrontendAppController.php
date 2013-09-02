@@ -40,7 +40,10 @@ class FrontendAppController extends AppController {
 	public $helpers = array(
 		'Form',
 		'Html',
-		'Session'
+		'Session',
+		'WasabiAsset' => array(
+			'className' => 'Core.WasabiAsset'
+		)
 	);
 
 	/**
