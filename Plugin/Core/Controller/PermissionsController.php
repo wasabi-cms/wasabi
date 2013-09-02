@@ -118,14 +118,31 @@ class PermissionsController extends BackendAppController {
 	 * POST|AJAX POST
 	 */
 	public function update() {
-		if ($this->request->is('post') && !empty($this->request->data)) {
-			if ($this->GroupPermission->saveAll($this->request->data['GroupPermission'])) {
-				Cache::clear(false, 'core.group_permissions');
-				if ($this->request->is('ajax')) {
-					$status = 'success';
-					$this->set(compact('status'));
-					$this->set('_serialize', array('status'));
-				}
+		if (!$this->request->is('post')) {
+			if ($this->request->is('ajax')) {
+				throw new MethodNotAllowedException();
+			} else {
+				$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+				$this->redirect(array('action' => 'index'));
+				return;
+			}
+		}
+
+		if (empty($this->data) && !$this->request->is('ajax')) {
+			$this->Session->setFlash(__d('core', 'There are no permissions to update yet.'), 'default', array('class' => 'info'));
+			$this->redirect(array('action' => 'index'));
+			return;
+		}
+
+		if ($this->GroupPermission->saveAll($this->request->data['GroupPermission'])) {
+			Cache::clear(false, 'core.group_permissions');
+			if ($this->request->is('ajax')) {
+				$status = 'success';
+				$this->set(compact('status'));
+				$this->set('_serialize', array('status'));
+			} else {
+				$this->Session->setFlash(__d('core', 'All permissions have been saved.'), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'index'));
 			}
 		}
 	}
