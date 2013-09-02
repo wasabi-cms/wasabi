@@ -88,11 +88,13 @@ class CoreSettingsController extends BackendAppController {
 		} else {
 			if ($this->CoreMediaSetting->saveKeyValues($this->data)) {
 				$this->Session->setFlash(__d('core', 'The media settings have been updated.'), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'cache'));
+				$this->redirect(array('action' => 'media'));
 			} else {
 				$this->Session->setFlash($this->formErrorMessage, 'default', array('class' => 'error'));
 			}
 		}
+
+		$this->set('subDirectories', $this->CoreMediaSetting->subDirectories);
 	}
 
 }

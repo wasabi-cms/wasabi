@@ -25,11 +25,66 @@ class CoreMediaSetting extends Setting {
 	public $useTable = 'settings';
 
 	/**
+	 * Holds all select options for Media__upload_subdirectories.
+	 *
+	 * @var array
+	 */
+	public $subDirectories = array();
+
+	/**
 	 * Validation rules
 	 *
 	 * @var array
 	 */
 	public $validate = array(
-
+		'Media__upload_directory' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Please enter a name for the upload directory.'
+			)
+		),
+		'Media__upload_subdirectories' => array(
+			'validSelection' => array(
+				'rule' => array('isValidSubdirectory'),
+				'message' => 'Please choose on of the above options.'
+			)
+		)
 	);
+
+	/**
+	 * Constructor
+	 *
+	 * Set up available sub directories.
+	 *
+	 * @param array|boolean|integer|string $id
+	 * @param string $table
+	 * @param string $ds
+	 */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+
+		$y = date('Y');
+		$m = date('m');
+		$d = date('d');
+
+		$this->subDirectories = array(
+			'none' => __d('core', 'No'),
+			'%Y' => __d('core', '%s (year only)', array($y)),
+			'%Y/%m' => __d('core', '%s/%s (year/month)', array($y, $m)),
+			'%Y_%m' => __d('core', '%s_%s (year_month)', array($y, $m)),
+			'%Y/%m/%d' => __d('core', '%s/%s/%s (year/month/day)', array($y, $m, $d)),
+			'%Y_%m_%d' => __d('core', '%s_%s_%s (year_month_day)', array($y, $m, $d))
+		);
+	}
+
+	/**
+	 * Make sure a valid subdirectory template is selected.
+	 *
+	 * @param array $check
+	 * @return boolean
+	 */
+	public function isValidSubdirectory($check) {
+		$keys = array_keys($this->subDirectories);
+		return in_array($check['Media__upload_subdirectories'], $keys);
+	}
 }
