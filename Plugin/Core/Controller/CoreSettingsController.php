@@ -16,6 +16,9 @@
 App::uses('BackendAppController', 'Core.Controller');
 
 /**
+ * @property CoreCacheSetting $CoreCacheSetting
+ * @property CoreGeneralSetting $CoreGeneralSetting
+ * @property CoreMediaSetting $CoreMediaSetting
  * @property array $data
  */
 
@@ -31,14 +34,11 @@ class CoreSettingsController extends BackendAppController {
 	 */
 	public function general() {
 		$this->set('title_for_layout', __d('core', 'Edit General Settings'));
-		/**
-		 * @var CoreGeneralSetting
-		 */
-		$GeneralSetting = ClassRegistry::init('Core.CoreGeneralSetting');
+		$this->CoreGeneralSetting = ClassRegistry::init('Core.CoreGeneralSetting');
 		if (!$this->request->is('post') && empty($this->data)) {
-			$this->request->data = $GeneralSetting->find('keyValues');
+			$this->request->data = $this->CoreGeneralSetting->find('keyValues');
 		} else {
-			if ($GeneralSetting->saveKeyValues($this->data)) {
+			if ($this->CoreGeneralSetting->saveKeyValues($this->data)) {
 				$this->Session->setFlash(__d('core', 'The general settings have been updated.'), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'general'));
 			} else {
@@ -57,14 +57,11 @@ class CoreSettingsController extends BackendAppController {
 	 */
 	public function cache() {
 		$this->set('title_for_layout', __d('core', 'Edit Cache Settings'));
-		/**
-		 * @var CoreCacheSetting
-		 */
-		$CacheSetting = ClassRegistry::init('Core.CoreCacheSetting');
+		$this->CoreCacheSetting = ClassRegistry::init('Core.CoreCacheSetting');
 		if (!$this->request->is('post') && empty($this->data)) {
-			$this->request->data = $CacheSetting->find('keyValues');
+			$this->request->data = $this->CoreCacheSetting->find('keyValues');
 		} else {
-			if ($CacheSetting->saveKeyValues($this->data)) {
+			if ($this->CoreCacheSetting->saveKeyValues($this->data)) {
 				$this->Session->setFlash(__d('core', 'The cache settings have been updated.'), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'cache'));
 			} else {
@@ -72,7 +69,7 @@ class CoreSettingsController extends BackendAppController {
 			}
 		}
 
-		$this->set('cacheDurations', $CacheSetting->cacheDurations);
+		$this->set('cacheDurations', $this->CoreCacheSetting->cacheDurations);
 	}
 
 	/**
@@ -85,14 +82,11 @@ class CoreSettingsController extends BackendAppController {
 	 */
 	public function media() {
 		$this->set('title_for_layout', __d('core', 'Edit Media Settings'));
-		/**
-		 * @var CoreMediaSetting
-		 */
-		$MediaSetting = ClassRegistry::init('Core.CoreMediaSetting');
+		$this->CoreMediaSetting = ClassRegistry::init('Core.CoreMediaSetting');
 		if (!$this->request->is('post') && empty($this->data)) {
-			$this->request->data = $MediaSetting->find('keyValues');
+			$this->request->data = $this->CoreMediaSetting->find('keyValues');
 		} else {
-			if ($MediaSetting->saveKeyValues($this->data)) {
+			if ($this->CoreMediaSetting->saveKeyValues($this->data)) {
 				$this->Session->setFlash(__d('core', 'The media settings have been updated.'), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'cache'));
 			} else {
