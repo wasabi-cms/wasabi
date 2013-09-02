@@ -43,7 +43,7 @@ class CHtmlHelper extends AppHelper {
 	 * @param string $title
 	 * @param array|string $url
 	 * @param array $options
-	 * @param bool $displayLinkTextIfUnauthorized
+	 * @param boolean $displayLinkTextIfUnauthorized
 	 * @return string
 	 */
 	public function backendLink($title, $url, $options = array(), $displayLinkTextIfUnauthorized = false) {
@@ -54,6 +54,20 @@ class CHtmlHelper extends AppHelper {
 			}
 			return '';
 		}
+		return $this->Html->link($title, $url, $options);
+	}
+
+	/**
+	 * Create a properly prefixed backend link and
+	 * don't check permissions.
+	 *
+	 * @param string $title
+	 * @param array|string $url
+	 * @param array $options
+	 * @return string
+	 */
+	public function backendUnprotectedLink($title, $url, $options = array()) {
+		$url = $this->_getBackendUrl($url);
 		return $this->Html->link($title, $url, $options);
 	}
 
