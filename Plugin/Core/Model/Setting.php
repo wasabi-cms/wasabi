@@ -33,7 +33,7 @@ class Setting extends CoreAppModel {
 
 	/**
 	 * afterSave callback
-	 * Clear the core_settings cache whenever the settings are updated
+	 * Clear the settings cache whenever the settings are updated
 	 * and notify all plugins via an event 'Backend.Core.CoreSettings.changed'
 	 *
 	 * @param bool $created
