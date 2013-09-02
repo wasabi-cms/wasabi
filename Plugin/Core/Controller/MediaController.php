@@ -41,14 +41,61 @@ class MediaController extends BackendAppController {
 
 	/**
 	 * Upload action
-	 * AJAX POST | AJAX PUT
+	 * POST | PUT | AJAX POST | AJAX PUT
 	 *
-	 * @throws CakeException
+	 * Hint for iframe transport:
+	 * --------------------------
+	 * We don't respond with an error code of 400 on errors because even IE 10 will replace
+	 * the iframe contents with an error message from disk (res://ieframe.dll/http_500.htm)
+	 * which results in a cross-domain access denied error.
 	 */
 	public function upload() {
-		if (!$this->request->is('ajax') || !($this->request->is('post') || $this->request->is('put'))) {
-			throw new CakeException($this->invalidRequestMessage, 400);
+		$status = 'success';
+		$data = array();
+		$errors = array();
+		$_serialize = array('status');
+
+		// Check for valid request type
+		if (!($this->request->is('post') || $this->request->is('put'))) {
+			$errors[] = array('message' => __d('core', $this->invalidRequestMessage));
 		}
+
+		// Make sure at least one file is submitted.
+		if (empty($errors) && (!isset($this->data['files']) || empty($this->data['files']))) {
+			$errors[] = array('message' => __d('core', 'No files were submitted.'));
+		}
+
+		// Validate submitted files
+		if (empty($errors)) {
+			foreach ($this->data['files'] as $file) {
+				$fileErrors = $this->Media->validateFile($file);
+				if (empty($fileErrors)) {
+					$data[] = $this->Media->data;
+				} else {
+					$errors = $errors + $fileErrors;
+				}
+			}
+		}
+
+		// Save submitted files and catch afterSave errors.
+		if (empty($errors) && !$this->Media->saveAll($this->data['files'], array('validate' => false))) {
+			$errors[] = array('message' => __d('core', 'Something went wrong.'));
+		}
+
+		if (!empty($errors)) {
+			$status = 'error';
+			$_serialize[] = 'errors';
+			$this->set('errors', $errors);
+		}
+
+		$this->set('status', $status);
+
+		if ($this->request->is('ajax')) {
+			$this->set('_serialize', $_serialize);
+		} else {
+			$this->layout = false;
+		}
+
 	}
 
 }

@@ -16,6 +16,9 @@
 App::uses('CoreAppModel', 'Core.Model');
 App::uses('Hash', 'Utility');
 
+/**
+ * @property AttachedMedia $AttachedMedia
+ */
 class Media extends CoreAppModel {
 
 	/**
@@ -52,7 +55,7 @@ class Media extends CoreAppModel {
 	 * @var array
 	 */
 	protected $_mediaMimetypes = array(
-		'application/pdf',
+		#'application/pdf',
 		'application/postscript',
 		'application/zip',
 		'application/x-rar-compressed',
@@ -94,8 +97,102 @@ class Media extends CoreAppModel {
 	 * @var array
 	 */
 	public $validate = array(
-
+//		'general' => array(
+//			'phpSizeLimit' => array(
+//				'rule' => 'inUnderPhpSizeLimit',
+//				'message' => 'This file exceeds the maximum file size.'
+//			),
+			# isUnderFormSizeLimit
+			# isCompletedUpload
+			# isFileUpload
+//			'tmpDirExists' => array(
+//				'rule' => 'tempDirExists',
+//				'message' => 'The temporary upload directoy is missing.'
+//			),
+			# isSuccessfulWrite
+			# notStoppedByPhpExtension
+//		),
+		'mimetype' => array(
+			'allowedMimeType' => array(
+				'rule' => 'isAllowedMimetype',
+				'message' => 'The mimetype "{1}" of File "{0}" is not supported.'
+			)
+			# isAllowedMimetype
+			# isValidExtension
+			# isAboveMinSize
+			# isBelowMaxSize
+			# isUploadDirPresent
+			# isUploadDirWritable
+		)//,
+//		'imageChecks' => array(
+			# isAboveMinHeight
+			# isBelowMaxHeight
+			# isAboveMinWidth
+			# isBelowMaxWidth
+//		)
 	);
+
+	/**
+	 * beforeValidate callback
+	 *
+	 * @param array $options
+	 * @return boolean
+	 */
+	public function beforeValidate($options = array()) {
+		if (isset($this->data[$this->alias]['tmp_name'])) {
+			if (isset($this->data[$this->alias]['name'])) {
+				$parts = explode('.', $this->data[$this->alias]['name']);
+				$this->data[$this->alias]['ext'] = strtolower(array_pop($parts));
+				$this->data[$this->alias]['name'] = join('.', $parts);
+				$this->data[$this->alias]['fullname'] =
+					$this->data[$this->alias]['name'] . '.' . $this->data[$this->alias]['ext'];
+			}
+			if (isset($this->data[$this->alias]['type'])) {
+				$this->data[$this->alias]['mimetype'] = $this->data[$this->alias]['type'];
+				unset($this->data[$this->alias]['type']);
+			}
+		}
+
+		return parent::beforeValidate($options);
+	}
+
+	/**
+	 * afterSave callback
+	 *
+	 * @param boolean $created
+	 */
+	public function afterSave($created) {
+//		var_dump($this->data);
+//		die();
+	}
+
+	/**
+	 * Validate a submitted file and return
+	 * its validation errors.
+	 *
+	 * @param array $file
+	 * @return array
+	 */
+	public function validateFile($file) {
+		$errors = array();
+		$this->create($file);
+
+		if (!$this->validates()) {
+			foreach ($this->validationErrors as $field => $fieldErrors) {
+				foreach ($fieldErrors as $fieldError) {
+					$errors[] = array(
+						'message' => $fieldError,
+						'context' => array(
+							$file['name'],
+							$this->data[$this->alias][$field]
+						)
+					);
+				}
+			}
+		}
+
+		return $errors;
+	}
 
 	protected function _handleUploadedFile() {
 
@@ -109,9 +206,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isUnderPhpSizeLimit($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_INI_SIZE;
+		return $check['error'] !== UPLOAD_ERR_INI_SIZE;
 	}
 
 	/**
@@ -124,9 +219,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isUnderFormSizeLimit($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_FORM_SIZE;
+		return $check['error'] !== UPLOAD_ERR_FORM_SIZE;
 	}
 
 	/**
@@ -136,9 +229,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isCompletedUpload($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_PARTIAL;
+		return $check['error'] !== UPLOAD_ERR_PARTIAL;
 	}
 
 	/**
@@ -148,9 +239,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isFileUpload($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_NO_FILE;
+		return $check['error'] !== UPLOAD_ERR_NO_FILE;
 	}
 
 	/**
@@ -160,9 +249,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function tempDirExists($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_NO_TMP_DIR;
+		return $check['error'] !== UPLOAD_ERR_NO_TMP_DIR;
 	}
 
 	/**
@@ -172,9 +259,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isSuccessfulWrite($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_CANT_WRITE;
+		return $check['error'] !== UPLOAD_ERR_CANT_WRITE;
 	}
 
 	/**
@@ -184,21 +269,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function notStoppedByPhpExtension($check) {
-		$field = $this->_getField($check);
-
-		return $check[$field]['error'] !== UPLOAD_ERR_EXTENSION;
-	}
-
-	/**
-	 * Check that the file is of a supported mimetype.
-	 *
-	 * @param mixed $check
-	 * @return boolean
-	 */
-	public function isSupportedMimetype($check) {
-		$field = $this->_getField($check);
-
-		return in_array($check[$field]['mimetype'], array_merge($this->_imageMimetypes, $this->_videoMimetypes, $this->_mediaMimetypes));
+		return $check['error'] !== UPLOAD_ERR_EXTENSION;
 	}
 
 	/**
@@ -208,13 +279,13 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isAllowedMimetype($check) {
-		$field = $this->_getField($check);
-
-		if (in_array('*', $this->_options['allowedMimetypes'])) {
+		if (in_array('*', array_merge($this->_imageMimetypes, $this->_videoMimetypes, $this->_mediaMimetypes))) {
 			return true;
 		}
 
-		return in_array($check[$field]['mimetype'], $this->_options['allowedMimetypes']);
+		$field = $this->_getField($check);
+
+		return in_array($check[$field], array_merge($this->_imageMimetypes, $this->_videoMimetypes, $this->_mediaMimetypes));
 	}
 
 	/**
@@ -224,9 +295,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isUploadDirWritable($check) {
-		$field = $this->_getField($check);
-
-		return is_writable($check[$field]['abs_path']);
+		return is_writable($check['abs_path']);
 	}
 
 	/**
@@ -236,9 +305,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isUploadDirPresent($check) {
-		$field = $this->_getField($check);
-
-		return is_dir($check[$field]['abs_path']);
+		return is_dir($check['abs_path']);
 	}
 
 	/**
@@ -248,9 +315,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isBelowMaxSize($check) {
-		$field = $this->_getField($check);
-
-		if (!isset($check[$field]['size'])) {
+		if (!isset($check['size'])) {
 			return false;
 		}
 
@@ -258,7 +323,7 @@ class Media extends CoreAppModel {
 			return true;
 		}
 
-		return $check[$field]['size'] <= $this->_options['maxFileSize'];
+		return $check['size'] <= $this->_options['maxFileSize'];
 	}
 
 	/**
@@ -268,13 +333,11 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isAboveMinSize($check) {
-		$field = $this->_getField($check);
-
-		if (!isset($check[$field]['size'])) {
+		if (!isset($check['size'])) {
 			return false;
 		}
 
-		return $check[$field]['size'] >= $this->_options['minFileSize'];
+		return $check['size'] >= $this->_options['minFileSize'];
 	}
 
 	/**
@@ -284,13 +347,11 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isValidExtension($check) {
-		$field = $this->_getField($check);
-
-		if (!isset($check[$field]['ext'])) {
+		if (!isset($check['ext'])) {
 			return false;
 		}
 
-		return in_array($check[$field]['ext'], $this->_options['extensions']);
+		return in_array($check['ext'], $this->_options['extensions']);
 	}
 
 	/**
@@ -300,13 +361,11 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isAboveMinHeight($check) {
-		$field = $this->_getField($check);
-
-		if (!isset($check[$field]['tmp_name'])) {
+		if (!isset($check['tmp_name'])) {
 			return false;
 		}
 
-		list(, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		list(, $imgHeight) = getimagesize($check['tmp_name']);
 
 		return $imgHeight >= $this->_options['minHeight'];
 	}
@@ -318,9 +377,7 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isBelowMaxHeight($check) {
-		$field = $this->_getField($check);
-
-		if (!isset($check[$field]['tmp_name'])) {
+		if (!isset($check['tmp_name'])) {
 			return false;
 		}
 
@@ -328,7 +385,7 @@ class Media extends CoreAppModel {
 			return true;
 		}
 
-		list(, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		list(, $imgHeight) = getimagesize($check['tmp_name']);
 
 		return $imgHeight <= $this->_options['maxHeight'];
 	}
@@ -340,13 +397,11 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isAboveMinWidth($check) {
-		$field = $this->_getField($check);
-
-		if (!isset($check[$field]['tmp_name'])) {
+		if (!isset($check['tmp_name'])) {
 			return false;
 		}
 
-		list($imgWidth, ) = getimagesize($check[$field]['tmp_name']);
+		list($imgWidth, ) = getimagesize($check['tmp_name']);
 
 		return $imgWidth >= $this->_options['minWidth'];
 	}
@@ -358,9 +413,8 @@ class Media extends CoreAppModel {
 	 * @return boolean
 	 */
 	public function isBelowMaxWidth($check) {
-		$field = $this->_getField($check);
 
-		if (!isset($check[$field]['tmp_name'])) {
+		if (!isset($check['tmp_name'])) {
 			return false;
 		}
 
@@ -368,19 +422,20 @@ class Media extends CoreAppModel {
 			return true;
 		}
 
-		list($imgWidth, ) = getimagesize($check[$field]['tmp_name']);
+		list($imgWidth, ) = getimagesize($check['tmp_name']);
 
 		return $imgWidth <= $this->_options['maxWidth'];
 	}
 
 	/**
-	 * Get a single field value
+	 * Get the key of the single field that
+	 * is currently checked.
 	 *
 	 * @param mixed $check
 	 * @return mixed
 	 */
 	protected function _getField($check) {
-		$keys = $check;
+		$keys = array_keys($check);
 		return array_pop($keys);
 	}
 }
