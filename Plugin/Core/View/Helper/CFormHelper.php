@@ -99,4 +99,25 @@ class CFormHelper extends AppHelper {
 		return $out;
 	}
 
+	/**
+	 * Create a form section.
+	 *
+	 * @param string $title
+	 * @param boolean|string $description
+	 * @return string
+	 */
+	public function section($title, $description = false) {
+		$out = '<div class="form-section">';
+
+		$out .= '<div class="form-section-title">' . $title . '</div>';
+
+		if ($description !== false) {
+			$out .= '<div class="form-section-description">' . $description . '</div>';
+		}
+
+		$out .= '</div>';
+
+		return $out;
+	}
+
 }
