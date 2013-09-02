@@ -212,14 +212,10 @@ class KeyValueBehavior extends ModelBehavior {
 			$key = $result[$model->alias][$fields['key']];
 			$value = $result[$model->alias][$fields['value']];
 
-			if (!isset($results[$scope])) {
-				$results[$scope] = array();
-			}
-
-			$results[$scope][$key] = $value;
+			$results[$scope . '__' . $key] = $value;
 		}
 
-		return $results;
+		return Hash::expand($results, '__');
 	}
 
 	/**
