@@ -14,6 +14,7 @@
  */
 
 App::uses('CoreControllerTest', 'Core.Test/TestSuite');
+App::uses('CoreGeneralSetting', 'Core.Model');
 App::uses('CoreSettingsController', 'Core.Controller');
 
 class CoreSettingsTestController extends CoreSettingsController {
@@ -53,58 +54,56 @@ class CoreSettingsControllerTest extends CoreControllerTest {
 		parent::tearDown();
 	}
 
-	public function testRequiredModelsAreSetup() {
-		$this->assertTrue(in_array('Core.CoreSetting', $this->CoreSettings->uses));
-	}
-
-	public function testEditActionGet() {
-		$this->testAction('/' . $this->backendPrefix . '/settings/edit', array('method' => 'get'));
+	public function testGeneralActionGet() {
+		$this->testAction('/' . $this->backendPrefix . '/settings/general', array('method' => 'get'));
 
 		$this->assertInternalType('string', $this->CoreSettings->viewVars['title_for_layout']);
 		$this->assertNull($this->CoreSettings->redirectUrl);
 
-		$expected = $this->CoreSettings->CoreSetting->find('keyValues');
+		$expected = array(
+			'CoreGeneralSetting' => array(
+				'application_name' => 'TestApp'
+			)
+		);
 		$result = $this->CoreSettings->request->data;
 		$this->assertEqual($expected, $result);
 	}
 
-	public function testEditActionPost() {
-		$csCount = $this->CoreSettings->CoreSetting->find('count');
+	public function testGeneralActionPost() {
+		$CoreGeneralSetting = ClassRegistry::init('Core.CoreGeneralSetting');
+		$csCount = $CoreGeneralSetting->find('count');
 
-		$this->testAction('/' . $this->backendPrefix . '/settings/edit', array(
+		$this->testAction('/' . $this->backendPrefix . '/settings/general', array(
 			'method' => 'post',
 			'data' => array(
-				'CoreSetting' => array(
+				'CoreGeneralSetting' => array(
 					'application_name' => 'TestApp modified'
 				)
 			)
 		));
 
-		$this->assertEmpty($this->CoreSettings->CoreSetting->validationErrors);
-		$this->assertEqual($csCount, $this->CoreSettings->CoreSetting->find('count'));
-		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array(
+		$this->assertEmpty($this->CoreSettings->CoreGeneralSetting->validationErrors);
+		$this->assertEqual($csCount, $this->CoreSettings->CoreGeneralSetting->find('count'));
+		$this->assertTrue($this->CoreSettings->CoreGeneralSetting->hasAny(array(
 			'key' => 'application_name',
 			'value' => 'TestApp modified'
 		)));
 		$this->assertEqual('success', $this->CoreSettings->Session->read('Message.flash.params.class'));
-		$this->assertEqual(array('action' => 'edit'), $this->CoreSettings->redirectUrl);
+		$this->assertEqual(array('action' => 'general'), $this->CoreSettings->redirectUrl);
 	}
 
 	public function testEditActionPostValidationError() {
-		$csCount = $this->CoreSettings->CoreSetting->find('count');
-
-		$this->testAction('/' . $this->backendPrefix . '/settings/edit', array(
+		$this->testAction('/' . $this->backendPrefix . '/settings/general', array(
 			'method' => 'post',
 			'data' => array(
-				'CoreSetting' => array(
+				'CoreGeneralSetting' => array(
 					'application_name' => ''
 				)
 			)
 		));
 
-		$this->assertNotEmpty($this->CoreSettings->CoreSetting->validationErrors);
-		$this->assertEqual($csCount, $this->CoreSettings->CoreSetting->find('count'));
-		$this->assertTrue($this->CoreSettings->CoreSetting->hasAny(array(
+		$this->assertNotEmpty($this->CoreSettings->CoreGeneralSetting->validationErrors);
+		$this->assertTrue($this->CoreSettings->CoreGeneralSetting->hasAny(array(
 			'key' => 'application_name',
 			'value' => 'TestApp'
 		)));
