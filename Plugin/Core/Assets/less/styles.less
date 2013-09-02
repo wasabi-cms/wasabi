@@ -32,7 +32,8 @@ body {
   min-width: @minWidth;
 }
 
-.main-nav, .user-nav, .aside-nav, .sub-nav, .breadcrumbs, #menu-items ul {
+.main-nav, .user-nav, .aside-nav, .sub-nav, .breadcrumbs, #menu-items ul,
+.multi-fileupload-controls, .support.browser ul {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -57,6 +58,10 @@ a {
 
 .hide {
   display: none;
+}
+
+.invisible {
+  visibility: hidden;
 }
 
 /** ----------------------------------------------- HEADER --------------------------------------------------------- **/
@@ -100,6 +105,11 @@ header {
     background-color: #3d3d3d;
     outline: none;
 
+    i {
+      display: inline-block;
+      width: 12px;
+    }
+
     body.nav-closed & {
       background-color: transparent;
     }
@@ -107,27 +117,9 @@ header {
     &:hover {
       background-color: #3d3d3d !important;
     }
-  }
 
-  .main-nav li {
-    float: left;
-
-    a {
-      color: #fff;
-      display: block;
-      padding: 10px 15px;
-      text-decoration: none;
-
-      &:hover {
-        background-color: #111;
-      }
-    }
-
-    &.active {
-      a, a:hover {
-        color: @base;
-        background-color: #fff;
-      }
+    .lt-ie9 & {
+      line-height: 40px;
     }
   }
 }
@@ -144,6 +136,8 @@ header {
 
     i {
       margin-left: 7px;
+      display: inline-block;
+      width: 9px;
     }
 
     &:hover,
@@ -246,7 +240,7 @@ aside {
       padding: 10px 10px 9px;
       text-decoration: none;
       color: #fff;
-      border-top: 1px solid #5c5c5c;
+      border-top: 1px solid #454545;
       position: relative;
 
       & > i {
@@ -254,6 +248,8 @@ aside {
         font-size: 16px;
         line-height: 16px;
         color: #969696;
+        display: inline-block;
+        width: 17px;
 
         @media only screen and (max-width: @menuBreakPoint) {
           margin-right: 0;
@@ -654,7 +650,6 @@ span.error-message, div.error-message {
     display: table-cell;
     padding: 20px;
     background-color: #fff;
-    border-left: 1px solid #ddd;
     vertical-align: top;
     width: 100%;
 
@@ -662,6 +657,10 @@ span.error-message, div.error-message {
       padding-top: 27px;
       padding-bottom: 25px;
     }
+  }
+
+  & > label + .field {
+    border-left: 1px solid #ddd;
   }
 
   & table.list {
@@ -1019,6 +1018,199 @@ table.list {
   text-align: right;
 }
 
+/** ------------------------------------------ MULTI FILE UPLOAD --------------------------------------------------- **/
+.multi-fileupload {
+  margin-bottom: 20px;
+
+  .button {
+    cursor: pointer;
+
+    i {
+      color: #fff;
+      margin: 0 7px 0 10px;
+      display: inline-block;
+      width: 11px;
+    }
+
+    span {
+      .border-radius(0 3px 3px 0);
+    }
+
+    &.small {
+
+      i {
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        width: 22px;
+        text-align: center;
+      }
+    }
+
+    &.disabled {
+      cursor: default;
+    }
+  }
+}
+
+.multi-fileupload-controls {
+  margin-bottom: 10px;
+
+  li {
+    display: inline;
+    margin-right: 5px;
+  }
+}
+
+.multi-fileupload-box {
+  background-color: #F4F4F4;
+  border: 1px solid #CCCCCC;
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.multi-fileupload-button {
+  float: left;
+  max-height: 36px;
+}
+
+.multi-fileupload-description {
+  float: left;
+  margin: 0;
+  padding-left: 20px;
+  line-height: 36px;
+}
+
+.fileinput-button {
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+}
+
+.fileinput-button input {
+  cursor: pointer;
+  direction: ltr;
+  font-size: 23px;
+  margin: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  .opacity(0);
+}
+
+.multi-fileupload-progress {
+  margin-bottom: 10px;
+
+  .progress-extended {
+    padding-left: 4px;
+    font-size: 11px;
+    color: #333;
+  }
+
+  &.inactive {
+    opacity: 0.2;
+
+    .progress-extended {
+      color: #999;
+    }
+  }
+}
+
+.multi-fileupload-upload {
+  width: 100%;
+
+  tr {
+
+    td {
+      border-top: 1px solid #ddd;
+      background-color: #f5f5f5;
+      padding: 8px;
+      vertical-align: middle;
+    }
+
+    &.error td {
+      background-color: #f2dede;
+      border-top: 1px solid #990000;
+
+      .error-message {
+        display: inline;
+        color: #990000;
+      }
+    }
+
+    &.success td {
+      background-color: #e6efc2;
+      border-top: 1px solid #c6d880;
+      opacity: 0.6;
+    }
+  }
+
+  .preview {
+    padding-bottom: 5px;
+
+    canvas {
+      float: left;
+      margin: 0 3px 3px 0;
+    }
+
+    audio {
+      padding-top: 5px;
+      min-height: 33px;
+      min-width: 90px;
+    }
+
+    & > div {
+      float: left;
+      margin: 0 3px 3px 0;
+    }
+  }
+
+  .filename {
+    word-wrap: break-word;
+  }
+
+  .actions .button {
+    margin-right: 3px;
+  }
+}
+
+/** -------------------------------------------- PROGRESS BARS ----------------------------------------------------- **/
+.progress {
+  background-color: #F5F5F5;
+  height: 20px;
+  overflow: hidden;
+  .border-radius(4px);
+  .box-shadow(inset 0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.progress-bar {
+  background-color: #428BCA;
+  color: #fff;
+  float: left;
+  height: 100%;
+  width: 0;
+  .box-shadow(inset 0 -1px 0 rgba(0, 0, 0, 0.15));
+  .transition(width .3s ease 0s);
+}
+
+.progress-text {
+  display: inline-block;
+  width: 100%;
+  text-align: right;
+  padding-right: 10px;
+  font-weight: 600;
+  font-size: 12px;
+  position: relative;
+  top: -1px;
+}
+
+.progress-strip {
+  background-color: #ccc;
+  height: 3px;
+  overflow: hidden;
+}
+
 /** ----------------------------------------- MENUS / MENU ITEMS --------------------------------------------------- **/
 .field.link-options {
   div[data-type="empty"], div[data-type="ExternalLink"], div[data-type="Object"], div[data-type="Action"], div[data-type="CustomAction"] {
@@ -1169,15 +1361,14 @@ table.permissions {
   }
 }
 
-/** ----------------------------------------------- LOGIN ---------------------------------------------------------- **/
-.login {
+/** ------------------------------- SUPPORT PAGES (e.g.: Login, Browser not supported) ----------------------------- **/
+.support {
   background-color: #efefef;
 
-  .login-wrapper {
-    margin: 100px auto 0;
-    max-width: 400px;
-    background-color: #fff;
-    .box-shadow(3px 3px 4px #bbb);
+  .support-wrapper {
+    margin: 0 auto;
+    padding-top: 100px;
+    max-width: 600px;
   }
 
   h1 {
@@ -1191,12 +1382,40 @@ table.permissions {
     border-bottom: 1px solid #000;
   }
 
-  .form-content {
+  .support-content {
     padding: 20px 20px 0;
+    background-color: #fff;
   }
 
   .form-controls {
     border-top: 1px solid #ddd;
+  }
+}
+
+.support.login {
+
+  .support-wrapper {
+    max-width: 340px;
+
+    img {
+      padding: 0 0 20px 50px;
+    }
+  }
+
+  #flashMessage {
+    border: none;
+    margin-bottom: 0;
+    padding: 10px 20px;
+  }
+
+  form {
+    border-left: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    .box-shadow(3px 3px 4px #bbb);
+
+    .lt-ie9 & {
+      border: 1px solid #ddd;
+    }
   }
 
   label {
@@ -1207,17 +1426,86 @@ table.permissions {
     margin-bottom: 10px;
 
     &.checkbox {
-      margin: 20px 0;
+      margin: 20px 0 0;
+      padding-bottom: 20px;
     }
   }
 
-  #flashMessage {
-    border: none;
-    margin-bottom: 0;
-    padding: 10px 20px;
+  .lt-ie9 & {
+
+    input[type="password"] {
+      font-family: Arial;
+    }
   }
 
-  #flashMessage + form {
-    border-top: none;
+  .form-controls {
+    text-align: right;
+
+    button {
+      margin-right: 0;
+    }
+  }
+
+  .bottom-links {
+    padding: 20px;
+  }
+}
+
+.support.browser {
+
+  h1, p, .browsers li {
+    text-align: center;
+  }
+
+  .browsers {
+    padding-bottom: 20px;
+
+    a {
+      display: block;
+      padding: 8px;
+      border: 1px solid transparent;
+
+      &:hover {
+        border-color: #ddd;
+        background-color: #efefef;
+      }
+    }
+
+    i {
+      display: inline-block;
+      width: 128px;
+      height: 128px;
+      cursor: pointer;
+
+      &.ie {
+        margin-left: -20px;
+        //noinspection CssUnknownTarget
+        background-image: url("../img/browsers/ie9-10_128x128.png");
+      }
+
+      &.firefox {
+        //noinspection CssUnknownTarget
+        background-image: url(../img/browsers/firefox_128x128.png);
+      }
+
+      &.chrome {
+        //noinspection CssUnknownTarget
+        background-image: url(../img/browsers/chrome_128x128.png);
+      }
+    }
+  }
+}
+
+.support.error {
+
+  .support-wrapper {
+    max-width: 1000px;
+    margin-top: 100px;
+    padding: 20px;
+    background-color: #fff;
+  }
+
+  h2 {
+    margin-top: 0;
   }
 }
