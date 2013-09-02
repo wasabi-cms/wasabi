@@ -32,15 +32,15 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 		}
 
 		try {
-			$exceptionType = get_class($exception);
-			switch ($exceptionType) {
-				case 'MissingControllerException':
-					App::uses('BackendErrorController', 'Core.Controller');
-					$controller = new BackendErrorController($request, $response);
-					break;
-				default:
-					App::uses('FrontendErrorController', 'Core.Controller');
-					$controller = new FrontendErrorController($request, $response);
+			if (strpos($request->url, Configure::read('Wasabi.backend_prefix') . '/') === 0 || (
+				strpos($request->url, Configure::read('Wasabi.backend_prefix')) === 0 &&
+				strlen($request->url) == strlen(Configure::read('Wasabi.backend_prefix'))
+			)) {
+				App::uses('BackendErrorController', 'Core.Controller');
+				$controller = new BackendErrorController($request, $response);
+			} else {
+				App::uses('FrontendErrorController', 'Core.Controller');
+				$controller = new FrontendErrorController($request, $response);
 			}
 			$controller->constructClasses();
 			$controller->startupProcess();
@@ -58,8 +58,15 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 
 	protected function _outputMessage($template) {
 		try {
-			$this->controller->plugin = 'Core';
-			$this->controller->render($template, 'Core.default');
+			if ($this->controller->name === 'BackendError') {
+				$this->controller->plugin = 'Core';
+				$this->controller->set(array(
+					'title_for_layout' => 'Error'
+				));
+				$this->controller->render($template, 'Core.default');
+			} else {
+				$this->controller->render($template);
+			}
 			$this->controller->afterFilter();
 			$this->controller->response->send();
 		} catch (MissingViewException $e) {
@@ -70,7 +77,6 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 				$this->_outputMessage('error500');
 			}
 		} catch (Exception $e) {
-			var_dump($e);
 			$this->_outputMessageSafe('error500');
 		}
 	}
@@ -85,10 +91,19 @@ class CoreExceptionRenderer extends ExceptionRenderer {
 	protected function _outputMessageSafe($template) {
 		$this->controller->layoutPath = null;
 		$this->controller->subDir = null;
-		$this->controller->viewPath = 'BackendError/';
+		$this->controller->plugin = null;
+		if ($this->controller->name === 'BackendError') {
+			$this->controller->plugin = 'Core';
+			$this->controller->viewPath = 'BackendErrors';
+			$this->controller->set(array(
+				'title_for_layout' => 'Error'
+			));
+		} else {
+			$this->controller->viewPath = 'Errors';
+		}
 
 		$view = new View($this->controller);
-		$this->controller->response->body($view->render($template, 'Core.default'));
+		$this->controller->response->body($view->render($template));
 		$this->controller->response->type('html');
 		$this->controller->response->send();
 	}
