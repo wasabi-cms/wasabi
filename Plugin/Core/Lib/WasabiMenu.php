@@ -60,7 +60,8 @@ class WasabiMenu {
 		$menuItem = array(
 			'alias' => $options['alias'],
 			'name' => $options['name'],
-			'priority' => $options['priority']
+			'priority' => $options['priority'],
+			'matchAction' => false
 		);
 
 		if (isset($options['icon'])) {
@@ -79,6 +80,10 @@ class WasabiMenu {
 				throw new CakeException('$options[\'url\'][\'action\'] is missing.');
 			}
 			$menuItem['url'] = $url;
+		}
+
+		if (isset($options['matchAction']) && $options['matchAction'] === true) {
+			$menuItem['matchAction'] = true;
 		}
 
 		if (isset($options['parent'])) {

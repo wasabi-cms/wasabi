@@ -216,7 +216,7 @@ class BackendAppController extends AppController {
 		$this->_triggerEvent(new stdClass(), 'Backend.Menu.load');
 
 		try {
-			$mainItems = WasabiNav::getMenu('main', true);
+			$mainItems = WasabiNav::getProcessedMenu('main', $this->request->params);
 		} catch (CakeException $e) {
 			return;
 		}
@@ -225,39 +225,11 @@ class BackendAppController extends AppController {
 			return;
 		}
 
-		$mainItems = $this->_processMenuItems($mainItems);
-
 		$this->set(array(
 			'backend_menu_for_layout' => array(
 				'main' => $mainItems
 			)
 		));
-	}
-
-	protected function _processMenuItems($items, &$subActiveFound = false) {
-		foreach ($items as &$item) {
-			if (isset($item['url']) &&
-				$item['url']['plugin'] === $this->request->params['plugin'] &&
-				$item['url']['controller'] === $this->request->params['controller']
-			) {
-				$item['active'] = true;
-				$subActiveFound = true;
-			}
-			if (isset($item['children']) && !empty($item['children'])) {
-				$sub = false;
-
-				$item['children'] = $this->_processMenuItems($item['children'], $sub);
-
-				if ($sub === true) {
-					$item['active'] = true;
-					$item['open'] = true;
-					$subActiveFound = true;
-				}
-			}
-
-		}
-
-		return $items;
 	}
 
 	/**
