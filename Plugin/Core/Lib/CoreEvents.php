@@ -71,7 +71,7 @@ class CoreEvents {
 		Router::connect("/${prefix}/languages/:action/*", array('plugin' => 'core', 'controller' => 'languages'));
 
 		// Core Settings
-		Router::connect("/${prefix}/settings/edit", array('plugin' => 'core', 'controller' => 'core_settings', 'action' => 'edit'));
+		Router::connect("/${prefix}/settings/:action/*", array('plugin' => 'core', 'controller' => 'core_settings'));
 
 		// Plugins
 		Router::connect("/${prefix}/plugins", array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index'));
@@ -98,7 +98,7 @@ class CoreEvents {
 
 		$main
 			->addMenuItem(array(
-				'alias' => 'dashboard',
+				'alias' => 'core_dashboard',
 				'name' => __d('core', 'Dashboard'),
 				'priority' => 1,
 				'url' => array(
@@ -109,7 +109,7 @@ class CoreEvents {
 				'icon' => 'icon-home'
 			))
 			->addMenuItem(array(
-				'alias' => 'menus',
+				'alias' => 'core_menus',
 				'name' => __d('core', 'Menus'),
 				'priority' => 1000,
 				'icon' => 'icon-list',
@@ -120,7 +120,7 @@ class CoreEvents {
 				)
 			))
 			->addMenuItem(array(
-				'alias' => 'media',
+				'alias' => 'core_media',
 				'name' => __d('core', 'Media'),
 				'priority' => 2000,
 				'icon' => 'icon-picture',
@@ -131,16 +131,16 @@ class CoreEvents {
 				)
 			))
 			->addMenuItem(array(
-				'alias' => 'administration',
+				'alias' => 'core_administration',
 				'name' => __d('core', 'Administration'),
-				'priority' => 99999,
+				'priority' => 3000,
 				'icon' => 'icon-cogs'
 			))
 				->addMenuItem(array(
-					'alias' => 'users',
+					'alias' => 'core_users',
 					'name' => __d('core', 'Users'),
 					'priority' => 100,
-					'parent' => 'administration',
+					'parent' => 'core_administration',
 					'url' => array(
 						'plugin' => 'core',
 						'controller' => 'users',
@@ -148,10 +148,10 @@ class CoreEvents {
 					)
 				))
 				->addMenuItem(array(
-					'alias' => 'groups',
+					'alias' => 'core_groups',
 					'name' => __d('core', 'Groups'),
 					'priority' => 200,
-					'parent' => 'administration',
+					'parent' => 'core_administration',
 					'url' => array(
 						'plugin' => 'core',
 						'controller' => 'groups',
@@ -159,10 +159,10 @@ class CoreEvents {
 					)
 				))
 				->addMenuItem(array(
-					'alias' => 'languages',
+					'alias' => 'core_languages',
 					'name' => __d('core', 'Languages'),
 					'priority' => 300,
-					'parent' => 'administration',
+					'parent' => 'core_administration',
 					'url' => array(
 						'plugin' => 'core',
 						'controller' => 'languages',
@@ -170,10 +170,10 @@ class CoreEvents {
 					)
 				))
 				->addMenuItem(array(
-					'alias' => 'plugins',
+					'alias' => 'core_plugins',
 					'name' => __d('core', 'Plugins'),
 					'priority' => 400,
-					'parent' => 'administration',
+					'parent' => 'core_administration',
 					'url' => array(
 						'plugin' => 'core',
 						'controller' => 'plugins',
@@ -181,26 +181,57 @@ class CoreEvents {
 					)
 				))
 				->addMenuItem(array(
-					'alias' => 'permissions',
+					'alias' => 'core_permissions',
 					'name' => __d('core', 'Permissions'),
 					'priority' => 500,
-					'parent' => 'administration',
+					'parent' => 'core_administration',
 					'url' => array(
 						'plugin' => 'core',
 						'controller' => 'permissions',
 						'action' => 'index'
 					)
 				))
+			->addMenuItem(array(
+				'alias' => 'core_settings',
+				'name' => __d('core', 'Settings'),
+				'priority' => 4000,
+				'icon' => 'icon-wrench'
+			))
 				->addMenuItem(array(
-					'alias' => 'core_settings',
-					'name' => __d('core', 'Core Settings'),
-					'priority' => 600,
-					'parent' => 'administration',
+					'alias' => 'core_general_settings',
+					'name' => __d('core', 'General'),
+					'priority' => 100,
+					'parent' => 'core_settings',
 					'url' => array(
 						'plugin' => 'core',
 						'controller' => 'core_settings',
-						'action' => 'edit'
-					)
+						'action' => 'general'
+					),
+					'matchAction' => true
+				))
+				->addMenuItem(array(
+					'alias' => 'core_cache_settings',
+					'name' => __d('core', 'Cache'),
+					'priority' => 200,
+					'parent' => 'core_settings',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'core_settings',
+						'action' => 'cache'
+					),
+					'matchAction' => true
+				))
+				->addMenuItem(array(
+					'alias' => 'core_media_settings',
+					'name' => __d('core', 'Media'),
+					'priority' => 300,
+					'parent' => 'core_settings',
+					'url' => array(
+						'plugin' => 'core',
+						'controller' => 'core_settings',
+						'action' => 'media'
+					),
+					'matchAction' => true
 				));
 	}
 

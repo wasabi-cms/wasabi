@@ -15,7 +15,7 @@
 
 App::uses('Setting', 'Core.Model');
 
-class CoreSetting extends Setting {
+class CoreCacheSetting extends Setting {
 
 	/**
 	 * This model uses the 'settings' db table.
@@ -37,12 +37,6 @@ class CoreSetting extends Setting {
 	 * @var array
 	 */
 	public $validate = array(
-		'application_name' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty',
-				'message' => 'Please enter a name for your application.'
-			)
-		),
 		'enable_caching' => array(
 			'matches' => array(
 				'rule' => array('inList', array('0', '1')),
