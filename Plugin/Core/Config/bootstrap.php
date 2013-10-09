@@ -21,55 +21,47 @@ App::uses('WasabiEventManager', 'Core.Lib');
 /**
  * Setup cache configs.
  */
-	$cacheFolder = new Folder(CACHE . 'core' . DS . 'infinite', true, 0755);
 	Cache::config('core.infinite', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
 		'prefix' => '',
-		'path' => $cacheFolder->path,
+		'path' => CACHE . 'core' . DS . 'infinite',
 	));
 
-	$cacheFolder = new Folder(CACHE . 'core' . DS . 'routes', true, 0755);
 	Cache::config('core.routes', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
 		'prefix' => '',
-		'path' => $cacheFolder->path
+		'path' => CACHE . 'core' . DS . 'routes'
 	));
 
-	$cacheFolder = new Folder(CACHE . 'core' . DS . 'group_permissions', true, 0755);
 	Cache::config('core.group_permissions', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
 		'prefix' => '',
-		'path' => $cacheFolder->path
+		'path' => CACHE . 'core' . DS . 'group_permissions'
 	));
 
-	$cacheFolder = new Folder(CACHE . 'core' . DS . 'guardian_paths', true, 0755);
 	Cache::config('core.guardian_paths', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
 		'prefix' => '',
-		'path' => $cacheFolder->path
+		'path' => CACHE . 'core' . DS . 'guardian_paths'
 	));
 
-	$cacheFolder = new Folder(CACHE . 'frontend' . DS . 'pygmentize', true, 0755);
 	Cache::config('frontend.pygmentize', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
 		'prefix' => '',
-		'path' => $cacheFolder->path
+		'path' => CACHE . 'frontend' . DS . 'pygmentize'
 	));
 
-	$cacheFolder = new Folder(CACHE . 'core' . DS . 'main_nav', true, 0755);
 	Cache::config('core.main_nav', array(
 		'engine' => 'File',
 		'duration' => '+999 days',
 		'prefix' => '',
-		'path' => $cacheFolder->path
+		'path' => CACHE . 'core' . DS . 'main_nav'
 	));
-
-	unset($cacheFolder);
 
 /**
  * Load active plugins.
