@@ -61,6 +61,14 @@ App::uses('WasabiEventManager', 'Core.Lib');
 		'path' => $cacheFolder->path
 	));
 
+	$cacheFolder = new Folder(CACHE . 'core' . DS . 'main_nav', true, 0755);
+	Cache::config('core.main_nav', array(
+		'engine' => 'File',
+		'duration' => '+999 days',
+		'prefix' => '',
+		'path' => $cacheFolder->path
+	));
+
 	unset($cacheFolder);
 
 /**
