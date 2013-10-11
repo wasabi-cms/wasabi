@@ -117,6 +117,20 @@
      */
     this.options = $.extend({}, $.fn.multifileupload.defaults, options);
 
+    if (this.$el.attr('data-extensions') !== undefined) {
+      this.options.extensions = this.$el.attr('data-extensions').split('|');
+      if (typeof this.options.extensions === 'string') {
+        this.options.extensions = [this.options.extensions];
+      }
+    }
+
+    if (this.$el.attr('data-mime-types') !== undefined) {
+      this.options.mimeTypes = this.$el.attr('data-mime-types').split('|');
+      if (typeof this.options.mimeTypes === 'string') {
+        this.options.mimeTypes = [this.options.mimeTypes];
+      }
+    }
+
     /**
      * The file input jquery object
      * on which change events are listened on.
