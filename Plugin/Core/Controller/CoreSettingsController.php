@@ -94,7 +94,23 @@ class CoreSettingsController extends BackendAppController {
 			}
 		}
 
-		$this->set('subDirectories', $this->CoreMediaSetting->subDirectories);
+		$this->set(array(
+			'subDirectories' => $this->CoreMediaSetting->subDirectories,
+			'mimeTypes' => array(
+				'Image' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->imageFiles),
+				'Video' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->videoFiles),
+				'Audio' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->audioFiles),
+				'Document' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->documentFiles),
+				'Other' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->otherFiles),
+			),
+			'fileExtensions' => array(
+				'Image' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->imageFiles),
+				'Video' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->videoFiles),
+				'Audio' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->audioFiles),
+				'Document' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->documentFiles),
+				'Other' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->otherFiles),
+			)
+		));
 	}
 
 }
