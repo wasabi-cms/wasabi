@@ -46,7 +46,8 @@ class KeyValueBehavior extends ModelBehavior {
 		'fields' => array(
 			'key' => 'key',
 			'value' => 'value'
-		)
+		),
+		'serializeFields' => array()
 	);
 
 	/**
@@ -102,11 +103,18 @@ class KeyValueBehavior extends ModelBehavior {
 				continue;
 			}
 
+			$serialized = false;
+			if (in_array($key, $this->_settings[$model->alias]['serializeFields'])) {
+				$value = serialize($value);
+				$serialized = true;
+			}
+
 			$data = array(
 				$model->alias => array(
 					'scope' => $scope,
 					$fields['key'] => $key,
-					$fields['value'] => $value
+					$fields['value'] => $value,
+					'serialized' => $serialized
 				)
 			);
 
@@ -155,6 +163,12 @@ class KeyValueBehavior extends ModelBehavior {
 			}
 			$key = $result[$model->alias][$fields['key']];
 			$value = $result[$model->alias][$fields['value']];
+			if (in_array($key, $this->_settings[$model->alias]['serializeFields'])) {
+				$value = unserialize($value);
+				if (!is_array($value)) {
+					$value = array();
+				}
+			}
 			$results[$model->alias][$key] = $value;
 		}
 
@@ -211,6 +225,14 @@ class KeyValueBehavior extends ModelBehavior {
 			$scope = $result[$model->alias]['scope'];
 			$key = $result[$model->alias][$fields['key']];
 			$value = $result[$model->alias][$fields['value']];
+			$serialized = $result[$model->alias]['serialized'];
+
+			if ($serialized) {
+				$value = unserialize($value);
+				if (!is_array($value)) {
+					$value = array();
+				}
+			}
 
 			$results[$scope . '__' . $key] = $value;
 		}

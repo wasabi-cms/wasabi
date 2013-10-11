@@ -29,7 +29,8 @@ class AddSettingsTable extends Migration {
 			'id' => array('type' => 'integer', 'key' => 'primary'),
 			'scope' => array('type' => 'string', 'null' => false),
 			'key' => array('type' => 'string', 'null' => false),
-			'value' => array('type' => 'string', 'null' => true),
+			'value' => array('type' => 'text', 'null' => true),
+			'serialized' => array('type' => 'boolean', 'null' => true),
 			'created' => array('type' => 'datetime', 'null' => false),
 			'modified' => array('type' => 'datetime', 'null' => false),
 			'indexes' => array(
