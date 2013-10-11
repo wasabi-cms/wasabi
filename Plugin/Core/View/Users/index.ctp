@@ -55,8 +55,7 @@ $this->CHtml->addAction(
 						'class' => 'wicon-remove',
 						'title' => __d('core', 'Delete this User'),
 						'confirm-message' => __d('core', 'Delete user <strong>%s</strong> ?', array($u['User']['username'])),
-						'confirm-title' => __d('core', 'Deletion Confirmation'),
-						'modal-id' => 'modalDeleteUser' . $u['User']['id']
+						'confirm-title' => __d('core', 'Deletion Confirmation')
 					));
 				} else {
 					echo '-';

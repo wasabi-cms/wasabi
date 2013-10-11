@@ -83,16 +83,15 @@ class CHtmlHelper extends AppHelper {
 	 */
 	public function backendConfirmationLink($title, $url, $options, $displayLinkTextIfUnauthorized = false) {
 		if (!isset($options['confirm-message'])) {
-			throw new CakeException('\'confirm-message\' option is not set on backendConfirmationLink.');
+			user_error('\'confirm-message\' option is not set on backendConfirmationLink.');
+			$options['confirm-message'] = '';
 		}
 		if (!isset($options['confirm-title'])) {
-			throw new CakeException('\'confirm-title\' option is not set on backendConfirmationLink.');
-		}
-		if (!isset($options['modal-id'])) {
-			throw new CakeException('\'modal-id\' options is not set on backendConfirmationLink.');
+			user_error('\'confirm-title\' option is not set on backendConfirmationLink.');
+			$options['confirm-title'] = '';
 		}
 
-		$url = $this->_getBackendUrl($url, true);
+		$url = $this->_getBackendUrl($url);
 		if (!Guardian::hasAccess($url)) {
 			if ($displayLinkTextIfUnauthorized) {
 				return $title;
@@ -100,44 +99,31 @@ class CHtmlHelper extends AppHelper {
 			return '';
 		}
 
-		$modalData = array(
-			'id' => $options['modal-id'],
-			'title' => $options['confirm-title'],
-			'body' => '<p>' . $options['confirm-message'] . '</p>',
-			'action' => $url,
-			'ajax' => false,
-			'notify' => false,
-			'event' => null,
-			'method' => 'post'
-		);
-		unset($options['confirm-message']);
-		unset($options['confirm-title']);
-
 		$linkOptions = array(
-			'data-toggle' => 'modal',
-			'data-target' => '#' . $options['modal-id']
+			'data-modal-title' => $options['confirm-title'],
+			'data-modal-body' => '<p>' . $options['confirm-message'] . '</p>',
+			'data-method' => 'post',
+			'data-toggle' => 'confirm'
 		);
-		unset($options['modal-id']);
+		unset($options['confirm-title'], $options['confirm-message']);
 
 		if (isset($options['ajax']) && $options['ajax'] === true) {
-			$modalData['ajax'] = true;
+			$linkOptions['data-ajax'] = 1;
 			unset($options['ajax']);
+
+			if (isset($options['notify'])) {
+				$linkOptions['data-notify'] = $options['notify'];
+				unset($options['notify']);
+			}
+
+			if (isset($options['event'])) {
+				$linkOptions['data-event'] = $options['event'];
+				unset($options['event']);
+			}
 		}
 
-		if (isset($options['notify'])) {
-			$modalData['notify'] = $options['notify'];
-			unset($options['notify']);
-		}
-
-		if (isset($options['event'])) {
-			$modalData['event'] = $options['event'];
-			unset($options['event']);
-		}
-
-		$out = $this->_View->element('Core.modals/confirm', $modalData);
 		$linkOptions = Hash::merge($linkOptions, $options);
-		$out .= $this->Html->link($title, 'javascript:void(0)', $linkOptions);
-		return $out;
+		return $this->Html->link($title, $url, $linkOptions);
 	}
 
 	public function getBackendUrl($url, $rel = false) {

@@ -66,8 +66,7 @@ echo $this->Form->create('Language', array('url' => array('plugin' => 'core', 'c
 						'title' => __d('core', 'Delete this Language'),
 						'class' => 'wicon-remove',
 						'confirm-message' => __d('core', 'Delete language <strong>%s</strong> ?', array($lang['Language']['name'])),
-						'confirm-title' => __d('core', 'Deletion Confirmation'),
-						'modal-id' => 'modalDeleteLanguage' . $lang['Language']['id']
+						'confirm-title' => __d('core', 'Deletion Confirmation')
 					));
 				}
 				?>

@@ -34,8 +34,7 @@ $this->CHtml->addAction(
 					'title' => __d('core', 'Delete this Menu'),
 					'class' => 'wicon-remove',
 					'confirm-message' => __d('core', 'Do you really want to delete menu <strong>%s</strong> ?', array($m['Menu']['name'])),
-					'confirm-title' => __d('core', 'Deletion Confirmation'),
-					'modal-id' => 'modalDeleteMenu' . $m['Menu']['id']
+					'confirm-title' => __d('core', 'Deletion Confirmation')
 				));
 				?>
 			</td>

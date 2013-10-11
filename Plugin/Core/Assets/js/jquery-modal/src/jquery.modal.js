@@ -1,205 +1,398 @@
-(function($) {
+(function($, doc) {
   "use strict";
 
+  /**
+   * Modal
+   * 
+   * @param {HTMLElement} element
+   * @param {Object} options
+   * @constructor
+   */
   var Modal = function(element, options) {
-    this.settings = $.extend({}, $.fn.modal.defaults, options);
 
-    this.$body = $('body');
+    /**
+     * Options/Settings for this modal instance.
+     * 
+     * @type {Object}
+     */
+    this.o = $.extend({}, $.fn.modal.defaults, options);
+
+    /**
+     * The jQuery object on which the modal is instantiated on.
+     * 
+     * @type {jQuery}
+     */
     this.$el = $(element);
+
+    /**
+     * Determines if the modal dialogue is a confirm dialogue (true) or not (false).
+     *
+     * @type {Boolean}
+     */
+    this.isConfirm = (this.$el.attr('data-toggle') === 'confirm');
+
     this.$target = $(this.$el.attr('data-target'));
     this.$targetContents = null;
 
-    this.$modalBackdrop = null;
-    this.$modalWrapper = null;
-    this.$modalContainer = null;
+    /**
+     * Holds a reference to the modal backdrop jQuery object.
+     *
+     * @type {jQuery}
+     */
+    this.$backdrop = null;
 
+    /**
+     * Holds a reference to the modal scrollable jQuery object.
+     *
+     * @type {jQuery}
+     */
+    this.$scrollable = null;
+
+    /**
+     * Holds a reference to the modal container jQuery object.
+     *
+     * @type {jQuery}
+     */
+    this.$container = null;
+
+    /**
+     * Determines if the modal is open (true) or not (false).
+     *
+     * @type {Boolean}
+     */
     this.isOpen = false;
+
+    this.header = false;
+
+    this.body = false;
+
+    this.footer = false;
+
+    this.isAjax = false;
+
+    this.$notify = false;
+
+    this.event = false;
+
+    this.method = false;
+
+    this.action = false;
 
     this._primaryEvents = [];
     this._secondaryEvents = [];
 
-    if (this.$target.length > 0) {
-      this._buildEvents();
-      $.attachEvents(this._primaryEvents);
-    }
+    this.useTarget = (this.$target.length > 0);
+
+    this.init();
   };
 
-  Modal.prototype = {
+  /**
+   * Modal Prototype
+   */
+  Modal.prototype = (function() {
 
-    _buildEvents: function(secondary) {
+    /**
+     * Holds a reference to the body jQuery object.
+     * 
+     * @type {jQuery}
+     */
+    var $body = $('body');
+
+    /**
+     * 
+     * @param {Boolean} secondary
+     * @private
+     */
+    function _buildEvents(secondary) {
       this._primaryEvents = [
         [this.$el, {
-          click: $.proxy(this._openModal, this)
+          click: $.proxy(_openModal, this)
         }]
       ];
 
       if (secondary === true) {
         this._secondaryEvents = [
-          [this.$modalWrapper, {
+          [this.$scrollable, {
             click: $.proxy(function(event) {
-              if (event.target === this.$modalWrapper[0]) {
-                this._closeModal(event);
+              if (event.target === this.$scrollable[0]) {
+                _closeModal.call(this, event);
               }
             }, this)
           }],
-          [this.$modalContainer, '[data-dismiss="modal"]', [
-            ['click', $.proxy(this._closeModal, this)]
+          [this.$container, '[data-dismiss="modal"]', [
+            ['click', $.proxy(_closeModal, this)]
           ]],
-          [this.$modalContainer, '[type="submit"]', [
-            ['click', $.proxy(this._submit, this)]
+          [this.$container, '[type="submit"]', [
+            ['click', $.proxy(_submit, this)]
           ]],
           [$(window), {
-            resize: $.proxy(this._onResize, this)
+            resize: $.proxy(_onResize, this)
           }]
         ];
       }
-    },
+    }
 
-    _initDOMElements: function() {
-      this.$modalBackdrop = $('<div class="modal-backdrop"></div>').css({
-        opacity: this.settings.opacity,
+    /**
+     *
+     * @private
+     */
+    function _initDOMElements() {
+      this.$backdrop = $('<div/>').addClass(this.o.backdrop).css({
+        opacity: this.o.opacity,
         zIndex: 10000
       });
 
-      this.$modalWrapper = $('<div class="modal-scrollable"></div>').css({
-        zIndex: this.$modalBackdrop.css('zIndex') + 1
+      this.$scrollable = $('<div/>').addClass(this.o.scrollable).css({
+        zIndex: this.$backdrop.css('zIndex') + 1
       });
 
-      this.$modalContainer = $('<div class="modal-container"></div>');
-    },
+      this.$container = $('<div/>').addClass(this.o.container);
+    }
 
-    _resetDOMElements: function() {
-      this.$target.append(this.$targetContents);
-      this.$targetContents = null;
-      this.$modalContainer.remove();
-      this.$modalContainer = null;
-      this.$body.removeClass('modal-open').removeClass('page-overflow');
-      this.$modalWrapper.remove();
-      this.$modalWrapper = null;
-      this.$modalBackdrop.remove();
-      this.$modalBackdrop = null;
-    },
+    /**
+     *
+     * @private
+     */
+    function _resetDOMElements() {
+      if (this.useTarget) {
+        this.$target.append(this.$targetContents);
+        this.$targetContents = null;
+      }
+      this.$container.remove();
+      this.$container = null;
+      $body.removeClass('modal-open').removeClass('page-overflow');
+      this.$scrollable.remove();
+      this.$scrollable = null;
+      this.$backdrop.remove();
+      this.$backdrop = null;
+    }
 
-    _openModal: function(event) {
+    /**
+     *
+     * @private
+     */
+    function _initAttributes() {
+      var mtitle = this.$el.attr('data-modal-title');
+      if (mtitle !== undefined) {
+        this.header = mtitle;
+      }
+
+      var mbody = this.$el.attr('data-modal-body');
+      if (mbody !== undefined) {
+        this.body = mbody;
+      }
+
+      this.method = this.$el.attr('data-method') || 'post';
+
+      this.isAjax = (this.$el.attr('data-ajax') === '1' || this.$el.attr('data-ajax') === 'true');
+
+      if (this.isAjax) {
+        var $notify = this.$el.attr('data-notify');
+        this.$notify = $notify ? $($notify) : $(doc);
+        this.event = this.$el.attr('data-event') || 'succes.modal';
+      }
+
+      this.action = this.$el.attr('data-action') || this.$el.attr('href') || false;
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _createModalContent() {
+      if (this.useTarget) {
+        this.$targetContents = this.$target.children();
+        this.$container.append(this.$targetContents);
+      } else {
+        var mtitle = this.$el.attr('data-modal-title');
+        var mbody = this.$el.attr('data-modal-body');
+        var $header = false;
+        var $body = $('<div/>', {class: this.o.body});
+        var $footer = false;
+
+        if (mtitle !== undefined && mtitle !== '0') {
+          $header = $('<div/>', {class: this.o.header}).append($('<span/>').text(mtitle));
+        }
+
+        if (mbody !== undefined) {
+          $body.append(mbody);
+        }
+
+        if (this.isConfirm) {
+          $footer = $('<div/>', {class: this.o.footer + ' ' + this.o.confirmFooter});
+          var $btn = $('<button/>', {
+            class: 'button',
+            type: 'submit'
+          });
+          $btn.append($('<span/>').text(this.o.confirmYes));
+          var $cancel = $('<a href="javascript:void(0)" data-dismiss="modal"/>');
+          $cancel.text(this.o.confirmNo);
+          $footer.append($btn).append($cancel);
+        }
+
+        $header && this.$container.append($header);
+        $body && this.$container.append($body);
+        $footer && this.$container.append($footer);
+      }
+    }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _openModal(event) {
       event.preventDefault();
       $.detachEvents(this._primaryEvents);
 
-      this._initDOMElements();
-      this._buildEvents(true);
+      _initDOMElements.call(this);
+      _buildEvents.call(this, true);
       $.attachEvents(this._secondaryEvents);
 
-      this.$body
+      $body
         .toggleClass('page-overflow', $(window).height() < $(document).height())
         .addClass('modal-open');
 
+      _initAttributes.call(this);
 
-      this.$targetContents = this.$target.children();
+      _createModalContent.call(this);
 
-      this.$modalContainer.append(this.$targetContents).css({
-        width: this.settings.width,
+      this.$container.css({
+        width: this.o.width,
         position: 'fixed',
         left: -99999,
-        top: this.settings.offsetTop
+        top: this.o.offsetTop
       });
-      this.$modalWrapper.append(this.$modalContainer);
+      this.$scrollable.append(this.$container);
 
-      this.$body.append(this.$modalBackdrop).append(this.$modalWrapper);
+      $body.append(this.$backdrop).append(this.$scrollable);
 
-      this._updatePosition();
-      this.$modalContainer.hide();
-      this.$modalContainer.fadeIn();
+      _updatePosition.call(this);
+      this.$container.hide();
+      this.$container.fadeIn();
       this.isOpen = true;
-    },
+    }
 
-    _closeModal: function(event) {
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _closeModal(event) {
       event && event.preventDefault();
       $.detachEvents(this._secondaryEvents);
 
       // fadeout and remove modal from DOM and reset body classes
       $.when.apply(null, [
-        this.$modalContainer.fadeOut(200),
-        this.$modalBackdrop.fadeOut(200)
-      ]).then($.proxy(function() {
-        this._resetDOMElements();
-        this.isOpen = false;
-        $.attachEvents(this._primaryEvents);
-      }, this));
-    },
+          this.$container.fadeOut(200),
+          this.$backdrop.fadeOut(200)
+        ]).then($.proxy(function() {
+          _resetDOMElements.call(this);
+          this.isOpen = false;
+          $.attachEvents(this._primaryEvents);
+        }, this));
+    }
 
-    _updatePosition: function() {
-      var modalHeight = this.$modalContainer.outerHeight();
-      var modalOffsetTop = this.$modalContainer.offset().top - this.$modalWrapper.offset().top;
-      var screenHeight = this.$modalWrapper.height();
-      var needsVerticalCentering = ((screenHeight - modalHeight - modalOffsetTop) < this.settings.offsetTop);
+    /**
+     *
+     * @private
+     */
+    function _updatePosition() {
+      var modalHeight = this.$container.outerHeight();
+      var modalOffsetTop = this.$container.offset().top - this.$scrollable.offset().top;
+      var screenHeight = this.$scrollable.height();
+      var needsVerticalCentering = ((screenHeight - modalHeight - modalOffsetTop) < this.o.offsetTop);
       if (needsVerticalCentering) {
-        if ((modalHeight + 2 * this.settings.padding) <= screenHeight) {
-          this.$modalContainer.css({
+        if ((modalHeight + 2 * this.o.padding) <= screenHeight) {
+          this.$container.css({
             top: '50%',
             marginTop: -modalHeight / 2
           });
         } else {
-          this.$modalContainer.css({
-            top: this.settings.padding,
+          this.$container.css({
+            top: this.o.padding,
             marginTop: 0
           });
         }
       } else {
-        this.$modalContainer.css({
-          top: this.settings.offsetTop,
+        this.$container.css({
+          top: this.o.offsetTop,
           marginTop: 0
         });
       }
 
-      this.$modalContainer.css({
+      this.$container.css({
         position: 'absolute',
-        marginLeft: -this.settings.width / 2,
+        marginLeft: -this.o.width / 2,
         left: '50%'
       });
-    },
+    }
 
-    _onResize: function(event) {
-      if (!this.isOpen) {
-        return;
-      }
-      this._updatePosition();
-    },
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _onResize(event) {
+      this.isOpen && _updatePosition.call(this);
+    }
 
-    _submit: function(event) {
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _submit(event) {
       event.preventDefault();
 
       var $target = $(event.target);
       if ($target.attr('disabled') !== undefined) {
         return;
       }
-      var that = this;
-
-      if ($target.attr('data-is-ajax') === 'true') {
+      
+      if (this.isAjax) {
+        var that = this;
         $target.attr('disabled', true);
-        var $notify = $($target.attr('data-notify')) || $(document);
-        var evt = 'beforeAjax.modal';
-        $notify.trigger(evt);
+        this.$notify.trigger('beforeAjax.modal');
         $.ajax({
-          type: $target.attr('data-method'),
-          url: $target.attr('data-action'),
+          type: this.method,
+          url: this.action,
           cache: false,
           success: function(data) {
-            evt = $target.attr('data-event') || 'success.modal';
-            $notify.trigger(evt, data);
+            that.$notify.trigger(that.event, data);
           }
         });
       } else {
         $('<form></form>')
-          .attr('action', $target.attr('data-action'))
-          .attr('method', $target.attr('data-method'))
+          .attr('action', this.action)
+          .attr('method', this.method)
           .appendTo('body')
           .submit();
       }
 
-      that._closeModal();
+      _closeModal.call(this);
     }
 
-  };
+    /**
+     * public methods
+     */
+    return {
 
+      init: function() {
+        _buildEvents.call(this);
+        $.attachEvents(this._primaryEvents);
+      }
+
+    }
+
+  })();
+
+  /**
+   * jQuery modal plugin definition
+   *
+   * @param options
+   * @returns {*}
+   */
   $.fn.modal = function(options) {
     return this.each(function() {
       if (!$(this).data('Modal')) {
@@ -209,11 +402,25 @@
     });
   };
 
+  /**
+   * jQuery modal default settings.
+   *
+   * @type {object}
+   */
   $.fn.modal.defaults = {
     width: 400,
     offsetTop: 200,
     opacity: 0.6,
-    padding: 20
+    padding: 20,
+    backdrop: 'modal-backdrop',
+    scrollable: 'modal-scrollable',
+    container: 'modal-container',
+    header: 'modal-header',
+    body: 'modal-body',
+    footer: 'modal-footer',
+    confirmFooter: 'modal-confirm',
+    confirmYes: 'Yes',
+    confirmNo: 'No'
   };
 
-})(jQuery);
+})(jQuery, document);

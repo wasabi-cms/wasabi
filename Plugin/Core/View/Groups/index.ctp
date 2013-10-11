@@ -36,8 +36,7 @@ $this->CHtml->addAction(
 						'title' => __d('core', 'Delete this Group'),
 						'class' => 'wicon-remove',
 						'confirm-message' => __d('core', 'Delete the group <strong>%s</strong> ?', array($g['Group']['name'])),
-						'confirm-title' => __d('core', 'Deletion Confirmation'),
-						'modal-id' => 'modalDeleteGroup' . $g['Group']['id']
+						'confirm-title' => __d('core', 'Deletion Confirmation')
 					));
 				} else {
 					echo '-';
