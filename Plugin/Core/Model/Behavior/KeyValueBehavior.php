@@ -75,6 +75,11 @@ class KeyValueBehavior extends ModelBehavior {
 	 * @return boolean|array
 	 */
 	public function saveKeyValues(Model $model, $data) {
+		// call beforeSaveKeyValues on the model if it exists
+		if (method_exists($model, 'beforeSaveKeyValues')) {
+			$data = $model->{'beforeSaveKeyValues'}($data);
+		}
+
 		/**
 		 * @var string $scope
 		 * @var array $fields
