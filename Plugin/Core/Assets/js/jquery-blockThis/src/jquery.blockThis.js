@@ -38,6 +38,16 @@
         return;
       }
       var offset = this.$el.offset();
+      var borderLeft = this.$el.css('borderLeftWidth');
+      if (borderLeft !== '') {
+        borderLeft = parseInt(borderLeft.split('px')[0]);
+        offset.left += borderLeft;
+      }
+      var borderTop = this.$el.css('borderTopWidth');
+      if (borderTop !== '') {
+        borderTop = parseInt(borderTop.split('px')[0]);
+        offset.top += borderTop;
+      }
       this.$blockBackdrop
         .css({
           position: 'absolute',
