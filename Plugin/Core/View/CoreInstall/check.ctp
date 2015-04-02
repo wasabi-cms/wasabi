@@ -24,5 +24,5 @@
 	</div>
 </div>
 <div class="form-controls">
-	<?php echo $this->Html->link('<span>' . __d('core', 'Start Installation') . '</span>', '/backend/install/database', array('class' => 'button', 'escape' => false)) ?>
+	<?php echo $this->Html->link(__d('core', 'Start Installation'), '/backend/install/database', array('class' => 'button')) ?>
 </div>

@@ -57,6 +57,10 @@ class MenusController extends BackendAppController {
 			}
 		}
 
+		$this->helpers['CMenu'] = array(
+			'className' => 'Core.CMenu'
+		);
+
 		$this->set(array(
 			'title_for_layout' => __d('core', 'Add a new Menu')
 		));
@@ -65,6 +69,8 @@ class MenusController extends BackendAppController {
 	/**
 	 * Edit action
 	 * GET | POST
+	 *
+	 * @param integer $id
 	 */
 	public function edit($id = null) {
 		if ($id === null || !$this->Menu->exists($id)) {
@@ -99,7 +105,7 @@ class MenusController extends BackendAppController {
 	 * Delete action
 	 * POST
 	 *
-	 * @param null|integer $id
+	 * @param integer $id
 	 * @return void
 	 * @throws MethodNotAllowedException
 	 */
@@ -121,8 +127,11 @@ class MenusController extends BackendAppController {
 	}
 
 	/**
-	 * Add action
+	 * Add menu item action
 	 * GET | POST
+	 *
+	 * @param integer $menuId
+	 * @param integer $parentId
 	 */
 	public function add_item($menuId = null, $parentId = null) {
 		if ($menuId === null || !$this->Menu->exists($menuId)) {
@@ -140,7 +149,7 @@ class MenusController extends BackendAppController {
 				)
 			));
 			if ($this->Menu->MenuItem->save($this->request->data)) {
-				$this->Session->setFlash(__d('core', 'Menu Item <strong>%s</strong> has been updated.', array($this->request->data['MenuItem']['name'])), 'default', array('class' => 'success'));
+				$this->Session->setFlash(__d('core', 'Menu Item <strong>%s</strong> has been added.', array($this->request->data['MenuItem']['name'])), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'edit', $this->request->data['MenuItem']['menu_id']));
 				return;
 			} else {
@@ -165,8 +174,10 @@ class MenusController extends BackendAppController {
 	}
 
 	/**
-	 * Edit action
+	 * Edit menu item action
 	 * GET | POST
+	 *
+	 * @param integer $id
 	 */
 	public function edit_item($id = null) {
 		if ($id === null || !$this->Menu->MenuItem->exists($id)) {
@@ -180,11 +191,17 @@ class MenusController extends BackendAppController {
 			if ($this->request->data['MenuItem']['parent_id'] === '') {
 				$this->request->data['MenuItem']['parent_id'] = 0;
 			}
-			$this->Menu->MenuItem->Behaviors->load('Core.EnhancedTree', array(
-				'scope' => array(
-					'MenuItem.menu_id' => $this->request->data['MenuItem']['menu_id']
-				)
-			));
+
+			$menuItem = $this->Menu->MenuItem->findById($id);
+			$hasMenuChanged = $menuItem['MenuItem']['menu_id'] !== $this->request->data['MenuItem']['menu_id'];
+			if (!$hasMenuChanged) {
+				$this->Menu->MenuItem->Behaviors->load('Core.EnhancedTree', array(
+					'scope' => array(
+						'MenuItem.menu_id' => $this->request->data['MenuItem']['menu_id']
+					)
+				));
+			}
+
 			if ($this->Menu->MenuItem->save($this->request->data)) {
 				$this->Session->setFlash(__d('core', 'Menu Item <strong>%s</strong> has been updated.', array($this->request->data['MenuItem']['name'])), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'edit', $this->request->data['MenuItem']['menu_id']));
@@ -211,6 +228,31 @@ class MenusController extends BackendAppController {
 	}
 
 	/**
+	 * Delete menu item action
+	 * POST
+	 *
+	 * @param $id
+	 * @throws MethodNotAllowedException
+	 */
+	public function delete_item($id) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
+
+		if ($id === null || !$this->Menu->MenuItem->exists($id)) {
+			$this->Session->setFlash($this->invalidRequestMessage, 'default', array('class' => 'error'));
+			$this->redirect($this->referer());
+			return;
+		}
+
+		$menuItem = $this->Menu->MenuItem->findById($id);
+		if ($this->Menu->MenuItem->delete($id)) {
+			$this->Session->setFlash(__d('core', 'The menu item has been deleted.'), 'default', array('class' => 'success'));
+			$this->redirect(array('action' => 'edit', $menuItem['MenuItem']['menu_id']));
+		}
+	}
+
+	/**
 	 * Reorder items action
 	 * AJAX POST
 	 */
@@ -230,6 +272,54 @@ class MenusController extends BackendAppController {
 		} else {
 			throw new CakeException($this->invalidRequestMessage, 400);
 		}
+	}
+
+	/**
+	 * Get available parent items
+	 * rendered in a select for edit.
+	 * AJAX GET
+	 *
+	 * @param integer $id
+	 * @param integer $menuId
+	 * @throws CakeException
+	 */
+	public function get_parents($id = null, $menuId = null) {
+		if (!$this->request->is('ajax') || $id === null || $menuId === null ||
+			!$this->Menu->MenuItem->exists($id) ||
+			!$this->Menu->exists($menuId)
+		) {
+			throw new CakeException($this->invalidRequestMessage, 400);
+		}
+
+		$menuItem = $this->Menu->MenuItem->findById($id);
+		$setMenuId = false;
+		if ($menuItem['MenuItem']['menu_id'] === $menuId) {
+			$this->Menu->MenuItem->Behaviors->load('Core.EnhancedTree', array(
+				'scope' => array(
+					'MenuItem.menu_id' => $menuItem['MenuItem']['menu_id']
+				)
+			));
+			$parentItems = $this->Menu->MenuItem->generateTreeList(array(
+				'MenuItem.menu_id' => $menuItem['MenuItem']['menu_id'],
+				'MenuItem.id <>' => $menuItem['MenuItem']['id'],
+				'or' => array(
+					'MenuItem.lft <' => $menuItem['MenuItem']['lft'],
+					'MenuItem.lft >' => $menuItem['MenuItem']['rght']
+				)
+			), null, null, '_', null, 2);
+			$setMenuId = $menuId;
+		} else {
+			$parentItems = $this->Menu->MenuItem->generateTreeList(array(
+				'MenuItem.menu_id' => $menuId
+			), null, null, '_', null, 2);
+		}
+
+
+		$this->set(array(
+			'parentItems' => $parentItems,
+			'setMenuId' => $setMenuId
+		));
+		$this->render('get_parents');
 	}
 
 	/**

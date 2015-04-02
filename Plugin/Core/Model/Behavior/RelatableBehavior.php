@@ -116,11 +116,12 @@ class RelatableBehavior extends ModelBehavior {
 				if (!in_array($type, array('belongsTo', 'hasOne'))) {
 					continue;
 				}
-				foreach ($assocs as $related) {
-					if (!is_object($source)) {
-						$source = self::$_model[$source];
-					}
 
+				if (!is_object($source)) {
+					$source = self::$_model[$source];
+				}
+
+				foreach ($assocs as $related) {
 					$keys = array_keys(self::$_queries);
 					$match = array_values(preg_grep("/(^{$source->alias}___|___{$source->alias}___|___{$source->alias}$)/", $keys));
 
@@ -153,6 +154,7 @@ class RelatableBehavior extends ModelBehavior {
 					);
 					unset(self::$_queries[$match[0]]);
 				}
+
 				unset($types[$type]);
 			}
 		}
@@ -318,13 +320,21 @@ class RelatableBehavior extends ModelBehavior {
 		/** @var DboSource $db */
 		$db = $model->getDataSource();
 
+		if ('hasOne' === $type) {
+			$conditions = array(
+				"{$linkModel->alias}.{$model->{$type}[$linkModel->alias]['foreignKey']}" => $db->identifier("{$model->alias}.id")
+			);
+		} else {
+			$conditions = array(
+				"{$model->alias}.{$model->{$type}[$linkModel->alias]['foreignKey']}" => $db->identifier("{$linkModel->alias}.id")
+			);
+		}
+
 		$query['joins'][] = array(
 			'type' => 'LEFT',
 			'alias' => $linkModel->alias,
 			'table' => $joinTable,
-			'conditions' => array(
-				"{$model->alias}.{$model->{$type}[$linkModel->alias]['foreignKey']}" => $db->identifier("{$linkModel->alias}.id"),
-			)
+			'conditions' => $conditions
 		);
 
 		return $query;

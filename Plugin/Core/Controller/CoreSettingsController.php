@@ -94,21 +94,24 @@ class CoreSettingsController extends BackendAppController {
 			}
 		}
 
+		App::uses('Mime', 'Core.Lib');
+		$mime = Mime::getInstance();
+
 		$this->set(array(
 			'subDirectories' => $this->CoreMediaSetting->subDirectories,
 			'mimeTypes' => array(
-				'Image' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->imageFiles),
-				'Video' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->videoFiles),
-				'Audio' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->audioFiles),
-				'Document' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->documentFiles),
-				'Other' => $this->CoreMediaSetting->getMimeTypes($this->CoreMediaSetting->otherFiles),
+				(string) __d('core', 'Image') => $mime->getTypes('image', true),
+				(string) __d('core', 'Video') => $mime->getTypes('video', true),
+				(string) __d('core', 'Audio') => $mime->getTypes('audio', true),
+				(string) __d('core', 'Document') => $mime->getTypes('document', true),
+				(string) __d('core', 'Other') => $mime->getTypes('other', true),
 			),
 			'fileExtensions' => array(
-				'Image' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->imageFiles),
-				'Video' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->videoFiles),
-				'Audio' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->audioFiles),
-				'Document' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->documentFiles),
-				'Other' => $this->CoreMediaSetting->getExtensions($this->CoreMediaSetting->otherFiles),
+				(string) __d('core', 'Image') => $mime->getExtensions('image', true),
+				(string) __d('core', 'Video') => $mime->getExtensions('video', true),
+				(string) __d('core', 'Audio') => $mime->getExtensions('audio', true),
+				(string) __d('core', 'Document') => $mime->getExtensions('document', true),
+				(string) __d('core', 'Other') => $mime->getExtensions('other', true),
 			)
 		));
 	}

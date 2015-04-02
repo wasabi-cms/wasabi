@@ -4,11 +4,15 @@
  * @var array $languages
  */
 
-$this->CHtml->setTitle(__d('core', 'Languages'));
+$this->Html->setTitle(__d('core', 'Languages'));
 
-$this->CHtml->addAction(
-	$this->CHtml->backendLink('<i class="icon-plus"></i>', '/languages/add', array('class' => 'add', 'title' => __d('core', 'Add a new Language'), 'escape' => false))
+$this->Html->addAction(
+	$this->Html->backendLink('<i class="icon-plus"></i>', '/languages/add', array('class' => 'add', 'title' => __d('core', 'Add a new Language'), 'escape' => false))
 );
+
+$this->start('Core.requireJs');
+echo 'wasabi.core.languages();';
+$this->end();
 
 echo $this->Form->create('Language', array('url' => array('plugin' => 'core', 'controller' => 'languages', 'action' => 'sort')));
 ?>
@@ -38,7 +42,7 @@ echo $this->Form->create('Language', array('url' => array('plugin' => 'core', 'c
 				echo $lang['Language']['id'];
 				?>
 			</td>
-			<td><?php echo $this->CHtml->backendLink($lang['Language']['name'], '/languages/edit/' . $lang['Language']['id'], array('title' => __d('core', 'Edit this Language'))) ?></td>
+			<td><?php echo $this->Html->backendLink($lang['Language']['name'], '/languages/edit/' . $lang['Language']['id'], array('title' => __d('core', 'Edit this Language'))) ?></td>
 			<td><?php echo $lang['Language']['locale'] ?></td>
 			<td><?php echo $lang['Language']['iso'] ?></td>
 			<td><?php echo $lang['Language']['lang'] ?></td>
@@ -62,7 +66,7 @@ echo $this->Form->create('Language', array('url' => array('plugin' => 'core', 'c
 				<?php
 				echo $this->Html->link(__d('core', 'sort'), 'javascript:void(0)', array('title' => __d('core', 'Change the position of this Language'), 'class' => 'wicon-sort sort'));
 				if (!in_array($lang['Language']['id'], array(1, 2))) {
-					echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), '/languages/delete/' . $lang['Language']['id'], array(
+					echo $this->Html->backendConfirmationLink(__d('core', 'delete'), '/languages/delete/' . $lang['Language']['id'], array(
 						'title' => __d('core', 'Delete this Language'),
 						'class' => 'wicon-remove',
 						'confirm-message' => __d('core', 'Delete language <strong>%s</strong> ?', array($lang['Language']['name'])),

@@ -44,16 +44,18 @@ class UsersController extends BackendAppController {
 	public function __construct(CakeRequest $request, CakeResponse $response) {
 		parent::__construct($request, $response);
 
-		$this->components = Hash::merge($this->components, array(
-			'Security' => array(
-				'unlockedActions' => array(
-					'add',
-					'edit',
-					'delete',
-					'logout'
+		if ($this->request->params['action'] === 'login') {
+			$this->components = Hash::merge($this->components, array(
+				'Security' => array(
+					'unlockedActions' => array(
+						'add',
+						'edit',
+						'delete',
+						'logout'
+					)
 				)
-			)
-		));
+			));
+		}
 	}
 
 	/**
@@ -157,7 +159,7 @@ class UsersController extends BackendAppController {
 	public function login() {
 		$this->layout = 'Core.support';
 		$this->set(array(
-			'bodyCss' => 'support login',
+			'bodyCssClass' => array('support', 'login'),
 			'title_for_layout' => __d('core', 'Login')
 		));
 

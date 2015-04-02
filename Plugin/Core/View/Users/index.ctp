@@ -4,9 +4,9 @@
  * @var array $users
  */
 
-$this->CHtml->setTitle(__d('core', 'Users'));
-$this->CHtml->addAction(
-	$this->CHtml->backendLink('<i class="icon-plus"></i>', '/users/add', array('class' => 'add', 'title' => __d('core', 'Add a new User'), 'escape' => false))
+$this->Html->setTitle(__d('core', 'Users'));
+$this->Html->addAction(
+	$this->Html->backendLink('<i class="icon-plus"></i>', '/users/add', array('class' => 'add', 'title' => __d('core', 'Add a new User'), 'escape' => false))
 );
 ?>
 <table class="list valign-middle">
@@ -32,7 +32,7 @@ $this->CHtml->addAction(
 				if ($u['User']['id'] == 1 && Authenticator::get('User.id') != 1) {
 					echo $u['User']['username'];
 				} else {
-					echo $this->CHtml->backendLink($u['User']['username'], '/users/edit/' . $u['User']['id'], array('title' => __d('core', 'Edit this User')), true);
+					echo $this->Html->backendLink($u['User']['username'], '/users/edit/' . $u['User']['id'], array('title' => __d('core', 'Edit this User')), true);
 				}
 				?>
 			</td>
@@ -51,7 +51,7 @@ $this->CHtml->addAction(
 			<td class="actions center">
 				<?php
 				if ($u['User']['id'] != Authenticator::get('id') && $u['User']['id'] != 1) {
-					echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), '/users/delete/' . $u['User']['id'], array(
+					echo $this->Html->backendConfirmationLink(__d('core', 'delete'), '/users/delete/' . $u['User']['id'], array(
 						'class' => 'wicon-remove',
 						'title' => __d('core', 'Delete this User'),
 						'confirm-message' => __d('core', 'Delete user <strong>%s</strong> ?', array($u['User']['username'])),

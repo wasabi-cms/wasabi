@@ -34,7 +34,6 @@
  * In development mode, you need to click the flash message to continue.
  */
 	Configure::write('debug', 2);
-	Configure::write('Lessy.SKIP_ON_PRODUCTION', true);
 
 /**
  * Configure the Error handler used to handle errors for your application.  By default
@@ -242,13 +241,6 @@
 	}
 
 /**
- * Load wasabi settings
- */
-	if (file_exists(dirname(__FILE__) . DS . 'wasabi.php')) {
-		include dirname(__FILE__) . DS . 'wasabi.php';
-	}
-
-/**
  * Apply timestamps with the last modified time to static assets (js, css, images).
  * Will append a query string parameter containing the time the file was modified. This is
  * useful for invalidating browser caches.
@@ -286,7 +278,7 @@
  * Uncomment this line and correct your server timezone to fix
  * any date & time related errors.
  */
-	//date_default_timezone_set('UTC');
+	date_default_timezone_set('Europe/Berlin');
 
 /**
  * Pick the caching engine to use.  If APC is enabled use it.

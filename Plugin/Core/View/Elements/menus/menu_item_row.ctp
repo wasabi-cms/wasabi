@@ -10,7 +10,7 @@
 	<div class="span10">
 		<div class="row">
 			<div class="spacer">&nbsp;</div>
-			<?php echo $this->CHtml->backendLink($menuItem['name'], '/menus/edit_item/' . $menuItem['id']); ?>
+			<?php echo $this->Html->backendLink($menuItem['name'], '/menus/edit_item/' . $menuItem['id']); ?>
 		</div>
 	</div>
 	<div class="span2 center">active</div>
@@ -26,8 +26,13 @@
 		if ($level > 2) {
 			$options['class'] .= ' hide';
 		}
-		echo $this->CHtml->backendLink(__d('core', 'add parent'), '/menus/add_item/' . $this->request->data['Menu']['id'] . '/' . $menuItem['id'], $options);
-		echo $this->Html->link(__d('core', 'delete'), 'javascript:void(0)', array('title' => __d('core', 'Delete this Menu Item'), 'class' => 'wicon-remove remove-item'));
+		echo $this->Html->backendLink(__d('core', 'add parent'), '/menus/add_item/' . $this->request->data['Menu']['id'] . '/' . $menuItem['id'], $options);
+		echo $this->Html->backendConfirmationLink(__d('core', 'delete'), '/menus/delete_item/' . $menuItem['id'], array(
+				'class' => 'wicon-remove',
+				'title' => __d('cms', 'Delete this Menu Item'),
+				'confirm-title' => __d('cms', 'Delete Menu Item'),
+				'confirm-message' => __d('cms', 'Do you really want to delete the Menu Item <strong>%s</strong>?', array($menuItem['name']))
+			));
 		?>
 	</div>
 </div>

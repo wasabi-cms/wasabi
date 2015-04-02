@@ -19,6 +19,15 @@ class Route extends CoreAppModel {
 
 	const TYPE_DEFAULT_ROUTE  = 'Default Route';
 	const TYPE_REDIRECT_ROUTE = 'Redirect';
+	const PAGE_KEY = 'page_id';
+	const LANG_KEY = 'language_id';
+
+	public $belongsTo = array(
+		'CmsPage' => array(
+			'className' => 'Cms.CmsPage',
+			'foreignKey' => self::PAGE_KEY
+		)
+	);
 
 	public $validate = array(
 		'url' => array(
@@ -30,23 +39,35 @@ class Route extends CoreAppModel {
 	);
 
 	public function afterSave($created = null) {
-		// clear cache
-	}
-
-	public function afterDelete() {
-		// clear cache
+//		if ($created) {
+//			$route = $this->data['Route'];
+//		} else {
+//			$route = $this->findById($this->id);
+//			$route = $route['Route'];
+//		}
+//		$identifier = $route['model'] . '__' . $route['model_id'] . '__' . $route['language_id'];
+//		Cache::delete($identifier, 'core.routes');
 	}
 
 	public function getRouteTypes() {
-		$reflector = new ReflectionClass(__CLASS__);
-		$constants = $reflector->getConstants();
+		$routeTypes = array(
+			self::TYPE_DEFAULT_ROUTE,
+			self::TYPE_REDIRECT_ROUTE
+		);
+		$routeTypes = array_combine(array_values($routeTypes), $routeTypes);
+		return $routeTypes;
+	}
 
-		$types = array();
-		foreach ($constants as $type) {
-			$types[$type] = $type;
+	public static function instance() {
+		static $instance;
+		if (!$instance) {
+			$instance = ClassRegistry::init('Core.Route');
 		}
+		return $instance;
+	}
 
-		return $types;
+	public static function getCacheKey($route) {
+
 	}
 
 }

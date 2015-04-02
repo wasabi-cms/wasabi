@@ -74,6 +74,10 @@ class WasabiEventManager {
 				continue;
 			}
 			$method = $handler['method'];
+			if (!isset($handler['priority'])) {
+				trigger_error('Class ' . $class . '::' . $handler['method'] . ' needs a priority value.');
+				continue;
+			}
 			$priority = $handler['priority'];
 			$this->_addEventHandler($eventName, array(
 				'plugin' => $plugin,

@@ -13,3 +13,5 @@
 //= require jquery-blockThis/build/jquery.blockThis.min.js
 //= require twbs-dropdown/build/twbs.dropdown.min.js
 //= require jquery-multifileupload/build/jquery.multifileupload.min.js
+//= require jquery-multiselect/build/jquery.multiselect.min.js
+//= require jquery-toggleSelect/build/jquery.toggleSelect.min.js

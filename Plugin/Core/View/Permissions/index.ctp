@@ -4,10 +4,14 @@
  * @var array $plugins
  */
 
-$this->CHtml->setTitle(__d('core', 'Permissions'));
-$this->CHtml->addAction(
-	$this->CHtml->backendLink('<i class="icon-refresh"></i>', '/permissions/sync', array('title' => __d('core', 'Synchronize Permissions'), 'class' => 'reload', 'escape' => false))
+$this->Html->setTitle(__d('core', 'Permissions'));
+$this->Html->addAction(
+	$this->Html->backendLink('<i class="icon-refresh"></i>', '/permissions/sync', array('title' => __d('core', 'Synchronize Permissions'), 'class' => 'reload', 'escape' => false))
 );
+
+$this->start('Core.requireJs');
+echo 'wasabi.core.permissions();';
+$this->end();
 
 echo $this->Form->create('GroupPermission', array('url' => '/' . $this->backendPrefix . '/permissions/update'));
 ?>
@@ -57,7 +61,7 @@ echo $this->Form->create('GroupPermission', array('url' => '/' . $this->backendP
 				<?php $i++; endforeach; ?>
 			</td>
 			<td class="center valign-middle">
-				<button class="single-submit button small" type="submit"><span><?php echo __d('core', 'Update') ?></span></button>
+				<button class="single-submit button small blue" type="submit"><?php echo __d('core', 'Update') ?></button>
 			</td>
 		</tr>
 		<?php
@@ -71,8 +75,8 @@ echo $this->Form->create('GroupPermission', array('url' => '/' . $this->backendP
 </table>
 <div class="form-controls">
 	<?php
-	echo $this->Form->button('<span>' . __d('core', 'Update all') . '</span>', array('div' => false, 'class' => 'button'));
-	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/permissions');
+	echo $this->Form->button(__d('core', 'Update all'), array('div' => false, 'class' => 'button'));
+	echo $this->Html->backendLink(__d('core', 'Cancel'), '/permissions');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

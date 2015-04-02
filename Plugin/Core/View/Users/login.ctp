@@ -25,7 +25,7 @@ echo $this->Session->flash();
 	)); ?>
 </div>
 <div class="form-controls">
-	<?php echo $this->Form->button('<span>' . __d('core', 'Login') . '</span>', array('class' => 'button')); ?>
+	<?php echo $this->Form->button(__d('core', 'Login'), array('class' => 'button blue')); ?>
 </div>
 <?php echo $this->Form->end(); ?>
 <div class="bottom-links">

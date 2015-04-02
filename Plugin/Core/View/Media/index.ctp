@@ -1,219 +1,211 @@
 <?php
 /**
  * @var CoreView $this
+ * @var array $media
+ * @var string $author
+ * @var array $typeCounts
  */
 
-$this->CHtml->setTitle(__d('core', 'Media'));
+$this->Html->setTitle(__d('core', 'Media'));
+$this->Html->addAction(
+	$this->Html->backendLink('<i class="icon-plus"></i>', '/media/add', array('class' => 'add', 'title' => __d('core', 'Add Media'), 'escape' => false))
+);
+$this->Bulk->setTarget('media[]');
+$this->Bulk->addActions(array(
+	Router::url(array('action' => 'deleteBulk')) => __d('core', 'Delete Permanently')
+));
 
 ?>
-<div class="multi-fileupload" data-url="<?php echo Router::url(array('plugin' => 'core', 'controller' => 'media', 'action' => 'upload')) ?>">
-	<div class="multi-fileupload-box row">
-		<div class="multi-fileupload-button">
-			<span class="button fileinput-button">
-				<i class="icon-plus"></i>
-				<span><?php echo __d('core', 'Add Files') ?>...</span>
-				<input type="file" name="data[files][]" multiple>
-			</span>
-		</div>
-		<p class="multi-fileupload-description"><?php echo __d('core', 'Drag and drop a single or multiple files on this area to upload them.') ?></p>
+<div class="filters row">
+	<div class="span8">
+		<?php echo $this->Filter->activeFilters(array(
+			'author' => __d('core', 'Author: <strong>%s</strong>', array($author)),
+			'file' => __d('core', 'File: {{VALUE}}')
+		)); ?>
 	</div>
-	<ul class="multi-fileupload-controls">
-		<li><span class="button small start-upload disabled" data-action="upload-all"><i class="icon-upload-alt"></i><span><?php echo __d('core', 'Start Upload') ?></span></span></li>
-		<li><span class="button small cancel-upload disabled" data-action="cancel-all"><i class="icon-ban-circle"></i><span><?php echo __d('core', 'Cancel') ?></span></span></li>
-	</ul>
-	<div class="multi-fileupload-progress inactive">
-		<div class="progress">
-			<div class="progress-bar" style="width: 0%;"><span class="progress-text">0%</span></div>
-		</div>
-		<div class="progress-extended invisible"><?php echo __d('core', 'Waiting for upload...') ?></div>
+	<div class="span8">
+		<?php echo $this->Form->input('file', array('label' => false)); ?>
 	</div>
-	<table class="multi-fileupload-upload">
-		<tbody></tbody>
-	</table>
 </div>
-<?php $this->append('bottom_js'); ?>
-<script type="text/javascript">
-	$(function () {
-		'use strict';
-
-		$('.multi-fileupload')
-			.multifileupload({
-				url: $('.multi-fileupload').first().attr('data-url'),
-				extensions: ['jpg', 'jpeg', 'gif', 'bmp', 'png', 'pdf', 'psd', 'rar', 'zip', 'mp3', 'mp4'],
-				uploadAllBtn: '[data-action="upload-all"]',
-				cancelAllBtn: '[data-action="cancel-all"]',
-				forceIframeTransport: false,
-				previewImageWidth: 60,
-				previewImageHeight: 60
-			})
-			//-------------------- local events ---------------------------------------------------------------
-			.on('add.mfu', function(event, fs) {
-				var $uploadHolder = fs.mfu.$el.find('.multi-fileupload-upload').find('tbody');
-				var $filename = $('<td/>').addClass('t5 filename');
-
-				$.each(fs.files, function(index, file) {
-					if (index > 0) {
-						$filename.append('<br/>');
-					}
-
-					$filename.append(file.name);
-
-					if (!file.validates && file.errors.length > 0) {
-						$filename.append('<br/>').append(
-							$('<span/>').addClass('error-message').html(file.errors.join('<br/>'))
-						);
-					}
-				});
-
-				fs.$context = $('<tr/>');
-
-				if (!fs.validates) {
-					fs.$context.addClass('error');
-
-					if (fs.errors.length > 0) {
-						$filename.append('<br/>').append(
-							$('<span/>').addClass('error-message').html(fs.errors.join('<br/>'))
-						)
-					}
+<div class="row">
+	<?php #echo $this->Bulk->render('top'); ?>
+</div>
+<?php echo $this->Form->create('Media', array('url' => array('action' => 'bulk'))); ?>
+<?php echo $this->Filter->groups(array(
+	'EMPTY' => array(
+		'name' => __d('core', 'All'),
+		'title' => __d('core', 'Show all media'),
+		'count' => $typeCounts['all']
+	),
+	'type' => array(
+		'image' => array(
+			'name' => __d('core', 'Images'),
+			'title' => __d('core', 'Only show images'),
+			'count' => isset($typeCounts['image']) ? $typeCounts['image'] : 0
+		),
+		'video' => array(
+			'name' => __d('core', 'Videos'),
+			'title' => __d('core', 'Only show videos'),
+			'count' => isset($typeCounts['video']) ? $typeCounts['video'] : 0
+		),
+		'audio' => array(
+			'name' => __d('core', 'Audio'),
+			'title' => __d('core', 'Only show audio files'),
+			'count' => isset($typeCounts['audio']) ? $typeCounts['audio'] : 0
+		),
+		'document' => array(
+			'name' => __d('core', 'Documents'),
+			'title' => __d('core', 'Only show documents'),
+			'count' => isset($typeCounts['document']) ? $typeCounts['document'] : 0
+		),
+		'other' => array(
+			'name' => __d('core', 'Other'),
+			'title' => __d('core', 'Only show other files'),
+			'count' => isset($typeCounts['other']) ? $typeCounts['other'] : 0
+		),
+	),
+	'detached' => array(
+		'1' => array(
+			'name' => __d('core', 'Unattached'),
+			'title' => __d('core', 'Only show unattached media'),
+			'count' => 7
+		)
+	)
+)); ?>
+<table class="list valign-middle">
+	<thead>
+	<tr>
+		<th class="t35px tselect"><input type="checkbox" data-toggle="select" data-target="media[]"/></th>
+		<th class="t80px"><?php echo 'ID'; ?></th>
+		<th class="t80px"></th>
+		<th class="t7"><?php echo $this->Filter->sortLink(__d('core', 'File'), 'file') ?></th>
+		<th class="t2"><?php echo $this->Filter->sortLink(__d('core', 'Author'), 'author') ?></th>
+		<th class="t2"><?php echo __d('core', 'Attached To') ?></th>
+		<th class="t130px"><?php echo $this->Filter->sortLink(__d('core', 'Date'), 'date') ?></th>
+		<th class="t1 center"><?php echo __d('core', 'Actions') ?></th>
+	</tr>
+	</thead>
+	<tbody>
+	<?php
+	$i = 1;
+	foreach($media as $m) {
+		$class = ($i % 2 == 0) ? ' class="even"' : '';
+		if (CakeTime::isToday($m['Media']['created'])) {
+			$date = __d('core', 'Today') . ', ' . date('H:i', strtotime($m['Media']['created']));
+		} else if (CakeTime::wasYesterday($m['Media']['created'])) {
+			$date = __d('core', 'Yesterday') . ', ' . date('H:i', strtotime($m['Media']['created']));
+		} else {
+			$date = date('d.m.Y', strtotime($m['Media']['created']));
+		}
+		?>
+		<tr<?php echo $class ?>>
+			<td class="tselect"><input type="checkbox" name="media[]" value="<?php echo $m['Media']['id'] ?>"/></td>
+			<td><?php echo $m['Media']['id'] ?></td>
+			<td><?php
+				$link = preg_replace('/\\\/', '/', Router::url('/'. $m['Media']['upload_path']));
+				$class = '';
+				$descTop = false;
+				$desc = '';
+				switch ($m['Media']['type']) {
+					case 'image':
+						if ($m['Media']['mime_type'] !== 'image/svg+xml') {
+							$descTop = $this->Image->resize($m['Media'], array(
+								'resize_method' => 'crop',
+								'width' => 60,
+								'height' => 60
+							));
+						} else {
+							$class = 'other';
+							$desc = strtoupper($m['Media']['ext']);
+						}
+						break;
+					case 'video':
+						$class = 'video';
+						$descTop = '<span class="play"><i class="icon-play"></i></span>';
+						$desc = '<i class="icon-film"></i> ' . strtoupper($m['Media']['ext']);
+						break;
+					case 'audio':
+						$class = 'audio';
+						$descTop = '<span class="play"><i class="icon-play"></i></span>';
+						$desc = '<i class="icon-music"></i> ' . strtoupper($m['Media']['ext']);
+						break;
+					default:
+						switch ($m['Media']['mime_type']) {
+							case 'application/pdf':
+								$class = 'pdf';
+								$desc = strtoupper($m['Media']['ext']);
+								break;
+							case 'application/vnd.ms-excel':
+							case 'application/vnd.ms-excel.sheet.macroEnabled.12':
+							case 'application/vnd.ms-excel.template.macroEnabled.12':
+							case 'application/vnd.ms-excel.addin.macroEnabled.12':
+							case 'application/vnd.ms-excel.sheet.binary.macroEnabled.12':
+							case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+							case 'application/vnd.openxmlformats-officedocument.spreadsheetml.template':
+								$class = 'xls';
+								$desc = strtoupper($m['Media']['ext']);
+								break;
+							case 'application/vnd.ms-powerpoint':
+							case 'application/vnd.ms-powerpoint.addin.macroEnabled.12':
+							case 'application/vnd.ms-powerpoint.presentation.macroEnabled.12':
+							case 'application/vnd.ms-powerpoint.slideshow.macroEnabled.12':
+							case 'application/vnd.openxmlformats-officedocument.presentationml.template':
+							case 'application/vnd.openxmlformats-officedocument.presentationml.slideshow':
+							case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+								$class = 'ppt';
+								$desc = strtoupper($m['Media']['ext']);
+								break;
+							default:
+								$class = 'other';
+								$desc = strtoupper($m['Media']['ext']);
+								break;
+						}
+						break;
 				}
-
-				fs.$uploadBtn = $('<span/>')
-					.addClass('button small')
-					.append($('<i class="icon-upload-alt"/>'))
-					.append($('<span/>').text(wasabi.i18n('Start')));
-
-				fs.$cancelBtn = $('<span/>')
-					.addClass('button small')
-					.append($('<i class="icon-ban-circle"/>'))
-					.append($('<span/>').text(wasabi.i18n('Cancel')));
-
-				fs.$removeBtn = $('<span/>')
-					.addClass('button small')
-					.append($('<i class="icon-remove"/>'))
-					.append($('<span/>').text(wasabi.i18n('Remove')));
-
-				fs.$context
-					.append($('<td/>').addClass('t3 preview'))
-					.append($filename)
-					.append(
-						$('<td/>')
-							.addClass('t4 progress-single')
-							.append(
-								$('<span/>')
-									.addClass('size')
-									.html(fs.mfu.bytesToHuman(fs.size, 2))
-							)
-							.append(
-								$('<div/>')
-									.addClass('progress-strip')
-									.append($('<div/>').addClass('progress-bar'))
-							)
-					)
-					.append(
-						$('<td/>')
-							.addClass('t4 actions')
-							.append(fs.$uploadBtn)
-							.append(fs.$cancelBtn)
-							.append(fs.$removeBtn)
-					);
-
-				fs.$context.appendTo($uploadHolder);
-			})
-			.on('processed.mfu', function(event, file) {
-				if (file.$canvas !== undefined) {
-					file.fileSet.$context.find('.preview').append(file.$canvas);
-				} else if (file.$audio !== undefined) {
-					file.fileSet.$context.find('.preview').append(file.$audio);
-				} else if (file.$video !== undefined) {
-					file.fileSet.$context.find('.preview').append(file.$video);
-				} else {
-					file.fileSet.$context.find('.preview').append(
-						$('<div/>')
-							.css({
-								width: file.fileSet.mfu.options.previewImageWidth,
-								height: file.fileSet.mfu.options.previewImageHeight,
-								backgroundColor: '#ccc',
-								lineHeight: file.fileSet.mfu.options.previewImageHeight + 'px',
-								textAlign: 'center'
-							})
-							.html(file.name.split('.').pop())
-					);
-				}
-			})
-			.on('remove-local.mfu', function(event, fs) {
-				fs.$context.find('td').wrapInner('<div style="overflow: hidden;"/>').parent().find('td > div').slideUp(200, function() {
-					fs.$context.remove();
-				});
-			})
-			.on('progress-local.mfu', function(event, percent, fs) {
-				fs.$context.find('.progress-bar').first().css({
-					width: percent + '%'
-				});
-			})
-			.on('cancel-local.mfu', function(event, fs) {
-				fs.$context.find('.progress-bar').first().css({
-					width: 0 + 'px'
-				});
-			})
-			.on('complete-local.mfu', function(event, fs) {
-				fs.$context.addClass('success').find('.progress-bar').first().css({
-					width: 100 + '%'
-				});
-				setTimeout(function() {
-					fs.$context.find('td').wrapInner('<div/>').parent().find('td > div').slideUp(200, function() {
-						fs.$context.remove();
-					});
-				}, 2000);
-			})
-			//-------------------- global events ---------------------------------------------------------------
-			.on('start.mfu', function(event, mfu) {
-				mfu.$el.find('.multi-fileupload-progress')
-					.removeClass('inactive')
-					.find('.progress-extended')
-					.removeClass('invisible');
-			})
-			.on('progress.mfu', function(event, progress, mfu) {
-				var text = '';
-
-				mfu.$el.find('.multi-fileupload-progress')
-					.find('.progress-bar').first()
-					.css({
-						width: progress.percent + '%'
-					})
-					.find('.progress-text').text(progress.percent + '%');
-
-				text += wasabi.i18n('Uploaded {0} / {1} Files', [
-					progress.filesLoaded,
-					progress.filesTotal
-				]) + ' | ';
-
-				if (mfu.bitRateTimer !== undefined) {
-					text += mfu.bitRateToHuman(progress.bitrate, 2) + ' | ';
-				}
-
-				if (progress.total !== undefined) {
-					text += mfu.bytesToHuman(progress.loaded, 2) + ' / ' +
-						mfu.bytesToHuman(progress.total, 2) + ' | ';
-				}
-
-				text += progress.percent + '%';
-
-				mfu.$el.find('.multi-fileupload-progress')
-					.find('.progress-extended').text(text);
-			})
-			.on('error.mfu', function(event, errors, fs) {
-				fs.$context.addClass('error');
-				if (errors && errors.length > 0) {
-					var $filename = fs.$context.find('.filename');
-					$.each(errors, function(index, error) {
-						$filename
-							.append('<br/>')
-							.append(
-								$('<span/>').addClass('error-message').html(error)
-							);
-					});
-				}
-			});
-	});
-</script>
-<?php $this->end(); ?>
+				echo '<a href="' . $link . '" class="' . $class . '" target="_blank">'
+					. (($descTop !== false) ? $descTop : '')
+					. (($desc !== '') ? '<span class="desc">' . $desc . '</span>' : '')
+					. '</a>';
+			?></td>
+			<td><?php echo $this->Html->backendLink($m['Media']['fullname'], '/media/edit/' . $m['Media']['id']) ?></td>
+			<td><?php echo $this->Filter->link($m['User']['username'], array('author' => $m['User']['id']), false, array('title' => __d('core', 'Show all media uploaded by %s', array($m['User']['username'])))) ?></td>
+			<td><?php echo '(unattached)' ?></td>
+			<td><?php echo $date ?></td>
+			<td class="actions center">
+				<?php
+				echo $this->Html->backendConfirmationLink(__d('core', 'delete'), '/media/delete/' . $m['Media']['id'], array(
+					'class' => 'wicon-remove',
+					'title' => __d('core', 'Delete this File'),
+					'confirm-message' => __d('core', 'Delete file <strong>%s</strong> ?', array($m['Media']['fullname'])),
+					'confirm-title' => __d('core', 'Deletion Confirmation')
+				));
+				?>
+			</td>
+		</tr>
+		<?php
+		$i++;
+	}
+	?>
+	</tbody>
+	<tfoot>
+	<tr>
+		<th class="tselect"><input type="checkbox" data-toggle="select-secondary" data-target="media[]"/></th>
+		<th><?php echo 'ID'; ?></th>
+		<th></th>
+		<th><?php echo $this->Filter->sortLink(__d('core', 'File'), 'file') ?></th>
+		<th><?php echo $this->Filter->sortLink(__d('core', 'Author'), 'author') ?></th>
+		<th><?php echo __d('core', 'Attached To') ?></th>
+		<th><?php echo $this->Filter->sortLink(__d('core', 'Date'), 'date') ?></th>
+		<th class="center"><?php echo __d('core', 'Actions') ?></th>
+	</tr>
+	</tfoot>
+</table>
+<?php echo $this->Form->end(); ?>
+<div class="row">
+	<div class="span8">
+		<?php echo $this->Bulk->render('bottom'); ?>
+	</div>
+	<div class="span8">
+		<?php echo $this->Filter->pagination() ?>
+	</div>
+</div>

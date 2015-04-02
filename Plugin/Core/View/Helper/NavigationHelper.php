@@ -16,7 +16,7 @@
 App::uses('AppHelper', 'View/Helper');
 
 /**
- * @property CHtmlHelper $CHtml
+ * @property CoreHtmlHelper $Html
  */
 class NavigationHelper extends AppHelper {
 
@@ -26,9 +26,8 @@ class NavigationHelper extends AppHelper {
 	 * @var array
 	 */
 	public $helpers = array(
-		'Html',
-		'CHtml' => array(
-			'className' => 'Core.CHtml'
+		'Html' => array(
+			'className' => 'Core.CoreHtml'
 		)
 	);
 
@@ -47,7 +46,7 @@ class NavigationHelper extends AppHelper {
 				$class = ' class="' . $activeClass . '"';
 			}
 			$out .= '<li' . $class . '>';
-			$out .= $this->CHtml->backendLink($item['name'], $item['url']);
+			$out .= $this->Html->backendLink($item['name'], $item['url']);
 			$out .= '</li>';
 		}
 		return $out;
@@ -70,7 +69,7 @@ class NavigationHelper extends AppHelper {
 					$item['name'] = '<i class="' . $item['icon'] . '"></i><span class="item-name">' . $item['name'] . '</span>';
 					$options['escape'] = false;
 				}
-				$out .= $this->CHtml->backendLink($item['name'], $item['url'], $options);
+				$out .= $this->Html->backendLink($item['name'], $item['url'], $options);
 			} else {
 				$out .= '<a href="javascript:void(0)">';
 				if (isset($item['icon'])) {
@@ -78,7 +77,7 @@ class NavigationHelper extends AppHelper {
 				}
 				$out .= '<span class="item-name">' . $item['name'] . '</span>';
 				if (isset($item['children']) && !empty($item['children'])) {
-					$out .= ' <i class="arrow"></i>';
+					$out .= ' <i class="icon-arrow"></i>';
 				}
 				$out .= '</a>';
 			}

@@ -4,7 +4,7 @@
  * @var array $plugins
  */
 
-$this->CHtml->setTitle(__d('core', 'Plugins'));
+$this->Html->setTitle(__d('core', 'Plugins'));
 ?>
 <table class="list">
 	<thead>
@@ -87,26 +87,26 @@ $this->CHtml->setTitle(__d('core', 'Plugins'));
 			<td>
 				<?php
 				if (!$p['Plugin']['installed']) {
-					echo $this->CHtml->backendConfirmationLink(__d('core', 'install'), '/plugins/install/' . $p['Plugin']['name'], array(
+					echo $this->Html->backendConfirmationLink(__d('core', 'install'), '/plugins/install/' . $p['Plugin']['name'], array(
 						'title' => __d('core', 'Install this Plugin'),
 						'confirm-message' => __d('core', 'Install <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
 						'confirm-title' => __d('core', 'Confirm Installation')
 					));
 				} else {
 					if (!$p['Plugin']['active']) {
-						echo $this->CHtml->backendConfirmationLink(__d('core', 'activate'), '/plugins/activate/' . $p['Plugin']['name'], array(
+						echo $this->Html->backendConfirmationLink(__d('core', 'activate'), '/plugins/activate/' . $p['Plugin']['name'], array(
 							'title' => __d('core', 'Activate this Plugin'),
 							'confirm-message' => __d('core', 'Activate <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
 							'confirm-title' => __d('core', 'Confirm Activation')
 						));
 						echo '<br>';
-						echo $this->CHtml->backendConfirmationLink(__d('core', 'uninstall'), '/plugins/uninstall/' . $p['Plugin']['name'], array(
+						echo $this->Html->backendConfirmationLink(__d('core', 'uninstall'), '/plugins/uninstall/' . $p['Plugin']['name'], array(
 							'title' => __d('core', 'Uninstall this Plugin'),
 							'confirm-message' => __d('core', 'Uninstall <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
 							'confirm-title' => __d('core', 'Confirm Uninstallation')
 						));
 					} else {
-						echo $this->CHtml->backendConfirmationLink(__d('core', 'deactivate'), '/plugins/deactivate/' . $p['Plugin']['name'], array(
+						echo $this->Html->backendConfirmationLink(__d('core', 'deactivate'), '/plugins/deactivate/' . $p['Plugin']['name'], array(
 							'title' => __d('core', 'Deactivate this Plugin'),
 							'confirm-message' => __d('core', 'Deactivate <strong>%s</strong> plugin?', array($p['Plugin']['name'])),
 							'confirm-title' => __d('core', 'Confirm Deactivation')

@@ -18,7 +18,7 @@
 	</div>
 	<h2><?php echo __d('core', 'What’s next?') ?></h2>
 	<ul class="whats-next">
-		<li><?php echo $this->CHtml->backendLink(__d('core', 'Login to the backend'), '/login'); ?><br><small>(<?php echo __d('core', 'default username: <strong>%s</strong>, default password: <strong>%s</strong>', array('admin', 'admin')); ?>)</small></li>
+		<li><?php echo $this->Html->backendLink(__d('core', 'Login to the backend'), '/login'); ?><br><small>(<?php echo __d('core', 'default username: <strong>%s</strong>, default password: <strong>%s</strong>', array('admin', 'admin')); ?>)</small></li>
 		<li><?php echo __d('core', 'Change the password of the admin account.'); ?></li>
 		<li><?php echo __d('core', 'Install additional <a href="https://github.com/Wasabi-Plugins" target="_blank">plugins</a>'); ?>.</li>
 	</ul>

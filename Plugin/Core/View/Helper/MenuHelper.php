@@ -14,44 +14,116 @@
  */
 
 App::uses('AppHelper', 'View/Helper');
+App::uses('Hash', 'Utility');
 
 /**
  * @property HtmlHelper $Html
- * @property FormHelper $Form
+ * @property CoreView $_View
  */
+
 class MenuHelper extends AppHelper {
 
 	/**
-	 * Helpers used by this helper
+	 * Helpers used by this helper.
 	 *
 	 * @var array
 	 */
 	public $helpers = array(
-		'Html',
-		'Form'
+		'Html'
 	);
 
-	public function renderTree($menuItems, $level = null) {
+	public function render($menuId = null, $options = array()) {
+		if ($menuId === null) {
+			return '';
+		}
+		$defaults = array(
+			'maxDepth' => 2,
+			'separator' => 'li',
+			'path' => array(),
+			'hasChildrenClass' => 'has-children'
+		);
+		$options = array_merge($defaults, $options);
+		App::uses('MenuItem', 'Core.Model');
+		$menuItems = MenuItem::instance()->find('publishedThreaded', array('menu' => $menuId));
+		return $this->_renderTreeLevel($menuItems, $options);
+	}
+
+	protected function _renderTreeLevel($menuItems, $options, $depth = 0, &$subActiveFound = false) {
 		$output = '';
 
-		$depth = ($level !== null) ? $level : 1;
-
-		foreach ($menuItems as $key => $menuItem) {
-			$classes =  array('menu-item');
-			$menuItemRow = $this->_View->element('menus/menu_item_row', array(
-				'menuItem' => $menuItem['MenuItem'],
-				'level' => $level
-			));
-
-			if (!empty($menuItem['children'])) {
-				$menuItemRow .= '<ul>' . $this->renderTree($menuItem['children'], $depth + 1) . '</ul>';
-			} else {
-				$classes[] = 'no-children';
+		foreach ($menuItems as $menuItem) {
+			$classes = [];
+			$content = $this->_renderMenuLink($menuItem['MenuItem']);
+			if ($this->_isActive($menuItem['MenuItem'])) {
+				$classes[] = 'active';
+				$subActiveFound = true;
 			}
-			$output .= '<li class="' . join(' ', $classes) . '" data-menu-item-id="' . $menuItem['MenuItem']['id'] . '">' . $menuItemRow . '</li>';
+
+			if (!empty($menuItem['children']) && ($depth + 1 <= $options['maxDepth'])) {
+				$sub = false;
+				$classes[] = $options['hasChildrenClass'];
+
+				$content .= '<ul>';
+				$content .= $this->_renderTreeLevel($menuItem['children'], $options, $depth + 1, $sub);
+				$content .= '</ul>';
+
+				if ($sub === true) {
+					$classes[] = 'active';
+					$subActiveFound = true;
+				}
+			}
+
+			if (!empty($classes)) {
+				$output .= '<li class="' . join(' ', array_unique($classes)) . '">';
+			} else {
+				$output .= '<li>';
+			}
+			$output .= $content;
+			$output .= '</li>';
 		}
 
 		return $output;
 	}
 
+	protected function _renderMenuLink($menuItem) {
+		$output = '';
+
+		switch ($menuItem['type']) {
+
+			case MenuItem::TYPE_EXTERNAL_LINK:
+				$output .= '<a href="' . $menuItem['external_link'] . '" title="' . $menuItem['name'] . '">' . $menuItem['name'] . '</a>';
+				break;
+
+			default:
+				$output .= $this->Html->link($menuItem['name'], array(
+					'page_id' => $menuItem['foreign_id'],
+					'language_id' => Configure::read('Wasabi.content_language.id')
+//					'plugin' => $menuItem['plugin'],
+//					'controller' => $menuItem['controller'],
+//					'action' => $menuItem['action'],
+//					$menuItem['foreign_id'],
+//					Configure::read('Wasabi.content_language.id')
+				), array('title' => $menuItem['name']));
+				break;
+		}
+
+		return $output;
+	}
+
+	protected function _isActive($menuItem) {
+		switch ($menuItem['type']) {
+
+			case MenuItem::TYPE_OBJECT:
+				if ($menuItem['foreign_model'] !== '') {
+					list($plugin, $model) = pluginSplit($menuItem['foreign_model']);
+					App::uses($model, $plugin . '.Model');
+					if (method_exists($model, 'isActive')) {
+						return $model::isActive($menuItem, $this->request->params);
+					}
+				}
+				break;
+
+		}
+		return false;
+	}
 }

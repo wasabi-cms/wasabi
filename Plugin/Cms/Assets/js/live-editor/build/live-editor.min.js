@@ -1,0 +1,2 @@
+/** live-editor - v0.0.1 */
+!function(a){"use strict";a(function(){var b=a("#content");b.css({height:a("body").innerHeight()}).spin("large");var c=a("#live-edit-iframe");c.load(function(){b.spin(!1).css("height",""),c.removeAttr("data-src").show();var d,e=function(){c.css("height",c.contents().innerHeight())};e(),a(window).on("resize",function(){clearTimeout(d),d=setTimeout(e,100)})}),c.attr("src",c.attr("data-src"))})}(jQuery);

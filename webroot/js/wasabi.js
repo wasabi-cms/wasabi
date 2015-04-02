@@ -1,0 +1,1 @@
+define(["Backbone","common/views/BaseViewFactory"],function(e,n){var i=window.wasabi={};return i.eventBus=_.extend({},e.Events),i.viewFactory=new n(i.eventBus),i.views={Core:{}},i});

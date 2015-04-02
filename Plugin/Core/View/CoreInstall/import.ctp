@@ -21,6 +21,6 @@
 </div>
 <?php echo $this->Form->create('CoreInstall', array('url' => array('plugin' => 'core', 'controller' => 'core_install', 'action' => 'import'))); ?>
 <div class="form-controls">
-	<?php echo $this->Form->button('<span>' . __d('core', 'Start Import') . '</span>', array('div' => false, 'class' => 'button green primary')); ?>
+	<?php echo $this->Form->button(__d('core', 'Start Import'), array('div' => false, 'class' => 'button')); ?>
 </div>
 <?php echo $this->Form->end(); ?>

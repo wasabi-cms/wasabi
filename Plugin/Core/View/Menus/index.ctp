@@ -4,9 +4,9 @@
  * @var array $menus
  */
 
-$this->CHtml->setTitle(__d('core', 'Menus'));
-$this->CHtml->addAction(
-	$this->CHtml->backendLink('<i class="icon-plus"></i>', 'menus/add', array('class' => 'add', 'title' => __d('core', 'Add a new Menu'), 'escape' => false))
+$this->Html->setTitle(__d('core', 'Menus'));
+$this->Html->addAction(
+	$this->Html->backendLink('<i class="icon-plus"></i>', 'menus/add', array('class' => 'add', 'title' => __d('core', 'Add a new Menu'), 'escape' => false))
 );
 ?>
 <table class="list">
@@ -26,11 +26,11 @@ $this->CHtml->addAction(
 		?>
 		<tr<?php echo $class ?>>
 			<td class="right"><?php echo $m['Menu']['id'] ?></td>
-			<td><?php echo $this->CHtml->backendLink($m['Menu']['name'], 'menus/edit/' . $m['Menu']['id'], array('title' => __d('core', 'Edit this Menu'))) ?></td>
+			<td><?php echo $this->Html->backendLink($m['Menu']['name'], 'menus/edit/' . $m['Menu']['id'], array('title' => __d('core', 'Edit this Menu'))) ?></td>
 			<td><?php echo $m['Menu']['menu_item_count'] ?></td>
 			<td class="actions center">
 				<?php
-				echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), 'menus/delete/' . $m['Menu']['id'], array(
+				echo $this->Html->backendConfirmationLink(__d('core', 'delete'), 'menus/delete/' . $m['Menu']['id'], array(
 					'title' => __d('core', 'Delete this Menu'),
 					'class' => 'wicon-remove',
 					'confirm-message' => __d('core', 'Do you really want to delete menu <strong>%s</strong> ?', array($m['Menu']['name'])),

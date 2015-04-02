@@ -6,16 +6,20 @@ App::uses('MenuItem', 'Core.Model');
  */
 
 if ($this->params['action'] === 'add') {
-	$this->CHtml->setTitle(__d('core', 'Add a new Menu'));
+	$this->Html->setTitle(__d('core', 'Add a new Menu'));
 } else {
-	$this->CHtml->setTitle(__d('core', 'Edit Menu'));
-	$this->CHtml->setSubTitle($this->data['Menu']['name']);
+	$this->Html->setTitle(__d('core', 'Edit Menu'));
+	$this->Html->setSubTitle($this->data['Menu']['name']);
 }
 
-echo $this->Form->create('Menu', array('novalidate' => true));
+echo $this->Form->create('Menu', array('class' => 'no-top-section', 'novalidate' => true));
 
 if ($this->params['action'] == 'edit') {
 	echo $this->Form->input('id', array('type' => 'hidden'));
+
+	$this->start('Core.requireJs');
+	echo 'wasabi.core.menuItems();';
+	$this->end();
 }
 
 echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
@@ -31,17 +35,17 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 				<div class="span2 center"><?php echo __d('core', 'Sort') ?></div>
 				<div class="span2 center"><?php echo __d('core', 'Actions') ?></div>
 			</div>
-			<ul id="menu-items" class="list-content" data-reorder-url="<?php echo $this->CHtml->getBackendUrl('/menus/reorder_items', true, 'false') ?>">
+			<ul id="menu-items" class="list-content" data-reorder-url="<?php echo $this->Html->getBackendUrl('/menus/reorder_items', true, 'false') ?>">
 				<?php
 				if ($menuItems) {
-					echo $this->Menu->renderTree($menuItems);
+					echo $this->CMenu->renderMenuTree($menuItems);
 				} else {
 					echo '<li class="no-items center">' . __d('core', 'This Menu has no items yet.') . '</li>';
 				}
 				?>
 			</ul>
 			<div class="bottom-links">
-				<?php echo $this->Chtml->backendLink(__d('core', 'Add a new Menu Item'), '/menus/add_item/' . $this->data['Menu']['id']) ?>
+				<?php echo $this->Html->backendLink(__d('core', 'Add a new Menu Item'), '/menus/add_item/' . $this->data['Menu']['id']) ?>
 			</div>
 			<?php else: ?>
 			<?php echo __d('core', 'You can start adding Menu Items after you created the Menu.') ?>
@@ -50,8 +54,8 @@ echo $this->CForm->input('name', array('label' => __d('core', 'Menu Name')));
 	</div>
 	<div class="form-controls">
 		<?php
-		echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
-		echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/menus');
+		echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button'));
+		echo $this->Html->backendLink(__d('core', 'Cancel'), '/menus');
 		?>
 	</div>
 <?php echo $this->Form->end(); ?>

@@ -15,3 +15,6 @@ tmp/
 .DS_Store
 
 tags
+
+# Ignore node packages
+.node_modules

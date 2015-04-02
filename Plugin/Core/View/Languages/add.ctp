@@ -4,16 +4,16 @@
  */
 
 if ($this->params['action'] === 'add') {
-	$this->CHtml->setTitle(__d('core', 'Add a new Language'));
+	$this->Html->setTitle(__d('core', 'Add a new Language'));
 } else {
-	$this->CHtml->setTitle(__d('core', 'Edit Language'));
-	$this->CHtml->setSubTitle($this->data['Language']['name']);
+	$this->Html->setTitle(__d('core', 'Edit Language'));
+	$this->Html->setSubTitle($this->data['Language']['name']);
 }
 ?>
 <div class="row">
 	<div class="span12">
 		<?php
-		echo $this->Form->create('Language');
+		echo $this->Form->create('Language', array('class' => 'no-top-section'));
 
 		if ($this->params['action'] == 'edit') {
 			echo $this->Form->input('id', array('type' => 'hidden'));
@@ -28,13 +28,13 @@ if ($this->params['action'] === 'add') {
 		?>
 		<div class="form-controls">
 			<?php
-			echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
-			echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/languages');
+			echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button'));
+			echo $this->Html->backendLink(__d('core', 'Cancel'), '/languages');
 			?>
 		</div>
 		<?php echo $this->Form->end(); ?>
 	</div>
-	<div class="span4">
+	<div class="span4 typography">
 		<h3><?php echo __d('core', 'Language FAQ') ?></h3>
 		<p>Languages are used for both, the backend you are currently looking at and the frontend of your website.</p>
 		<p>You can individually decide if a language should be available at the frontend and/or backend.</p>

@@ -1,0 +1,1 @@
+define([],function(){function n(n){"function"==typeof n.get&&(n=n.get(0));var t=[];return{on:function(e,o,r){n.addEventListener(e,o,!1),t.push({args:[e,o],context:r})},off:function(e,o,r){t=t.filter(function(t){return t.context===r?(n.removeEventListener.apply(n,t.args),!0):void 0})}}}return n});

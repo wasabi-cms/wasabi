@@ -1,0 +1,179 @@
+/**
+ * General Mixins for Backend wide usage.
+ *
+ * LESS
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the below copyright notice.
+ *
+ * @copyright     Copyright 2013, Frank Förster (http://frankfoerster.com)
+ * @link          http://github.com/frankfoerster/wasabi
+ * @package       Wasabi
+ * @subpackage    Wasabi.Plugin.Core.webroot.less
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+.list.routes,
+.list.layout-attributes {
+  margin-top: 2px;
+}
+.list-header small.collection,
+#pages small.collection,
+.list-header small.collection-item,
+#pages small.collection-item {
+  font-weight: 600;
+  margin-right: 1px;
+}
+.list-header small.layout,
+#pages small.layout {
+  color: #999;
+}
+.list-header small.collection,
+#pages small.collection {
+  color: #298c21;
+}
+.list-header small.collection-item,
+#pages small.collection-item {
+  color: #a929cf;
+}
+.list-header small.layout {
+  margin-left: 1px;
+  font-weight: 400;
+}
+#pages {
+  line-height: 48px;
+}
+#pages [class^="wicon-"],
+#pages [class*=" wicon-"] {
+  position: relative;
+  top: 5px;
+}
+#pages .expander {
+  top: 15px;
+  cursor: pointer;
+  position: absolute;
+  left: 8px;
+}
+#pages .wicon-page {
+  margin-left: 0;
+  width: 16px;
+  height: 22px;
+  position: absolute;
+  top: 8px;
+  left: 25px;
+  background-position: -123px -3px;
+}
+#pages .no-children > div .expander {
+  visibility: hidden;
+}
+#pages .page-meta {
+  line-height: 1.5em;
+}
+#pages .page-info {
+  padding-left: 48px;
+  position: relative;
+  line-height: 1.4em;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+#pages .page-info a {
+  display: inline-block;
+  margin-top: 4px;
+}
+#pages ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#pages ul .page-info {
+  margin-left: 24px;
+}
+#pages ul .sortable-placeholder {
+  border-left-width: 48px;
+}
+#pages ul ul .sortable-placeholder {
+  border-left-width: 72px;
+}
+#pages ul ul .page-info {
+  margin-left: 48px;
+}
+#pages ul ul ul .sortable-placeholder {
+  border-left-width: 96px;
+}
+#pages ul ul ul .page-info {
+  margin-left: 72px;
+}
+#pages ul ul ul ul .sortable-placeholder {
+  border-left-width: 120px;
+}
+#pages ul ul ul ul .page-info {
+  margin-left: 96px;
+}
+#pages ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 144px;
+}
+#pages ul ul ul ul ul .page-info {
+  margin-left: 120px;
+}
+#pages ul ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 168px;
+}
+#pages ul ul ul ul ul ul .page-info {
+  margin-left: 144px;
+}
+#pages ul ul ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 192px;
+}
+#pages ul ul ul ul ul ul ul .page-info {
+  margin-left: 168px;
+}
+#pages ul ul ul ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 216px;
+}
+#pages ul ul ul ul ul ul ul ul .page-info {
+  margin-left: 192px;
+}
+#pages ul ul ul ul ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 240px;
+}
+#pages ul ul ul ul ul ul ul ul ul .page-info {
+  margin-left: 216px;
+}
+#pages ul ul ul ul ul ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 264px;
+}
+#pages ul ul ul ul ul ul ul ul ul ul .page-info {
+  margin-left: 240px;
+}
+#pages ul ul ul ul ul ul ul ul ul ul ul .sortable-placeholder {
+  border-left-width: 288px;
+}
+#pages ul ul ul ul ul ul ul ul ul ul ul .page-info {
+  margin-left: 264px;
+}
+#pages .ui-sortable-helper {
+  border-bottom: none;
+}
+#pages .sortable-placeholder {
+  border-left: 0px solid #ddd;
+  border-bottom: 1px dotted #ddd;
+}
+.page-form .collection,
+.page-form .collection-item {
+  display: none;
+}
+.page-form .collection.active,
+.page-form .collection-item.active {
+  display: table;
+}
+table.layout-attributes tr > td label {
+  display: inline !important;
+}
+table.layout-attributes tr > td > label {
+  display: block !important;
+  padding-top: 5px;
+}
+table.layout-attributes tr > td div.input.radio,
+table.layout-attributes tr > td div.input.checkbox {
+  padding-top: 5px;
+}
+/*# sourceMappingURL=data:application/json,%7B%22version%22%3A3%2C%22sources%22%3A%5B%22Plugin%2FCms%2FAssets%2Fless%2Fcms.less%22%5D%2C%22names%22%3A%5B%5D%2C%22mappings%22%3A%22%3B%3B%3B%3B%3B%3B%3B%3B%3B%3B%3B%3B%3B%3BAAgBA%2CKAAK%3BAAAS%2CKAAK%3BEACjB%2CeAAA%3B%3BAAKE%2CYADF%2CMACG%3BAAAD%2CMADF%2CMACG%3BAAAa%2CYADhB%2CMACiB%3BAAAD%2CMADhB%2CMACiB%3BEACb%2CgBAAA%3BEACA%2CiBAAA%3B%3BAAJN%2CYAQE%2CMAAK%3BAARO%2CMAQZ%2CMAAK%3BEACH%2CWAAA%3B%3BAATJ%2CYAYE%2CMAAK%3BAAZO%2CMAYZ%2CMAAK%3BEAEH%2CcAAA%3B%3BAAdJ%2CYAiBE%2CMAAK%3BAAjBO%2CMAiBZ%2CMAAK%3BEACH%2CcAAA%3B%3BAAIJ%2CYAAa%2CMAAK%3BEAChB%2CgBAAA%3BEACA%2CgBAAA%3B%3BAAGF%3BEACE%2CiBAAA%3B%3BAADF%2CMAGE%3BAAHF%2CMAGqB%3BEACjB%2CkBAAA%3BEACA%2CQAAA%3B%3BAALJ%2CMAQE%3BEACE%2CSAAA%3BEACA%2CeAAA%3BEACA%2CkBAAA%3BEACA%2CSAAA%3B%3BAAZJ%2CMAeE%3BEACE%2CcAAA%3BEACA%2CWAAA%3BEACA%2CYAAA%3BEACA%2CkBAAA%3BEACA%2CQAAA%3BEACA%2CUAAA%3BEACA%2CgCAAA%3B%3BAAIA%2CMADF%2CaACI%2CMACA%3BEACE%2CkBAAA%3B%3BAA5BR%2CMAiCE%3BEACE%2CkBAAA%3B%3BAAlCJ%2CMAqCE%3BEACE%2CkBAAA%3BEACA%2CkBAAA%3BEACA%2CkBAAA%3BEACA%2CeAAA%3BEACA%2CkBAAA%3B%3BAA1CJ%2CMAqCE%2CWAOE%3BEACE%2CqBAAA%3BEACA%2CeAAA%3B%3BAA9CN%2CMAkDE%3BEAEE%2CSAAA%3BEACA%2CUAAA%3BEACA%2CgBAAA%3B%3BAAtDJ%2CMAkDE%2CGAaE%3BEACE%2CiBAAA%3B%3BAAhEN%2CMAkDE%2CGAiBE%3BEACE%2CuBAAA%3B%3BAApEN%2CMAkDE%2CGAqBE%2CGA%2FGF%3BEACE%2CuBAAA%3B%3BAAuCJ%2CMAkDE%2CGAqBE%2CGA3GF%3BEACE%2CiBAAA%3B%3BAAmCJ%2CMAkDE%2CGAyBE%2CGAAG%2CGAnHL%3BEACE%2CuBAAA%3B%3BAAuCJ%2CMAkDE%2CGAyBE%2CGAAG%2CGA%2FGL%3BEACE%2CiBAAA%3B%3BAAmCJ%2CMAkDE%2CGA6BE%2CGAAG%2CGAAG%2CGAvHR%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGA6BE%2CGAAG%2CGAAG%2CGAnHR%3BEACE%2CiBAAA%3B%3BAAmCJ%2CMAkDE%2CGAiCE%2CGAAG%2CGAAG%2CGAAG%2CGA3HX%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGAiCE%2CGAAG%2CGAAG%2CGAAG%2CGAvHX%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAkDE%2CGAqCE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA%2FHd%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGAqCE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA3Hd%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAkDE%2CGAyCE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAnIjB%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGAyCE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA%2FHjB%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAkDE%2CGA6CE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAvIpB%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGA6CE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAnIpB%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAkDE%2CGAiDE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA3IvB%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGAiDE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAvIvB%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAkDE%2CGAqDE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA%2FI1B%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGAqDE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA3I1B%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAkDE%2CGAyDE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAnJ7B%3BEACE%2CwBAAA%3B%3BAAuCJ%2CMAkDE%2CGAyDE%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGAAG%2CGA%2FI7B%3BEACE%2CkBAAA%3B%3BAAmCJ%2CMAgHE%3BEACE%2CmBAAA%3B%3BAAjHJ%2CMAoHE%3BEACE%2C2BAAA%3BEACA%2C8BAAA%3B%3BAAIJ%2CUAEE%3BAAFF%2CUAEe%3BEACX%2CaAAA%3B%3BAAEA%2CUAHF%2CYAGG%3BAAAD%2CUAHW%2CiBAGV%3BEACC%2CcAAA%3B%3BAAKN%2CKAAK%2CkBAAmB%2CGAAG%2CKACzB%3BEACE%2C0BAAA%3B%3BAAGF%2CKALG%2CkBAAmB%2CGAAG%2CKAKvB%3BEACA%2CyBAAA%3BEACA%2CgBAAA%3B%3BAAPJ%2CKAAK%2CkBAAmB%2CGAAG%2CKAUzB%2CIAAG%2CMAAM%3BAAVX%2CKAAK%2CkBAAmB%2CGAAG%2CKAUR%2CIAAG%2CMAAM%3BEACxB%2CgBAAA%22%7D */

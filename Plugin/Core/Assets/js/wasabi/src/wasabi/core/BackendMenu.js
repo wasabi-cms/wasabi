@@ -19,6 +19,8 @@ goog.provide('wasabi.core.BackendMenu');
     this.collapsed = false;
     this.resizeTimer = null;
 
+    this.$mainItems.filter('.active').prev().addClass('prev-active');
+
     this.init();
   };
 

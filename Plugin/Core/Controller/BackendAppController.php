@@ -40,7 +40,8 @@ class BackendAppController extends AppController {
 		),
 		'Core.Guardian',
 		'RequestHandler',
-		'Core.Menus'
+		'Core.Menus',
+		'Core.Filter'
 	);
 
 	/**
@@ -71,7 +72,9 @@ class BackendAppController extends AppController {
 	 */
 	public $helpers = array(
 		'Form',
-		'Html',
+		'Html' => array(
+			'className' => 'Core.CoreHtml'
+		),
 		'Session',
 		'WasabiAsset' => array(
 			'className' => 'Core.WasabiAsset'
@@ -82,8 +85,14 @@ class BackendAppController extends AppController {
 		'CForm' => array(
 			'className' => 'Core.CForm'
 		),
-		'CHtml' => array(
-			'className' => 'Core.CHtml'
+		'Image' => array(
+			'className' => 'Core.Image'
+		),
+		'Filter' => array(
+			'className' => 'Core.Filter'
+		),
+		'Bulk' => array(
+			'className' => 'Core.Bulk'
 		)
 	);
 
@@ -107,6 +116,17 @@ class BackendAppController extends AppController {
 		$this->_checkBelowIE8();
 		$this->_checkPermissions();
 		$this->_setupBackend();
+	}
+
+	public function beforeRender() {
+		parent::beforeRender();
+
+		if (!isset($this->viewVars['bodyCssClass'])) {
+			$this->set('bodyCssClass', array());
+		}
+		$this->set('bodyCssClass', array_merge((array) $this->viewVars['bodyCssClass'], array(
+			Inflector::underscore($this->plugin) . '-' . Inflector::underscore($this->name) . '-' . Inflector::underscore($this->request->params['action'])
+		)));
 	}
 
 	protected function _checkBelowIE8() {
@@ -184,7 +204,7 @@ class BackendAppController extends AppController {
 	 * @return void
 	 */
 	protected function _setupBackend() {
-		$this->_loadLanguages();
+		$this->loadLanguages(null, true);
 
 		if (!$this->_isLoginAction() && !$this->_isLogoutAction()) {
 			$this->_loadBackendMenu();
@@ -235,9 +255,11 @@ class BackendAppController extends AppController {
 	/**
 	 * Load and setup all languages and language related config options.
 	 *
+	 * @param integer $langId The id of the current active language.
+	 * @param boolean $backend
 	 * @return void
 	 */
-	protected function _loadLanguages() {
+	public static function loadLanguages($langId = null, $backend = false) {
 		// All available languages for frontend / backend
 		if (!$languages = Cache::read('languages', 'core.infinite')) {
 			$language = ClassRegistry::init('Core.Language');
@@ -259,32 +281,48 @@ class BackendAppController extends AppController {
 		}
 		Configure::write('Languages', $languages);
 
-		// current backend language of the logged in user
-		$user = Authenticator::get();
-		$userLanguage = $languages['backend'][0];
-		if ($user && isset($user['Language']) && isset($user['Language']['id'])) {
-			foreach ($languages['backend'] as $bLang) {
-				if ($bLang['id'] == $user['Language']['id']) {
-					$userLanguage = $bLang;
-					break;
+		if ($backend === true) {
+			// current backend language of the logged in user
+			$user = Authenticator::get();
+			$userLanguage = $languages['backend'][0];
+			if ($user && isset($user['Language']) && isset($user['Language']['id'])) {
+				foreach ($languages['backend'] as $bLang) {
+					if ($bLang['id'] == $user['Language']['id']) {
+						$userLanguage = $bLang;
+						break;
+					}
 				}
 			}
-		}
-		Configure::write('Wasabi.backend_language', $userLanguage);
-		Configure::write('Config.language', $userLanguage['iso']);
+			Configure::write('Wasabi.backend_language', $userLanguage);
+			Configure::write('Config.language', $userLanguage['iso']);
 
-		// current content language the user has active
-		$contentLanguage = $languages['frontend'][0];
-		if ($this->Session->check('Wasabi.content_language_id')) {
-			$cLangId = $this->Session->read('Wasabi.content_language_id');
-			foreach ($languages['frontend'] as $cLang) {
-				if ($cLang['id'] == $cLangId) {
-					$contentLanguage = $cLang;
-					break;
+			// current content language the user has active
+			$contentLanguage = $languages['frontend'][0];
+			if (CakeSession::check('Wasabi.content_language_id')) {
+				$cLangId = CakeSession::read('Wasabi.content_language_id');
+				foreach ($languages['frontend'] as $cLang) {
+					if ($cLang['id'] == $cLangId) {
+						$contentLanguage = $cLang;
+						break;
+					}
 				}
 			}
+			Configure::write('Wasabi.content_language', $contentLanguage);
+		} else {
+			// Frontend
+			if ($langId !== null) {
+				foreach ($languages['frontend'] as $frontendLanguage) {
+					if ($frontendLanguage['id'] == $langId) {
+						Configure::write('Wasabi.content_language', $frontendLanguage);
+						Configure::write('Config.language', $frontendLanguage['iso']);
+						break;
+					}
+				}
+			} else {
+				Configure::write('Wasabi.content_language', $languages['frontend'][0]);
+				Configure::write('Config.language', $languages['frontend'][0]['iso']);
+			}
 		}
-		Configure::write('Wasabi.content_language', $contentLanguage);
 	}
 
 	/**

@@ -1,0 +1,3 @@
+Mozilla Firefox 16+
+IE 8+ (multi file uploads)
+Opera 12.10 (still need to test lower versions)

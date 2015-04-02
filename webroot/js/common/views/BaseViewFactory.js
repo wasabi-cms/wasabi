@@ -1,0 +1,1 @@
+define(["Underscore"],function(e){var t=function(e){this.eventBus=e,this.registry={factory:this}};return t.prototype=e.extend({},{register:function(e,t){return this.registry[e]=t},create:function(t,r){var n,s;return r=r||{},s=e.extend(r,this.registry,{eventBus:this.eventBus}),n=t,n.prototype.eventBus=this.eventBus,new n(s)}}),t});

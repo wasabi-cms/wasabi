@@ -20,10 +20,6 @@ App::uses('WasabiNav', 'Core.Lib');
 class CoreEvents {
 
 	public $implements = array(
-		'Plugin.Routes.load' => array(
-			'method' => 'loadPluginRoutes',
-			'priority' => 99999
-		),
 		'Backend.Menu.load' => array(
 			'method' => 'loadBackendMenu',
 			'priority' => 0
@@ -42,57 +38,6 @@ class CoreEvents {
 		)
 	);
 
-	public static function loadPluginRoutes(WasabiEvent $event) {
-		// Handle .json and application/json requests
-		Router::parseExtensions('json');
-
-		$prefix = Configure::read('Wasabi.backend_prefix');
-
-		// Login & Logout
-		Router::connect("/${prefix}/login", array('plugin' => 'core', 'controller' => 'users', 'action' => 'login'));
-		Router::connect("/${prefix}/logout", array('plugin' => 'core', 'controller' => 'users', 'action' => 'logout'));
-
-		// Dashboard
-		Router::connect("/${prefix}", array('plugin' => 'core', 'controller' => 'dashboard', 'action' => 'index'));
-
-		// Edit Profile
-		Router::connect("/${prefix}/profile", array('plugin' => 'core', 'controller' => 'users', 'action' => 'profile'));
-
-		// Users
-		Router::connect("/${prefix}/users", array('plugin' => 'core', 'controller' => 'users', 'action' => 'index'));
-		Router::connect("/${prefix}/users/:action/*", array('plugin' => 'core', 'controller' => 'users'));
-
-		// Groups
-		Router::connect("/${prefix}/groups", array('plugin' => 'core', 'controller' => 'groups', 'action' => 'index'));
-		Router::connect("/${prefix}/groups/:action/*", array('plugin' => 'core', 'controller' => 'groups'));
-
-		// Languages
-		Router::connect("/${prefix}/languages", array('plugin' => 'core', 'controller' => 'languages', 'action' => 'index'));
-		Router::connect("/${prefix}/languages/:action/*", array('plugin' => 'core', 'controller' => 'languages'));
-
-		// Core Settings
-		Router::connect("/${prefix}/settings/:action/*", array('plugin' => 'core', 'controller' => 'core_settings'));
-
-		// Plugins
-		Router::connect("/${prefix}/plugins", array('plugin' => 'core', 'controller' => 'plugins', 'action' => 'index'));
-		Router::connect("/${prefix}/plugins/:action/*", array('plugin' => 'core', 'controller' => 'plugins'));
-
-		// Permissions
-		Router::connect("/${prefix}/permissions", array('plugin' => 'core', 'controller' => 'permissions', 'action' => 'index'));
-		Router::connect("/${prefix}/permissions/:action/*", array('plugin' => 'core', 'controller' => 'permissions'));
-
-		// Menus
-		Router::connect("/${prefix}/menus", array('plugin' => 'core', 'controller' => 'menus', 'action' => 'index'));
-		Router::connect("/${prefix}/menus/:action/*", array('plugin' => 'core', 'controller' => 'menus'));
-
-		// Media
-		Router::connect("/${prefix}/media", array('plugin' => 'core', 'controller' => 'media', 'action' => 'index'));
-		Router::connect("/${prefix}/media/:action/*", array('plugin' => 'core', 'controller' => 'media'));
-
-		// Browser
-		Router::connect("/${prefix}/browser/not-supported", array('plugin' => 'core', 'controller' => 'browser', 'action' => 'notSupported'));
-	}
-
 	public static function loadBackendMenu(WasabiEvent $event) {
 		$main = WasabiNav::createMenu('main');
 
@@ -106,34 +51,40 @@ class CoreEvents {
 					'controller' => 'dashboard',
 					'action' => 'index'
 				),
-				'icon' => 'icon-home'
+				'icon' => 'icon-dashboard'
+			))
+			->addMenuItem(array(
+				'alias' => 'core_content',
+				'name' => __d('core', 'Content'),
+				'priority' => 1000,
+				'icon' => 'icon-cms',
 			))
 			->addMenuItem(array(
 				'alias' => 'core_menus',
 				'name' => __d('core', 'Menus'),
-				'priority' => 1000,
-				'icon' => 'icon-list',
+				'priority' => 2000,
 				'url' => array(
 					'plugin' => 'core',
 					'controller' => 'menus',
 					'action' => 'index'
-				)
+				),
+				'icon' => 'icon-menu3',
 			))
 			->addMenuItem(array(
 				'alias' => 'core_media',
 				'name' => __d('core', 'Media'),
-				'priority' => 2000,
-				'icon' => 'icon-picture',
+				'priority' => 3000,
 				'url' => array(
 					'plugin' => 'core',
 					'controller' => 'media',
 					'action' => 'index'
-				)
+				),
+				'icon' => 'icon-20-pictures',
 			))
 			->addMenuItem(array(
 				'alias' => 'core_administration',
 				'name' => __d('core', 'Administration'),
-				'priority' => 3000,
+				'priority' => 4000,
 				'icon' => 'icon-cogs'
 			))
 				->addMenuItem(array(
@@ -194,8 +145,8 @@ class CoreEvents {
 			->addMenuItem(array(
 				'alias' => 'core_settings',
 				'name' => __d('core', 'Settings'),
-				'priority' => 4000,
-				'icon' => 'icon-wrench'
+				'priority' => 5000,
+				'icon' => 'icon-16-wrench'
 			))
 				->addMenuItem(array(
 					'alias' => 'core_general_settings',

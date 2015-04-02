@@ -13,7 +13,7 @@
 				if ($lang['id'] == Configure::read('Wasabi.content_language.id')) {
 					$class = ' class="active"';
 				}
-				echo "<li${class}>" . $this->CHtml->backendLink($lang['locale'], '/languages/change/' . $lang['id']) . "</li>";
+				echo "<li${class}>" . $this->Html->backendLink($lang['locale'], '/languages/change/' . $lang['id']) . "</li>";
 			}
 		}
 		?>

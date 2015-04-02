@@ -34,7 +34,7 @@ class BrowserController extends BackendAppController {
 		$this->layout = 'Core.support';
 
 		$this->set(array(
-			'bodyCss' => 'support browser',
+			'bodyCssClass' => array('support', 'browser'),
 			'title_for_layout' => __d('core', 'Update Your Browser')
 		));
 	}

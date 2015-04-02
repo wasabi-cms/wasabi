@@ -21,6 +21,6 @@
 		</div>
 	</div>
 	<div class="form-controls">
-		<?php echo $this->Form->button('<span>' . __d('core', 'Finalize') . '</span>', array('class' => 'button')); ?>
+		<?php echo $this->Form->button(__d('core', 'Finalize'), array('class' => 'button')); ?>
 	</div>
 <?php echo $this->Form->end(); ?>

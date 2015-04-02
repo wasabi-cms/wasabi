@@ -3,7 +3,7 @@
  * @var CoreView $this
  */
 
-$this->CHtml->setTitle(__d('core', 'Edit General Settings'));
+$this->Html->setTitle(__d('core', 'Edit General Settings'));
 
 echo $this->Form->create('CoreGeneralSetting');
 echo $this->CForm->section(
@@ -44,8 +44,8 @@ echo $this->CForm->input('Login__Message__class', array(
 ?>
 <div class="form-controls">
 	<?php
-	echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
-	echo $this->CHtml->backendLink(__d('core', 'Reset'), '/settings/general');
+	echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button'));
+	echo $this->Html->backendLink(__d('core', 'Reset'), '/settings/general');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

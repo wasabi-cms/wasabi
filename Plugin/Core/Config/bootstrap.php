@@ -93,3 +93,19 @@ App::uses('WasabiEventManager', 'Core.Lib');
 	}
 
 	unset($activePlugins);
+
+/**
+ * Autoload namespaced vendor libs
+ */
+	spl_autoload_register(function ($class) {
+		$path = CakePlugin::path('Core') . 'Vendor' . DS . str_replace('\\', DS, $class) . '.php';
+		if (file_exists($path)) {
+			include $path;
+		}
+	});
+
+/**
+ * Register all available Collections and CollectionItems.
+ */
+	WasabiEventManager::trigger(new stdClass(), 'Plugin.Collections.register');
+	WasabiEventManager::trigger(new stdClass(), 'Plugin.CollectionItems.register');

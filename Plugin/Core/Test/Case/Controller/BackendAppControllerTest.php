@@ -105,7 +105,6 @@ class BackendAppControllerTest extends CoreControllerTest {
 		$this->assertTrue(array_key_exists('WasabiAsset', $this->BackendAppController->helpers));
 		$this->assertTrue(array_key_exists('Navigation', $this->BackendAppController->helpers));
 		$this->assertTrue(array_key_exists('CForm', $this->BackendAppController->helpers));
-		$this->assertTrue(array_key_exists('CHtml', $this->BackendAppController->helpers));
 	}
 
 	public function testBeforeFilter() {

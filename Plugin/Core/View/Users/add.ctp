@@ -6,13 +6,13 @@
  */
 
 if ($this->params['action'] === 'add') {
-	$this->CHtml->setTitle(__d('core', 'Add a new User'));
+	$this->Html->setTitle(__d('core', 'Add a new User'));
 } else {
-	$this->CHtml->setTitle(__d('core', 'Edit User'));
-	$this->CHtml->setSubTitle($this->data['User']['username']);
+	$this->Html->setTitle(__d('core', 'Edit User'));
+	$this->Html->setSubTitle($this->data['User']['username']);
 }
 
-echo $this->Form->create('User');
+echo $this->Form->create('User', array('class' => 'no-top-section'));
 
 if ($this->params['action'] == 'edit') {
 	echo $this->Form->input('id', array('type' => 'hidden'));
@@ -33,8 +33,8 @@ if ($this->params['action'] !== 'add' && isset($this->data['User']['id']) && $th
 ?>
 <div class="form-controls">
 	<?php
-	echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
-	echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/users');
+	echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button'));
+	echo $this->Html->backendLink(__d('core', 'Cancel'), '/users');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

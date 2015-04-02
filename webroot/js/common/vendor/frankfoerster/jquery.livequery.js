@@ -1,0 +1,13 @@
+/*!
+ * jQuery Live Query v1.3.7
+ * https://github.com/frankfoerster/livequery
+ *
+ * Copyright
+ *  (c) 2010, Brandon Aaron (http://brandonaaron.net)
+ *  (c) 2012 - 2013, Alexander Zaytsev (http://hazzik.ru/en)
+ *  (c) 2013, Frank Förster (http://frankfoerster.com)
+ * Dual licensed under the MIT (MIT_LICENSE.txt)
+ * and GPL Version 2 (GPL_LICENSE.txt) licenses.
+ */
+
+!function(e,n){function t(e,n,t,u){return!(e.selector!=n.selector||e.context!=n.context||t&&t.$lqguid!=n.fn.$lqguid||u&&u.$lqguid!=n.fn2.$lqguid)}"indexOf"in Array.prototype||(Array.prototype.indexOf=function(e,t){t===n&&(t=0),0>t&&(t+=this.length),0>t&&(t=0);for(var u=this.length;u>t;t++)if(t in this&&this[t]===e)return t;return-1}),e.extend(e.fn,{livequery:function(n,r){var i,o=this;return e.each(u.queries,function(e,u){return t(o,u,n,r)?(i=u)&&!1:void 0}),i=i||new u(o.selector,o.context,n,r),i.stopped=!1,i.run(),o},expire:function(n,r){var i=this;return e.each(u.queries,function(e,o){t(i,o,n,r)&&!i.stopped&&u.stop(o.id)}),i}});var u=e.livequery=function(n,t,r,i){var o=this;return o.selector=n,o.context=t,o.fn=r,o.fn2=i,o.elements=e([]),o.stopped=!1,o.id=u.queries.push(o)-1,r.$lqguid=r.$lqguid||u.guid++,i&&(i.$lqguid=i.$lqguid||u.guid++),o};u.prototype={stop:function(){var n=this;n.stopped||(n.fn2&&n.elements.each(n.fn2),n.elements=e([]),n.stopped=!0)},run:function(){var n=this;if(!n.stopped){var t=n.elements,u=e(n.selector,n.context),r=u.not(t),i=t.not(u);n.elements=u,r.each(n.fn),n.fn2&&i.each(n.fn2)}}},e.extend(u,{guid:0,queries:[],queue:[],running:!1,timeout:null,registered:[],checkQueue:function(){if(u.running&&u.queue.length)for(var e=u.queue.length;e--;)u.queries[u.queue.shift()].run()},pause:function(){u.running=!1},play:function(){u.running=!0,u.run()},registerPlugin:function(){e.each(arguments,function(n,t){if(e.fn[t]&&!(u.registered.indexOf(t)>0)){var r=e.fn[t];e.fn[t]=function(){var e=r.apply(this,arguments);return u.run(),e},u.registered.push(t)}})},run:function(t){t!=n?e.inArray(t,u.queue)<0&&u.queue.push(t):e.each(u.queries,function(n){e.inArray(n,u.queue)<0&&u.queue.push(n)}),u.timeout&&clearTimeout(u.timeout),u.timeout=setTimeout(u.checkQueue,20)},stop:function(t){t!=n?u.queries[t].stop():e.each(u.queries,u.prototype.stop)}}),u.registerPlugin("append","prepend","after","before","wrap","attr","removeAttr","addClass","removeClass","toggleClass","empty","remove","html","prop","removeProp"),e(function(){u.play()})}(jQuery);

@@ -14,8 +14,11 @@
  */
 
 App::uses('BackendAppController', 'Core.Controller');
+App::uses('CakeTime', 'Utility');
+App::uses('Image', 'Core.Lib');
 
 /**
+ * @property FilterComponent $Filter
  * @property Media $Media
  * @property array $data
  */
@@ -31,12 +34,91 @@ class MediaController extends BackendAppController {
 		'Core.Media'
 	);
 
+	public $filterFields = array(
+		'file' => array(
+			'modelField' => 'Media.fullname',
+			'type' => 'like'
+		),
+		'type' => array(
+			'modelField' => 'Media.type',
+			'type' => 'value'
+		),
+		'author' => array(
+			'modelField' => 'User.id',
+			'type' => 'value',
+			'related' => array(
+				'User'
+			)
+		),
+		'date' => array(
+			'modelField' => 'Media.created',
+			'type' => 'date_range'
+		)
+	);
+
+	public $filteredActions = array(
+		'index' => array(
+			'file',
+			'type',
+			'author',
+			'date'
+		)
+	);
+
+	public $sortFields = array(
+		'file' => array(
+			'modelField' => 'Media.fullname'
+		),
+		'author' => array(
+			'modelField' => 'User.username'
+		),
+		'date' => array(
+			'modelField' => 'Media.created',
+			'default' => 'desc'
+		)
+	);
+
+	public $sortableActions = array(
+		'index' => array(
+			'file',
+			'author',
+			'date'
+		)
+	);
+
 	/**
 	 * Index action
 	 * GET
 	 */
 	public function index() {
+		$typeCounts = $this->Media->getTypeCounts($this->Filter->getFilterOptions(array('type')));
+		if (isset($this->request->query['type'], $typeCounts[$this->request->query['type']])) {
+			$total = $typeCounts[$this->request->query['type']];
+		} else {
+			$total = $typeCounts['all'];
+		}
 
+		$options = $this->Filter->filterOptions;
+		$options['related'] = array(
+			'User' => array(
+				'fields' => array('User.id', 'User.username')
+			)
+		);
+
+		$media = $this->Media->find('all', $this->Filter->paginate(8, $total, $options));
+
+		$this->set(array(
+			'title_for_layout' => __d('core', 'Media'),
+			'media' => $media,
+			'author' => !empty($media) ? $media[0]['User']['username'] : '',
+			'typeCounts' => $typeCounts
+		));
+	}
+
+	public function add() {
+		$this->set(array(
+			'title_for_layout' => __d('core', 'Add Media')
+		));
 	}
 
 	/**
@@ -70,6 +152,7 @@ class MediaController extends BackendAppController {
 			foreach ($this->data['files'] as $file) {
 				$fileErrors = $this->Media->validateFile($file);
 				if (empty($fileErrors)) {
+					$this->Media->data[$this->Media->alias]['user_id'] = $this->Authenticator->get('User.id');
 					$data[] = $this->Media->data;
 				} else {
 					$errors = $errors + $fileErrors;
@@ -78,7 +161,7 @@ class MediaController extends BackendAppController {
 		}
 
 		// Save submitted files and catch afterSave errors.
-		if (empty($errors) && !$this->Media->saveAll($this->data['files'], array('validate' => false))) {
+		if (empty($errors) && !$this->Media->saveAll($data, array('validate' => false))) {
 			$errors[] = array('message' => __d('core', 'Something went wrong.'));
 		}
 

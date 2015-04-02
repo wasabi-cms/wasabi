@@ -4,10 +4,10 @@
  * @var array $groups
  */
 
-$this->CHtml->setTitle(__d('core', 'Groups'));
+$this->Html->setTitle(__d('core', 'Groups'));
 
-$this->CHtml->addAction(
-	$this->CHtml->backendLink('<i class="icon-plus"></i>', '/groups/add', array('class' => 'add', 'title' => __d('core', 'Add a new Group'), 'escape' => false))
+$this->Html->addAction(
+	$this->Html->backendLink('<i class="icon-plus"></i>', '/groups/add', array('class' => 'add', 'title' => __d('core', 'Add a new Group'), 'escape' => false))
 );
 ?>
 <table class="list valign-middle">
@@ -27,12 +27,12 @@ $this->CHtml->addAction(
 		?>
 		<tr<?php echo $class ?>>
 			<td class="right"><?php echo $g['Group']['id'] ?></td>
-			<td><?php echo $this->CHtml->backendLink($g['Group']['name'], '/groups/edit/' . $g['Group']['id'], array('title' => __d('core', 'Edit this Group'))) ?></td>
+			<td><?php echo $this->Html->backendLink($g['Group']['name'], '/groups/edit/' . $g['Group']['id'], array('title' => __d('core', 'Edit this Group'))) ?></td>
 			<td><?php echo $g['Group']['user_count'] ?></td>
 			<td class="actions center">
 				<?php
 				if ($g['Group']['id'] != 1) {
-					echo $this->CHtml->backendConfirmationLink(__d('core', 'delete'), '/groups/delete/' . $g['Group']['id'], array(
+					echo $this->Html->backendConfirmationLink(__d('core', 'delete'), '/groups/delete/' . $g['Group']['id'], array(
 						'title' => __d('core', 'Delete this Group'),
 						'class' => 'wicon-remove',
 						'confirm-message' => __d('core', 'Delete the group <strong>%s</strong> ?', array($g['Group']['name'])),

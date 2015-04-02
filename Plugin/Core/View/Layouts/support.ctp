@@ -2,6 +2,7 @@
 /**
  * @var CoreView $this
  */
+$bodyCssClass = (array) $this->get('bodyCssClass');
 ?>
 <!doctype html>
 <!--[if lt IE 7]>     <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en-US"><![endif]-->
@@ -11,7 +12,7 @@
 <head>
 	<?php echo $this->element('Core.layout/head'); ?>
 </head>
-<body<?php echo (isset($bodyCss) && $bodyCss !== '') ? ' class="' . $bodyCss . '"' : ''; ?>>
+<body<?php echo !empty($bodyCssClass) ? ' class="' . implode(' ', $bodyCssClass) . '"' : '' ?>>
 	<div class="support-wrapper">
 		<?php echo $this->fetch('content'); ?>
 	</div>

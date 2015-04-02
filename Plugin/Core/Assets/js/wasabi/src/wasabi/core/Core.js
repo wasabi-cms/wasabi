@@ -4,6 +4,7 @@ goog.require('wasabi.core.BackendMenu');
 goog.require('wasabi.core.Menus');
 goog.require('wasabi.core.Languages');
 goog.require('wasabi.core.Permissions');
+goog.require('wasabi.core.Media');
 
 window.wasabi.translations = window.wasabi.translations || {};
 
@@ -24,32 +25,39 @@ window.wasabi.translations = window.wasabi.translations || {};
     this.events = [];
 
     /**
-     * Holds a reference to the core BackendMenu instance
+     * Holds a reference to the core BackendMenu instance.
      *
      * @type {null|wasabi.core.BackendMenu}
      */
     this.backendMenu = null;
 
     /**
-     * Holds a reference to the core Menus instance
+     * Holds a reference to the core Menus instance.
      *
      * @type {null|wasabi.core.Menus}
      */
     this.menus = null;
 
     /**
-     * Holds a reference to the core Languages instance
+     * Holds a reference to the core Languages instance.
      *
      * @type {null|wasabi.core.Languages}
      */
     this.languages = null;
 
     /**
-     * Holds a reference to the core Permissions instance
+     * Holds a reference to the core Permissions instance.
      *
      * @type {null|wasabi.core.Permissions}
      */
     this.permissions = null;
+
+    /**
+     * Holds a reference to the core Media instance.
+     *
+     * @type {null|wasabi.core.Media}
+     */
+    this.media = null;
   };
 
   /**
@@ -188,6 +196,13 @@ window.wasabi.translations = window.wasabi.translations || {};
      */
     function _initTabs() {
       $('.tabs').tabify();
+      $('[data-tabify-tab]').each(function() {
+        if ($(this).find('.form-row.error').length > 0) {
+          var tabifyId = $(this).attr('data-tabify-id');
+          var tab = $(this).attr('data-tabify-tab');
+          $('[data-tabify-id="' + tabifyId + '"] > [data-tabify-target="' + tab + '"]').addClass('has-error');
+        }
+      });
     }
 
     /**
@@ -208,6 +223,9 @@ window.wasabi.translations = window.wasabi.translations || {};
       $('[data-toggle="modal"]').livequery(function() {
         $(this).modal();
       });
+      $('[data-toggle="confirm"]').livequery(function() {
+        $(this).modal();
+      })
     }
 
     /**
@@ -231,13 +249,34 @@ window.wasabi.translations = window.wasabi.translations || {};
         });
     }
 
+    /**
+     * Initialize jQuery MultiSelect on all
+     * elements with class name 'mselect'.
+     *
+     * @private
+     */
+    function _initMultiSelect() {
+      $('.mselect').multiSelect();
+    }
+
+    /**
+     * Initialize jQuery ToggleSelect for all
+     * bulk tables.
+     *
+     * @private
+     */
+    function _initToggleSelect() {
+      $('[data-toggle="select"]').toggleSelect();
+    }
+
     function _initBackendMenu() {
       this.backendMenu = new wasabi.core.BackendMenu('.main-nav', '.toggle-nav');
     }
 
     function _initMenus() {
-      this.menus = new wasabi.core.Menus('#menu-items', '#MenuItemItem');
+      this.menus = new wasabi.core.Menus('#menu-items', '#MenuItemId', '#MenuItemMenuId', '#MenuItemParentId', '#MenuItemItem');
     }
+
 
     function _initLanguages() {
       this.languages = new wasabi.core.Languages('#languages');
@@ -245,6 +284,10 @@ window.wasabi.translations = window.wasabi.translations || {};
 
     function _initPermissions() {
       this.permissions = new wasabi.core.Permissions('.permissions');
+    }
+
+    function _initMedia() {
+      this.media = new wasabi.core.Media();
     }
 
     return {
@@ -285,20 +328,19 @@ window.wasabi.translations = window.wasabi.translations || {};
         _setupAjax();
         _setupSpin();
         _buildEvents.call(this);
+        $.attachEvents(this.events);
 
-        var that = this;
-
-        $(function() {
-          $.attachEvents(that.events);
-          _initTabs();
-          _initDropdowns();
-          _initModals();
-          _initTableSortables();
-          _initBackendMenu.call(that);
-          _initMenus.call(that);
-          _initLanguages.call(that);
-          _initPermissions.call(that);
-        });
+        _initTabs();
+        _initDropdowns();
+        _initModals();
+        _initTableSortables();
+        _initMultiSelect();
+        _initToggleSelect();
+        _initBackendMenu.call(this);
+        _initMenus.call(this);
+        _initLanguages.call(this);
+        _initPermissions.call(this);
+        _initMedia.call(this);
       }
     }
 

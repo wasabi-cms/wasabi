@@ -16,8 +16,11 @@
 App::uses('CakeResponse', 'Network');
 App::uses('CakeRoute', 'Routing/Route');
 App::uses('ClassRegistry', 'Utility');
+App::uses('Route', 'Core.Model');
 
 class WasabiRoute extends CakeRoute {
+
+	CONST PAGE_PART = 'p';
 
 	/**
 	 * CakeResponse object
@@ -40,7 +43,7 @@ class WasabiRoute extends CakeRoute {
 	 * @return boolean|mixed
 	 */
 	public function match($url) {
-		if (!is_array($url) || empty($url)) {
+		if (!is_array($url) || empty($url) || !isset($url[Route::PAGE_KEY]) || !isset($url[Route::LANG_KEY])) {
 			return false;
 		}
 
@@ -55,13 +58,15 @@ class WasabiRoute extends CakeRoute {
 		}
 
 		$conditions = array(
-			'Route.plugin' => ($url['plugin'] == null) ? '' : $url['plugin'],
-			'Route.controller' => $url['controller'],
-			'Route.action' => $url['action'],
+			//'Route.plugin' => ($url['plugin'] == null) ? '' : $url['plugin'],
+			//'Route.controller' => $url['controller'],
+			//'Route.action' => $url['action'],
+			'Route.' . Route::PAGE_KEY => $url[Route::PAGE_KEY],
+			'Route.' . Route::LANG_KEY => $url[Route::LANG_KEY],
 			'Route.status_code' => null
 		);
 
-		unset($url['plugin'], $url['controller'], $url['action']);
+		unset($url['plugin'], $url['controller'], $url['action'], $url[Route::PAGE_KEY], $url[Route::LANG_KEY]);
 
 		$passedParams = array();
 		$namedParams = array();
@@ -75,7 +80,7 @@ class WasabiRoute extends CakeRoute {
 			}
 		}
 
-		$conditions['Route.params'] = implode('|', $passedParams);
+//		$conditions['Route.params'] = implode('|', $passedParams);
 
 		$route = ClassRegistry::init('Core.Route')->find('first', array(
 			'conditions' => $conditions
@@ -106,13 +111,16 @@ class WasabiRoute extends CakeRoute {
 		}
 
 		$params = array(
+			'plugin' => 'cms',
+			'controller' => 'cms_pages_frontend',
+			'action' => 'view',
 			'pass' => array(),
-			'named' => array(),
-			'plugin' => null
+			'named' => array()
 		);
 
-		// check for named params
 		$urlParts = explode('/', $url);
+
+		// check for named params
 		foreach ($urlParts as $key => $value) {
 			if ($value === '') {
 				unset($urlParts[$key]);
@@ -125,50 +133,98 @@ class WasabiRoute extends CakeRoute {
 			}
 		}
 
-		$routeModel = ClassRegistry::init('Core.Route');
-
-		$route = $routeModel->find('first', array(
+		$route = Route::instance()->find('first', array(
 			'conditions' => array(
 				'Route.url' => '/' . implode('/', $urlParts)
+			),
+			'related' => array(
+				'CmsPage' => array(
+					'Collection'
+				)
 			)
 		));
 
-		if ($route && $route['Route']['redirect_to'] !== null) {
-			$redirectRoute = $routeModel->findById($route['Route']['redirect_to']);
-			if ($redirectRoute) {
-				if (!$this->response) {
-					$this->response = new CakeResponse();
-				}
-				$request = new CakeRequest('/');
-				$base = $request->base;
-				$redirectUrl = $base . $redirectRoute['Route']['url'];
-				$redirectUrl = preg_replace("/\/\//", '/', $redirectUrl);
-				$this->response->header(array('Location' => Router::url($redirectUrl, true)));
-				if ($route['Route']['status_code'] !== null) {
-					$this->response->statusCode((int) $route['Route']['status_code']);
-				} else {
-					$this->response->statusCode(301);
-				}
-				$this->_sendResponse();
+		$pageNumber = false;
+
+		// no direct route found -> try paged collection routes
+		if (!$route) {
+			$part = array_pop($urlParts);
+			if (preg_match('/^[0-9]*$/', $part)) {
+				$pageNumber = (int) $part;
+				$part = array_pop($urlParts);
+			}
+			// paged url found so lets try to find a proper collection route
+			if ($pageNumber !== false && $part === self::PAGE_PART) {
+				$route = Route::instance()->find('first', array(
+					'conditions' => array(
+						'Route.url' => '/' . implode('/', $urlParts),
+						'Collection.type' => 'collection'
+					),
+					'related' => array(
+						'CmsPage' => array(
+							'Collection'
+						)
+					)
+				));
 			}
 		}
 
-		if (!$route || $route['Route']['controller'] == '' || $route['Route']['action'] == '') {
+		if (!$route) {
 			return false;
 		}
 
-		if ($route['Route']['plugin'] != '') {
-			$params['plugin'] = $route['Route']['plugin'];
+		if ($route) {
+			$redirectUrl = false;
+			$statusCode = 301;
+			if ($route['Route']['redirect_to'] !== null) {
+				$redirectRoute = Route::instance()->findById($route['Route']['redirect_to']);
+				if ($redirectRoute) {
+					$redirectUrl = $redirectRoute['Route']['url'];
+					if ($pageNumber !== false && $pageNumber > 1) {
+						$redirectUrl .= '/' . self::PAGE_PART . '/' . $pageNumber;
+					}
+					if ($route['Route']['status_code'] !== null) {
+						$statusCode = (int) $route['Route']['status_code'];
+					}
+				}
+			}
+			if ($pageNumber !== false && $pageNumber <= 1) {
+				$redirectUrl = '/' . implode('/', $urlParts);
+			}
+			if ($redirectUrl !== false) {
+				$this->_redirect($redirectUrl, $statusCode);
+			}
 		}
 
-		$params['controller'] = $route['Route']['controller'];
-		$params['action'] = $route['Route']['action'];
+		$params['pass'] = array(
+			$route['Route'][Route::PAGE_KEY],
+			$route['Route'][Route::LANG_KEY]
+		);
 
-		if ($route['Route']['params'] != '') {
-			$params['pass'] = explode('|', $route['Route']['params']);
+		if (isset($route['Collection']['type'])) {
+			if ($route['Collection']['type'] === 'collection') {
+				$params['collection'] = $route['Collection']['identifier'];
+			}
+			if ($pageNumber !== false) {
+				$params['collection_page'] = $pageNumber;
+			}
 		}
 
 		return $params;
+	}
+
+	protected function _redirect($redirectUrl, $statusCode = 301) {
+		if (!$this->response) {
+			$this->response = new CakeResponse();
+		}
+		$request = new CakeRequest('/');
+		$base = $request->base;
+		$redirectUrl = $base . $redirectUrl;
+		$redirectUrl = preg_replace("/\/\//", '/', $redirectUrl);
+		$this->response->header('Location', Router::url($redirectUrl, true));
+		$this->response->statusCode($statusCode);
+		$this->_sendResponse();
+		$this->_stop();
 	}
 
 	/**
@@ -177,6 +233,16 @@ class WasabiRoute extends CakeRoute {
 	 */
 	protected function _sendResponse() {
 		$this->response->send();
+	}
+
+	/**
+	 * Stop execution. Wraps exit()
+	 * making testing easier.
+	 *
+	 * @param integer|string $status see http://php.net/exit for values
+	 */
+	protected function _stop($status = 0) {
+		exit($status);
 	}
 
 }

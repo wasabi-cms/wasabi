@@ -71,7 +71,7 @@ goog.provide('wasabi.core.Menus');
    *
    * @constructor
    */
-  var Menus = function(menuItems, menuItemTypeSelect) {
+  var Menus = function(menuItems, menuItemId, menuSelect, menuItemParent, menuItemTypeSelect) {
 
     /**
      * Menu events and their registered handlers.
@@ -81,6 +81,10 @@ goog.provide('wasabi.core.Menus');
     this.events = [];
 
     this.$menuItems = $(menuItems);
+
+    this.menuItemId = $(menuItemId).val();
+    this.$menuSelect = $(menuSelect);
+    this.$menuItemParent = $(menuItemParent);
     this.$menuItemTypeSelect = $(menuItemTypeSelect);
 
     this.init();
@@ -105,6 +109,13 @@ goog.provide('wasabi.core.Menus');
             "nSortable-change": $.proxy(_onNSortableChange, this)
           }]
         )
+      }
+      if (this.$menuSelect.length > 0) {
+        this.events.push(
+          [this.$menuSelect, {
+            change: $.proxy(_onMenuSelectChange, this)
+          }]
+        );
       }
       if (this.$menuItemTypeSelect.length > 0) {
         this.events.push(
@@ -152,6 +163,25 @@ goog.provide('wasabi.core.Menus');
           this.$menuItems.unblock();
         }, this)
       });
+    }
+
+    function _onMenuSelectChange() {
+      var val = this.$menuSelect.val();
+      var $field = this.$menuItemParent.parent();
+      $field.block({
+        backgroundColor: '#fff'
+      });
+      $.ajax({
+        dataType: 'json',
+        url: this.$menuSelect.attr('data-parents-url') + '/' + this.menuItemId + '/' + this.$menuSelect.val(),
+        cache: false,
+        success: $.proxy(function(data) {
+          var $newParents = $(data);
+          this.$menuItemParent.val(false);
+          this.$menuItemParent.html($newParents.html());
+          $field.unblock();
+        }, this)
+      })
     }
 
     /**

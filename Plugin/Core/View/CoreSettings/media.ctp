@@ -6,7 +6,11 @@
  * @var array $fileExtensions
  */
 
-$this->CHtml->setTitle(__d('core', 'Edit Media Settings'));
+$this->start('Core.requireJs');
+echo 'wasabi.core.settingsMedia();';
+$this->end();
+
+$this->Html->setTitle(__d('core', 'Edit Media Settings'));
 
 echo $this->Form->create('CoreMediaSetting');
 echo $this->CForm->section(
@@ -103,8 +107,8 @@ echo $this->CForm->input('Media__PngCrush__path', array(
 ?>
 <div class="form-controls">
 	<?php
-	echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
-	echo $this->CHtml->backendLink(__d('core', 'Reset'), '/settings/media');
+	echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button'));
+	echo $this->Html->backendLink(__d('core', 'Reset'), '/settings/media');
 	?>
 </div>
 <?php echo $this->Form->end(); ?>

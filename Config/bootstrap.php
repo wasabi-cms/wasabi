@@ -136,6 +136,13 @@ Configure::write('Wasabi.installed',
 );
 
 /**
+ * Load wasabi settings
+ */
+if (file_exists(dirname(__FILE__) . DS . 'wasabi.php')) {
+	include dirname(__FILE__) . DS . 'wasabi.php';
+}
+
+/**
  * Custom Inflector rules, can be set to correctly pluralize or singularize table, model, controller names or whatever other
  * string is passed to the inflection functions
  *
@@ -154,8 +161,8 @@ Configure::write('Wasabi.installed',
  *
  */
 
-CakePlugin::load('Core', array('bootstrap' => true, 'routes' => false));
-CakePlugin::load('Lessy', array('bootstrap' => false, 'routes' => false));
+CakePlugin::load('Core', array('bootstrap' => true, 'routes' => true));
+//CakePlugin::load('Lessy', array('bootstrap' => false, 'routes' => false));
 CakePlugin::load('Migrations');
 
 /**
@@ -175,8 +182,8 @@ CakePlugin::load('Migrations');
  * ));
  */
 Configure::write('Dispatcher.filters', array(
-	'Lessy.LessMinFilter',
-	'Lessy.JsConcatFilter',
+//	'Lessy.LessMinFilter',
+//	'Lessy.JsConcatFilter',
 	'AssetDispatcher',
 	'CacheDispatcher'
 ));

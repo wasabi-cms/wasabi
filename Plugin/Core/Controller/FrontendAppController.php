@@ -56,48 +56,6 @@ class FrontendAppController extends AppController {
 	public $viewClass = 'Core.Core';
 
 	/**
-	 * Load and setup all languages and language related config options.
-	 *
-	 * @param integer|null $langId The id of the current active language
-	 * @return void
-	 */
-	protected function _loadLanguages($langId = null) {
-		// All available languages for frontend / backend
-		if (!$languages = Cache::read('languages', 'core.infinite')) {
-			$language = ClassRegistry::init('Core.Language');
-			$allLanguages = $language->findAll();
-
-			$languages = array(
-				'frontend' => array(),
-				'backend' => array()
-			);
-			foreach ($allLanguages as $lang) {
-				if ($lang['Language']['available_at_backend'] === true) {
-					$languages['backend'][] = $lang['Language'];
-				}
-				if ($lang['Language']['available_at_frontend'] === true) {
-					$languages['frontend'][] = $lang['Language'];
-				}
-			}
-			Cache::write('languages', $languages, 'core.infinite');
-		}
-		Configure::write('Languages', $languages);
-
-		if ($langId !== null) {
-			foreach ($languages['frontend'] as $frontendLanguage) {
-				if ($frontendLanguage['id'] == $langId) {
-					Configure::write('Wasabi.content_language', $frontendLanguage);
-					Configure::write('Config.language', $frontendLanguage['iso']);
-					break;
-				}
-			}
-		} else {
-			Configure::write('Wasabi.content_language', $languages['frontend'][0]);
-			Configure::write('Config.language', $languages['frontend'][0]['iso']);
-		}
-	}
-
-	/**
 	 * Wrapper to trigger an event via WasabiEventManager.
 	 * The wrapper is needed to easily mock _triggerEvent for controller tests.
 	 *

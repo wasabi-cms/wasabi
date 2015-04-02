@@ -8,24 +8,24 @@
  */
 
 if ($this->params['action'] === 'add_item') {
-	$this->CHtml->setTitle(__d('core', 'Add a new Menu Item'));
+	$this->Html->setTitle(__d('core', 'Add a new Menu Item'));
 } else {
-	$this->CHtml->setTitle(__d('core', 'Edit Menu Item'));
-	$this->CHtml->setSubTitle($this->data['MenuItem']['name']);
+	$this->Html->setTitle(__d('core', 'Edit Menu Item'));
+	$this->Html->setSubTitle($this->data['MenuItem']['name']);
 }
 
-$this->CHtml->addAction(
-	$this->CHtml->backendLink(__d('core', 'Back to %s Menu', array($menu['Menu']['name'])), '/menus/edit/' . $menu['Menu']['id'], array('class' => 'no-icon'))
+$this->Html->addAction(
+	$this->Html->backendLink(__d('core', 'Back to %s Menu', array($menu['Menu']['name'])), '/menus/edit/' . $menu['Menu']['id'], array('class' => 'no-icon'))
 );
 
-echo $this->Form->create('MenuItem', array('novalidate' => true));
+echo $this->Form->create('MenuItem', array('class' => 'no-top-section', 'novalidate' => true));
 
 if ($this->params['action'] == 'edit_item') {
 	echo $this->Form->input('id', array('type' => 'hidden'));
 }
 
 echo $this->CForm->input('name', array('label' => __d('core', 'Menu Item Name')));
-echo $this->CForm->input('menu_id', array('label' => __d('core', 'Menu'), 'options' => $menus));
+echo $this->CForm->input('menu_id', array('label' => __d('core', 'Menu'), 'options' => $menus, 'data-parents-url' => Router::url(array('plugin' => 'core', 'controller' => 'menus', 'action' => 'get_parents'))));
 echo $this->CForm->input('parent_id', array('label' => __d('core', 'Parent Item'), 'options' => $parentItems, 'empty' => __d('core', '-- None --')));
 echo $this->CForm->input('item', array('label' => __d('core', 'Link To'), 'options' => $types, 'empty' => __d('core', 'Please choose ...')));
 echo $this->Form->input('type', array('type' => 'hidden'));
@@ -99,8 +99,8 @@ if (!isset($this->data['MenuItem']['type'])) {
 	</div>
 	<div class="form-controls">
 		<?php
-		echo $this->Form->button('<span>' . __d('core', 'Save') . '</span>', array('div' => false, 'class' => 'button'));
-		echo $this->CHtml->backendLink(__d('core', 'Cancel'), '/menus/edit/' . $menu['Menu']['id']);
+		echo $this->Form->button(__d('core', 'Save'), array('div' => false, 'class' => 'button'));
+		echo $this->Html->backendLink(__d('core', 'Cancel'), '/menus/edit/' . $menu['Menu']['id']);
 		?>
 	</div>
 <?php echo $this->Form->end(); ?>
