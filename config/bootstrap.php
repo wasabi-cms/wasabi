@@ -187,6 +187,8 @@ if (Configure::read('debug')) {
     Plugin::load('DebugKit', ['bootstrap' => true]);
 }
 
+Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
+
 /**
  * Connect middleware/dispatcher filters.
  */
