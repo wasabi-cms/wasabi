@@ -322,5 +322,6 @@ return [
      */
     'Session' => [
         'defaults' => 'php',
+        'cookie' => 'wasabi'
     ],
 ];
