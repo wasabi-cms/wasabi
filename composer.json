@@ -1,7 +1,7 @@
 {
-    "name": "frankfoerster/wasabi",
+    "name": "wasabi-cms/wasabi",
     "description": "More information coming soon",
-    "homepage": "http://github.com/frankfoerster/wasabi",
+    "homepage": "http://github.com/wasabi-cms/wasabi",
     "type": "project",
     "license": "MIT",
     "require": {
