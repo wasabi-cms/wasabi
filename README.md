@@ -1,1 +1,1 @@
-.
+[![composer Dependency Status](https://www.versioneye.com/user/projects/554625b22405498a1d000002/badge.svg?style=flat)](https://www.versioneye.com/user/projects/554625b22405498a1d000002)
