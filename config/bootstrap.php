@@ -40,7 +40,6 @@ if (!extension_loaded('intl')) {
 
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
-use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\Plugin;
@@ -50,7 +49,6 @@ use Cake\Log\Log;
 use Cake\Network\Email\Email;
 use Cake\Network\Request;
 use Cake\Routing\DispatcherFactory;
-use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 
 /**
@@ -188,6 +186,7 @@ if (Configure::read('debug')) {
 }
 
 Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
+Plugin::load('Wasabi/Cms', ['bootstrap' => true, 'routes' => true]);
 
 /**
  * Connect middleware/dispatcher filters.

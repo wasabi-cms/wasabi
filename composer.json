@@ -21,7 +21,8 @@
     "autoload": {
         "psr-4": {
             "App\\": "src",
-            "Wasabi\\Core\\": "./plugins/Wasabi/Core/src"
+            "Wasabi\\Core\\": "./plugins/Wasabi/Core/src",
+            "Wasabi\\Cms\\": "./plugins/Wasabi/Cms/src"
         }
     },
     "autoload-dev": {
