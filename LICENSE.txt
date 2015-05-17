@@ -1,6 +1,6 @@
 The MIT License
 
-Copyright 2015 Frank Förster (http://frankfoerster.com)
+Copyright (c) 2015 Frank Förster (http://frankfoerster.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
