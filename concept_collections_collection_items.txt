@@ -1,0 +1,71 @@
+
+
+We have Pages, Collections and Collection items.
+Pages are managed in a tree structure.
+Collections and their items are decoupled from Pages.
+
+examples (Collection -> Item)
+
+News
+	-> News Article
+
+TravelBlog
+	-> Blog Post
+	-> Short Post
+	-> Video Post
+
+Portfolio
+	-> Portfolio Item
+
+
+Definition of collections and collection items
+
+	Each collection
+		- must be defined in the backend via a collection interface
+		- has a route that is used as a starting point for the route of any item in it (e.g. /blog/)
+		- has a route pattern for its items e.g. /{publishedDate|date('Y')}/{slug}
+		- has a layout where its items and other components are rendered
+		- holds instances of collection items ordered by date published DESC
+		- can be integrated (displayed) in the frontend via Menus.
+		- may have custom filters for browsing the collection (handled via Cake Event callbacks)
+
+	Each collection item
+		- must be defined in the backend via an item interface
+		  In this interface you can
+		  	- give the collection item a name
+		  	- create field groups
+		  	- assign predefined fields to a group with
+		  		- their own name (array key)
+		  		- their own label (for the form)
+		  		- their own hint text (for the form)
+	  		- can assign custom fields (TODO: clarify how this can be implemented, maybe custom classes or event callbacks)
+	  		- change the position (order) of field groups
+	  		- change the position (order) of a field in a group
+	  		- drag and drop a field from one group to another
+	  		-> the group assignment and position of a field has only an influence on where the field is displayed when adding/editing a collection item instance
+
+	  	- can be made available to 1 or more collections
+	  	- has a short layout for display within a collection page
+	  	- has a detail layout for the detail view
+
+
+Managing collections and collection items:
+	
+	Managing collections:
+
+		Collections will have their own expandable menu entry on the left.
+		Each collection will have a submenu entry in the Collections menu.
+		Clicking on a collection will show the Manage Collection page.
+		The Manage Collection page shows a list of all collection items in this collection
+			- id
+			- name
+			- collection item (type)
+			- status
+			- actions (edit, delete, publish)
+
+	Managing collection items:
+
+		Items can be added, edited, deleted, published.
+
+
+

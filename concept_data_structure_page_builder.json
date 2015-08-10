@@ -1,0 +1,112 @@
+{
+  "content": [
+    {
+      "meta": {
+        "type": "contentarea",
+        "contentarea": "main"
+      },
+      "data": [
+        {
+          "meta": {
+            "type": "row",
+            "classNames": []
+          },
+          "data": [
+            {
+              "meta": {
+                "type": "column",
+                "grid": {
+                  "colWidth": 6,
+                  "baseWidth": 12
+                },
+                "classNames": []
+              },
+              "data": [
+                {
+                  "meta": {
+                    "type": "module",
+                    "module": "text",
+                    "classNames": []
+                  },
+                  "data": {
+                    "text": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda corporis deleniti deserunt doloribus eius esse ex illum inventore ipsam magnam minima molestiae quo sequi similique suscipit unde, voluptas voluptatem voluptatum?"
+                  }
+                },
+                {
+                  "meta": {
+                    "type": "module",
+                    "module": "image",
+                    "classNames": []
+                  },
+                  "data": {
+                    "imageId": 142,
+                    "caption": "Foo",
+                    "title": "Bar"
+                  }
+                }
+              ]
+            },
+            {
+              "meta": {
+                "type": "column",
+                "grid": {
+                  "colWidth": 6,
+                  "baseWidth": 12
+                },
+                "classNames": []
+              },
+              "data": [
+                {
+                  "meta": {
+                    "type": "module",
+                    "module": "text",
+                    "classNames": []
+                  },
+                  "data": {
+                    "text": "Lorem2 ipsum dolor sit amet, consectetur adipisicing elit. Assumenda corporis deleniti deserunt doloribus eius esse ex illum inventore ipsam magnam minima molestiae quo sequi similique suscipit unde, voluptas voluptatem voluptatum?"
+                  }
+                },
+                {
+                  "meta": {
+                    "type": "module",
+                    "module": "image",
+                    "classNames": []
+                  },
+                  "data": {
+                    "imageId": 142,
+                    "caption": "Foo",
+                    "title": "Bar"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "meta": {
+        "type": "contentarea",
+        "contentarea": "sidebar"
+      },
+      "data": [
+        {
+          "meta": {
+            "type": "module",
+            "module": "box-share",
+            "classNames": []
+          },
+          "data": []
+        },
+        {
+          "meta": {
+            "type": "module",
+            "module": "box-newsletter",
+            "classNames": []
+          },
+          "data": []
+        }
+      ]
+    }
+  ]
+}
