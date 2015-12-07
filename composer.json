@@ -16,7 +16,7 @@
         "psy/psysh": "@stable",
         "cakephp/debug_kit": "3.*",
         "cakephp/bake": "1.*",
-        "phpunit/phpunit": "4.*",
+        "phpunit/phpunit": "5.*",
         "cakephp/cakephp-codesniffer": "2.*"
     },
     "autoload": {
@@ -24,7 +24,8 @@
             "App\\": "src",
             "Wasabi\\Core\\": "./plugins/Wasabi/Core/src",
             "Wasabi\\Cms\\": "./plugins/Wasabi/Cms/src",
-            "Wasabi\\Blog\\": "./plugins/Wasabi/Blog/src"
+            "Wasabi\\Blog\\": "./plugins/Wasabi/Blog/src",
+            "Wasabi\\ThemeDefault\\": "./plugins/Wasabi/ThemeDefault/src"
         }
     },
     "autoload-dev": {

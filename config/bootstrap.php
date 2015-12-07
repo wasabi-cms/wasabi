@@ -189,6 +189,8 @@ Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Wasabi/Cms', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Wasabi/Blog', ['bootstrap' => true, 'routes' => true]);
 
+Plugin::load('Wasabi/ThemeDefault', ['bootstrap' => true, 'routes' => false]);
+
 /**
  * Connect middleware/dispatcher filters.
  */
