@@ -11,7 +11,9 @@
 	<?= $this->element('default/site_header'); ?>
     <main id="content">
 		<?= $this->fetch('content'); ?>
+        <?= $this->contentArea('top') ?>
         <?= $this->contentArea('main') ?>
+        <?= $this->contentArea('bottom') ?>
 	</main>
 	<?= $this->element('default/site_footer'); ?>
 </div>
