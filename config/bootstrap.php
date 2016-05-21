@@ -13,67 +13,57 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-/**
- * Configure paths required to find CakePHP + general filepath
- * constants
- */
+// Configure paths required to find CakePHP + general filepath constants
 require __DIR__ . '/paths.php';
 
 // Use composer to load the autoloader.
 require ROOT . DS . 'vendor' . DS . 'autoload.php';
 
-/**
- * Bootstrap CakePHP.
- *
- * Does the various bits of setup that CakePHP needs to do.
- * This includes:
- *
- * - Registering the CakePHP autoloader.
- * - Setting the default application paths.
- */
+// Bootstrap CakePHP.
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
-
-// You can remove this if you are confident you have intl installed.
-if (!extension_loaded('intl')) {
-    trigger_error('You must enable the intl extension to use CakePHP.', E_USER_ERROR);
-}
 
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\Plugin;
+use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorHandler;
+use Cake\Filesystem\Folder;
 use Cake\Log\Log;
-use Cake\Network\Email\Email;
+use Cake\Mailer\Email;
 use Cake\Network\Request;
 use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Security;
+use FrankFoerster\Environment\Environments;
 
 /**
  * Read configuration file and inject configuration into various
  * CakePHP classes.
- *
- * By default there is only one configuration file. It is often a good
- * idea to create multiple configuration files, and separate the configuration
- * that changes from configuration that does not. This makes deployment simpler.
  */
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+
+    Plugin::load('FrankFoerster/Environment');
+    Environments::init();
+
+    foreach (Configure::consume('Cache') as $key => $config) {
+        new Folder($config['path'], true, 0775);
+        Cache::config($key, $config);
+    }
+
+    unset($key, $config);
 } catch (\Exception $e) {
-    die($e->getMessage() . "\n");
+    exit($e->getMessage() . "\n");
 }
 
-// Load an environment local configuration file.
-// You can use a file like app_local.php to provide local overrides to your
-// shared configuration.
-//Configure::load('app_local', 'default');
-
-// When debug = false the metadata cache should last
-// for a very very long time, as we don't want
-// to refresh the cache while users are doing requests.
+/**
+ * When debug = false the metadata cache should last
+ * for a very very long time, as we don't want
+ * to refresh the cache while users are doing requests.
+ */
 if (!Configure::read('debug')) {
     Configure::write('Cache._cake_model_.duration', '+1 years');
     Configure::write('Cache._cake_core_.duration', '+1 years');
@@ -83,7 +73,7 @@ if (!Configure::read('debug')) {
  * Set server timezone to UTC. You can change it to another timezone of your
  * choice but using UTC makes time calculations / conversions easier.
  */
-date_default_timezone_set('UTC');
+date_default_timezone_set(Configure::read('App.defaultTimezone'));
 
 /**
  * Configure the mbstring extension to use the correct encoding.
@@ -94,12 +84,12 @@ mb_internal_encoding(Configure::read('App.encoding'));
  * Set the default locale. This controls how dates, number and currency is
  * formatted and sets the default language to use for translations.
  */
-ini_set('intl.default_locale', 'en_US');
+ini_set('intl.default_locale', Configure::read('App.defaultLocale'));
 
 /**
  * Register application error and exception handlers.
  */
-$isCli = php_sapi_name() === 'cli';
+$isCli = PHP_SAPI === 'cli';
 if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
@@ -130,7 +120,6 @@ if (!Configure::read('App.fullBaseUrl')) {
     unset($httpHost, $s);
 }
 
-Cache::config(Configure::consume('Cache'));
 ConnectionManager::config(Configure::consume('Datasources'));
 Email::configTransport(Configure::consume('EmailTransport'));
 Email::config(Configure::consume('Email'));
@@ -138,20 +127,13 @@ Log::config(Configure::consume('Log'));
 Security::salt(Configure::consume('Security.salt'));
 
 /**
- * The default crypto extension in 3.0 is OpenSSL.
- * If you are migrating from 2.x uncomment this code to
- * use a more compatible Mcrypt based implementation
- */
-// Security::engine(new \Cake\Utility\Crypto\Mcrypt());
-
-/**
  * Setup detectors for mobile and tablet.
  */
-Request::addDetector('mobile', function ($request) {
+Request::addDetector('mobile', function () {
     $detector = new \Detection\MobileDetect();
     return $detector->isMobile();
 });
-Request::addDetector('tablet', function ($request) {
+Request::addDetector('tablet', function () {
     $detector = new \Detection\MobileDetect();
     return $detector->isTablet();
 });
@@ -162,7 +144,7 @@ Request::addDetector('tablet', function ($request) {
  * inflection functions.
  *
  * Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
- * Inflector::rules('irregular' => ['red' => 'redlings']);
+ * Inflector::rules('irregular', ['red' => 'redlings']);
  * Inflector::rules('uninflected', ['dontinflectme']);
  * Inflector::rules('transliteration', ['/å/' => 'aa']);
  */
@@ -176,8 +158,13 @@ Request::addDetector('tablet', function ($request) {
  * Plugin::load('Migrations'); //Loads a single plugin named Migrations
  *
  */
-
 Plugin::load('Migrations');
+Plugin::load('FrankFoerster/Filter');
+Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
+Plugin::load('Wasabi/Cms', ['bootstrap' => true, 'routes' => true]);
+Plugin::load('Wasabi/Blog', ['bootstrap' => true, 'routes' => true]);
+
+Plugin::load('Wasabi/ThemeDefault', ['bootstrap' => true, 'routes' => false]);
 
 // Only try to load DebugKit in development mode
 // Debug Kit should not be installed on a production system
@@ -185,15 +172,27 @@ if (Configure::read('debug')) {
     Plugin::load('DebugKit', ['bootstrap' => true]);
 }
 
-Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
-Plugin::load('Wasabi/Cms', ['bootstrap' => true, 'routes' => true]);
-Plugin::load('Wasabi/Blog', ['bootstrap' => true, 'routes' => true]);
-
-Plugin::load('Wasabi/ThemeDefault', ['bootstrap' => true, 'routes' => false]);
-
 /**
  * Connect middleware/dispatcher filters.
  */
 DispatcherFactory::add('Asset');
 DispatcherFactory::add('Routing');
 DispatcherFactory::add('ControllerFactory');
+
+/**
+ * Enable immutable time objects in the ORM.
+ *
+ * You can enable default locale format parsing by adding calls
+ * to `useLocaleParser()`. This enables the automatic conversion of
+ * locale specific date formats. For details see
+ * @link http://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
+ */
+Type::build('time')
+    ->useImmutable()
+    ->useLocaleParser();
+Type::build('date')
+    ->useImmutable()
+    ->useLocaleParser();
+Type::build('datetime')
+    ->useImmutable()
+    ->useLocaleParser();

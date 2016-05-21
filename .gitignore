@@ -1,6 +1,7 @@
 .idea
 /vendor/*
 /config/app.php
+/config/Environment/environment.local.php
 /tmp/*
 /logs/*
 composer.lock
