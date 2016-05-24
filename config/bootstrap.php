@@ -22,7 +22,6 @@ require ROOT . DS . 'vendor' . DS . 'autoload.php';
 // Bootstrap CakePHP.
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
-use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
@@ -30,13 +29,13 @@ use Cake\Core\Plugin;
 use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorHandler;
-use Cake\Filesystem\Folder;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
 use Cake\Network\Request;
 use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Security;
 use FrankFoerster\Environment\Environments;
+use Wasabi\Cms\View\Theme\ThemeManager;
 
 /**
  * Read configuration file and inject configuration into various
@@ -48,11 +47,6 @@ try {
 
     Plugin::load('FrankFoerster/Environment');
     Environments::init();
-
-    foreach (Configure::consume('Cache') as $key => $config) {
-        new Folder($config['path'], true, 0775);
-        Cache::config($key, $config);
-    }
 
     unset($key, $config);
 } catch (\Exception $e) {
@@ -164,7 +158,7 @@ Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Wasabi/Cms', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Wasabi/Blog', ['bootstrap' => true, 'routes' => true]);
 
-Plugin::load('Wasabi/ThemeDefault', ['bootstrap' => true, 'routes' => false]);
+ThemeManager::loadThemes();
 
 // Only try to load DebugKit in development mode
 // Debug Kit should not be installed on a production system
