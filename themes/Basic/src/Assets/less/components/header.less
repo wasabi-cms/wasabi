@@ -1,0 +1,39 @@
+@import (reference) "../__config";
+@import (reference) "../__mixins";
+
+#header {
+
+  .nav--main {
+    background: rgba(255, 255, 255, 0.94);
+    width: 100%;
+    position: fixed;
+    .box-shadow(0 2px 3px rgba(2, 23, 31, 0.25));
+
+    .container {
+      .clearfix();
+    }
+
+    .logo {
+      float: left;
+    }
+
+    ul {
+      float: right;
+      padding: 30px 0;
+    }
+
+    li {
+      display: inline-block;
+
+      a {
+        display: inline-block;
+        padding: 12px 25px;
+        font-size: 17px;
+      }
+    }
+  }
+
+  .nav--mobile {
+    display: none;
+  }
+}
