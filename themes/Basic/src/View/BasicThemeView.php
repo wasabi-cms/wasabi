@@ -9,6 +9,9 @@ use Wasabi\Cms\View\ThemeView;
  */
 class BasicThemeView extends ThemeView
 {
+    public $moduleCount = 0;
+    public $modules = [];
+
     /**
      * Initialization hook method.
      */

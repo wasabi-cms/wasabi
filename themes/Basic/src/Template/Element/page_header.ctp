@@ -17,7 +17,9 @@ use Cake\Routing\Router;use Wasabi\Core\Wasabi;
 	#echo $this->Meta->meta($layoutAttributes);
 
 	$this->start('head_css');
-	echo $this->Asset->themeCss('/css/main.css', 'Wasabi/Theme/Basic');
+	echo $this->Asset->css('css/base.css');
+	echo $this->Asset->css('css/main.css', 'Wasabi/Theme/Basic');
+	echo $this->Asset->js('ASSETS/js/test.js');
 	$this->end();
 	echo $this->fetch('head_css');
 	?>

@@ -153,7 +153,6 @@ Request::addDetector('tablet', function () {
  *
  */
 Plugin::load('Migrations');
-Plugin::load('FrankFoerster/Filter');
 Plugin::load('Wasabi/Core', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Wasabi/Cms', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Wasabi/Blog', ['bootstrap' => true, 'routes' => true]);
@@ -169,7 +168,7 @@ if (Configure::read('debug')) {
 /**
  * Connect middleware/dispatcher filters.
  */
-DispatcherFactory::add('Asset');
+//DispatcherFactory::add('Asset');
 DispatcherFactory::add('Routing');
 DispatcherFactory::add('ControllerFactory');
 

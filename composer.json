@@ -13,7 +13,11 @@
     "mobiledetect/mobiledetectlib": "2.*",
     "cakephp/migrations": "1.5.*",
     "cakephp/plugin-installer": "*",
-    "frankfoerster/cakephp-environment": "^3.0"
+    "frankfoerster/cakephp-asset": "3.0.*",
+    "frankfoerster/cakephp-environment": "^3.0",
+    "wasabi-cms/core": "dev-master",
+    "wasabi-cms/cms": "dev-master",
+    "wasabi-cms/blog": "dev-master"
   },
   "require-dev": {
     "psy/psysh": "@stable",
@@ -30,11 +34,7 @@
   },
   "autoload": {
     "psr-4": {
-      "App\\": "src",
-      "Wasabi\\Core\\": "./plugins/Wasabi/Core/src",
-      "Wasabi\\Cms\\": "./plugins/Wasabi/Cms/src",
-      "Wasabi\\Blog\\": "./plugins/Wasabi/Blog/src",
-      "Wasabi\\ThemeDefault\\": "./plugins/Wasabi/ThemeDefault/src"
+      "App\\": "src"
     }
   },
   "autoload-dev": {
