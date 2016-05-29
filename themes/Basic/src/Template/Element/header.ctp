@@ -3,6 +3,9 @@
  * @var \WasabiTheme\Basic\View\BasicThemeView $this
  */
 
+use Wasabi\Cms\WasabiCms;
+use Wasabi\Core\Wasabi;
+
 $menu = $this->Menu->render(1);
 
 ?><header id="header">
@@ -10,8 +13,8 @@ $menu = $this->Menu->render(1);
         <div class="container row">
             <?= $this->Html->link('Wasabi', [
                 'model' => 'Wasabi/Cms.Pages',
-                'foreign_key' => \Wasabi\Core\Wasabi::startPage()->id,
-                'language_id' => \Wasabi\Core\Wasabi::contentLanguage()->id,
+                'foreign_key' => WasabiCms::startPage()->id,
+                'language_id' => Wasabi::contentLanguage()->id,
                 '_name' => 'wasabi'
             ], [
                 'class' => 'logo'
