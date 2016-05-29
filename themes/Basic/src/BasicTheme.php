@@ -1,6 +1,6 @@
 <?php
 
-namespace Wasabi\Theme\Basic;
+namespace WasabiTheme\Basic;
 
 use Wasabi\Cms\View\Theme\Theme;
 use Wasabi\Cms\View\Theme\ThemeInterface;

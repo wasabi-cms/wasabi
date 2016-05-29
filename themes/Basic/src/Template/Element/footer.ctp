@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \Wasabi\Theme\Basic\View\BasicThemeView $this
+ * @var \WasabiTheme\Basic\View\BasicThemeView $this
  */
 ?><footer id="footer" role="contentinfo">
     <div class="container">

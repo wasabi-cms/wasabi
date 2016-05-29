@@ -1,6 +1,6 @@
 <?php
 
-namespace Wasabi\Theme\Basic\View\Layout;
+namespace WasabiTheme\Basic\View\Layout;
 
 use Wasabi\Cms\View\Layout\ContentArea;
 use Wasabi\Cms\View\Layout\Layout;

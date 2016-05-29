@@ -388,7 +388,7 @@ body {
   height: 100%;
 }
 body {
-  font: 16px / 1.5 'Open Sans', sans-serif;
+  font: 1em / 1.5 'Open Sans', sans-serif;
   color: #333333;
   background-color: #fff;
 }
@@ -396,6 +396,13 @@ nav ul {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+h1 {
+  margin: 0 0 0.67em;
+}
+p {
+  font-size: 1em;
+  margin: 0.75em 0;
 }
 a {
   color: #368ee0;
@@ -628,7 +635,7 @@ strong {
   top: 11px;
 }
 .flash-message .dismiss-flash i {
-  font-size: 18px;
+  font-size: 3em;
 }
 .flash-message--no-dismiss {
   padding: 10px 15px;

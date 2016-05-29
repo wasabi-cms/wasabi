@@ -1,6 +1,6 @@
 <?php
 
-namespace Wasabi\Theme\Basic\View;
+namespace WasabiTheme\Basic\View;
 
 use Wasabi\Cms\View\ThemeView;
 
