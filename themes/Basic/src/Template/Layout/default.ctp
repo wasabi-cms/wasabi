@@ -2,9 +2,12 @@
 /**
  * @var \WasabiTheme\Basic\View\BasicThemeView $this
  * @var \Wasabi\Cms\Model\Entity\Page $page
+ * @var string $title_for_layout
+ * @var string $lang
+ * @var array $layoutAttributes
  */
 ?>
-<?= $this->element('page_header'); ?>
+<?= $this->element('html_head'); ?>
 <div id="wrapper">
 	<?= $this->element('header'); ?>
     <main id="content">
@@ -17,4 +20,4 @@
 	</main>
 	<?= $this->element('footer'); ?>
 </div>
-<?= $this->element('page_footer'); ?>
+<?= $this->element('html_foot'); ?>
